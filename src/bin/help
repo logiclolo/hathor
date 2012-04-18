@@ -1,0 +1,36 @@
+#!/bin/sh
+
+help_ ()
+{
+	echo "Hi, I am hathor, an Ancient Egyptian goddess who personified the principles of love, beauty, music, motherhood and joy."
+	echo ""
+	echo "You could give command to me, such as:"
+	echo "  $ make history (for generating history.txt)"
+	echo ""
+	echo "Available subcommands are:"
+	echo "  firmware -- tag firmware, build tagged firmware and check/compare built firmware"
+	echo "  history  -- generate history.txt"
+	echo "  release  -- copy firmware to athena, send RT ticket"
+	echo ""
+	echo "make help_<subommand> for more help, for example"
+	echo "  $ make help_history"
+}
+
+help_firmware ()
+{
+	echo "help_firmware, document needs to be done"
+}
+
+help_history ()
+{
+	echo "help_history, document needs to be done"
+}
+
+help_release ()
+{
+	echo "help_release, document needs to be done"
+}
+
+action=$1
+eval help_$action
+

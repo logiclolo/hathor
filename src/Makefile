@@ -2,12 +2,12 @@
 export HATHOR=.
 
 all:
+	@make help
 
-history: build_firmware
+history: 
 	@bin/gen_history
 
-build_firmware: tag build_kernel check_firmware
-	@bin/firmware_build firmware
+firmware: tag build_kernel build_firmware firmware_check firmware_release
 
 tag: 
 	@bin/firmware_tag_create
@@ -15,8 +15,13 @@ tag:
 build_kernel:
 	@bin/firmware_build kernel
 
-check_firmware:
-	@bin/compare_firmware
+build_firmware:
+	@bin/firmware_build firmware
+
+firmware_check:
+	@bin/firmware_compare
+
+firmware_release: 
 	@bin/firmware_prelease
 
 upload: product/history.txt product/firmware
@@ -28,4 +33,13 @@ clean:
 help:
 	@bin/help
 
-.PHONY: history upload clean tag all build_firmware build_kernel help
+help_firmware:
+	@bin/help firmware
+
+help_history:
+	@bin/help history
+
+help_release:
+	@bin/help release
+
+.PHONY: all history firmware build_firmware tag build_kernel check_firmware firmware_release upload clean help
