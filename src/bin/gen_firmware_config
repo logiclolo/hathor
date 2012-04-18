@@ -1,0 +1,63 @@
+#!/bin/sh
+
+
+# this script is in charge of setting variables for generating history.txt
+# we put all the hard work of generating stuff in the get_firmware_info script
+# this script only contains the output code
+
+echo 'Generate firmware config...'
+
+source $HATHOR/config/basic_config
+source $HATHOR/lib/libfirmwareinfo
+
+rm -f $FIRMWARE_CONFIG
+
+#HATHOR_FIRMWARE_NAME
+hathor_get_firmware_name
+echo "export HATHOR_FIRMWARE_NAME='$HATHOR_FIRMWARE_NAME'" >> $FIRMWARE_CONFIG
+
+#HATHOR_FIRMWARE_PATH
+hathor_get_firmware_path
+echo "export HATHOR_FIRMWARE_PATH='$HATHOR_FIRMWARE_PATH'" >> $FIRMWARE_CONFIG
+
+#HATHOR_FIRMWARE_FILE
+hathor_get_firmware_file
+echo "export HATHOR_FIRMWARE_FILE='$HATHOR_FIRMWARE_FILE'" >> $FIRMWARE_CONFIG
+
+#HATHOR_FIRMWARE_END_DATE
+hathor_get_firmware_end_date
+echo "export HATHOR_FIRMWARE_END_DATE='$HATHOR_FIRMWARE_END_DATE'" >> $FIRMWARE_CONFIG
+
+#HATHOR_AUTHOR
+hathor_get_author
+echo "export HATHOR_AUTHOR='$HATHOR_AUTHOR'" >> $FIRMWARE_CONFIG
+
+#HATHOR_FIRMWARE_TYPE
+hathor_get_firmware_type
+echo "export HATHOR_FIRMWARE_TYPE='$HATHOR_FIRMWARE_TYPE'" >> $FIRMWARE_CONFIG
+
+#HATHOR_FIRMWARE_VERSION
+hathor_get_firmware_version
+echo "export HATHOR_FIRMWARE_VERSION='$HATHOR_FIRMWARE_VERSION'" >> $FIRMWARE_CONFIG
+
+#HATHOR_PLUGIN_VERSION
+hathor_get_plugin_version
+if [ -n "$HATHOR_WINDOW_PLUGIN" ]; then
+	echo "export HATHOR_WINDOW_PLUGIN='1'" >> $FIRMWARE_CONFIG
+	echo "export HATHOR_WINDOW_PLUGIN_VERSION='$HATHOR_WINDOW_PLUGIN_VERSION'" >> $FIRMWARE_CONFIG
+fi 
+if [ -n "$HATHOR_WINDOWLESS_PLUGIN" ]; then
+	echo "export HATHOR_WINDOWLESS_PLUGIN='1'" >> $FIRMWARE_CONFIG
+	echo "export HATHOR_IE_PLUGIN_VERSION='$HATHOR_IE_PLUGIN_VERSION'" >> $FIRMWARE_CONFIG
+	echo "export HATHOR_NP_PLUGIN_VERSION='$HATHOR_NP_PLUGIN_VERSION'" >> $FIRMWARE_CONFIG
+	echo "export HATHOR_VNDP_WRAPPER_VERSION='$HATHOR_VNDP_WRAPPER_VERSION'" >> $FIRMWARE_CONFIG
+fi
+
+#HATHOR_WEBPAGE_LANGUAGE
+hathor_get_webpage_language
+echo "export HATHOR_WEBPAGE_LANGUAGE='$HATHOR_WEBPAGE_LANGUAGE'" >> $FIRMWARE_CONFIG
+
+#HATHOR_COMMONBUG_LIST
+hathor_get_commonbug_list
+echo "export HATHOR_COMMONBUG_LIST='$HATHOR_COMMONBUG_LIST'" >> $FIRMWARE_CONFIG
+

@@ -1,0 +1,43 @@
+#!/bin/sh
+
+source $HATHOR/config/basic_config
+
+# This script is used for generate history.txt file
+FILEPP="filepp -e -I$OUTPUT_DIR"
+HISTORY_TEMPLATE="history.txt.pp"
+HISTORY_THIS_TIME="$OUTPUT_DIR/history-combined.txt"
+HISTORY_OUTPUT="$OUTPUT_DIR/history.txt"
+
+# generate firmware connfig 
+$HATHOR/bin/gen_firmware_config
+source $FIRMWARE_CONFIG
+
+if [ -f $FIRMWARE_CONFIG ] ; then 
+	source $FIRMWARE_CONFIG
+else
+	echo "$FIRMWARE_CONFIG not found, quit!"
+	exit 1;
+fi
+
+# gathering fixed bugs from bugzilla
+$EXEC/get_fixed_bugs
+
+# gathering history related stuff from athena
+$EXEC/get_previous_firmware_history
+
+# gathering module versions, we will filter out stuff that we don't care (such as open source programs)
+$EXEC/gen_module_versions
+
+# all done, generate history.txt
+echo 'Generating history.txt...'
+$FILEPP $HATHOR/template/$HISTORY_TEMPLATE -o $HISTORY_THIS_TIME
+
+encoding_of_previous_history=`file $HISTORY_ATHENA | grep "UTF-8"`
+if [ -z "$encoding_of_previous_history" ] ; then
+	iconv -f CP950 -t UTF-8 $HISTORY_ATHENA > $HISTORY_ATHENA.utf8
+	mv $HISTORY_ATHENA.utf8 $HISTORY_ATHENA
+fi
+
+cat $HISTORY_THIS_TIME $HISTORY_ATHENA > $HISTORY_OUTPUT
+
+echo 'history.txt generated.'

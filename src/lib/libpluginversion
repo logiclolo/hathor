@@ -1,0 +1,102 @@
+# Color code
+NORMAL='\033[0m'
+GOOD='\033[32;01m'
+WARN='\033[33;01m'
+BAD='\033[31;01m'
+
+WEBPAGE_ROOT=${ROOTFSDIR}/www
+
+# Plugin type detection
+if [ -e ${WEBPAGE_ROOT}/VVTK_Plugin_Installer.exe ]; then
+	PluginType="Winless"
+	PLUGIN_FILE=${WEBPAGE_ROOT}/VVTK_Plugin_Installer.exe
+	PLUGIN_DEFJS=plugindef_winless.js
+	EXEEXTRACT=/home/kent/usr/bin/7z.exe
+	GET_DLL_VERSION=/home/kent/Repos/Tools/get_dll_version.pl
+elif [ -e ${WEBPAGE_ROOT}/RtspVaPgDecNew2.cab ]; then
+	PluginType="Windowed"
+    PLUGIN_FILE=${WEBPAGE_ROOT}/RtspVaPgDecNew2.cab
+	PLUGIN_DEFJS=plugindef.js
+	CABEXTRACT=/home/klaymen/usr/bin/cabextract
+else
+	echo -e "${BAD}Plugin not found!${NORMAL}"
+	exit 1
+fi	
+
+PLUGIN_DEF=${WEBPAGE_ROOT}/include/${PLUGIN_DEFJS}
+TEMP=$$
+
+firmware_version_init ()
+{
+	if [ -z ${PRODUCTDIR} ] ; then
+		echo 'Please source devel file first!'
+		exit 1
+	fi
+	mkdir -p ${TEMP}
+}
+
+firmware_version_release ()
+{
+	rm -rf ${TEMP}
+}
+
+get_plugincab_version ()
+{
+	pushd ${TEMP}  > /dev/null
+	cp ${PLUGIN_FILE} . 
+	${CABEXTRACT} ${PLUGIN_FILE} > /dev/null 2> /dev/null
+	PLUGIN_VERSION=`grep ^FileVersion ActiveX.inf | awk -F= '{print $2}' | sed -e 's/\r//g'`
+	popd > /dev/null
+}
+
+get_plugindef_version ()
+{
+	pushd ${TEMP} > /dev/null
+	cp ${PLUGIN_DEF} . 
+	PLUGINDEF_VERSION=`grep "^[ \t]*var[ \t]*PLUGIN_VER" ${PLUGIN_DEFJS} | awk -F= '{print $2}' | sed -e 's/"//g' -e 's/;//g'`
+	popd > /dev/null
+}
+
+get_plugindll_version ()
+{
+	pushd ${TEMP}  > /dev/null
+	cp ${PLUGIN_FILE} . 
+	$(DISPLAY= /usr/bin/wine ${EXEEXTRACT} e ${PLUGIN_FILE} > /dev/null 2> /dev/null)
+	IE_PLUGIN_DLL_VERSION=`${GET_DLL_VERSION} WinLessRtspCtrl.dll`
+	NP_PLUGIN_DLL_VERSION=`${GET_DLL_VERSION} npWinLessRtspCtrl.dll`
+	VNDPWRAPPER_DLL_VERSION=`${GET_DLL_VERSION} VNDPWrapper.dll`
+	popd > /dev/null
+}
+
+get_plugindef_winless_version ()
+{
+	pushd ${TEMP} > /dev/null
+	cp ${PLUGIN_DEF} . 
+	IE_PLUGINDEF_VERSION=`grep "^[ \t]*var[ \t]*PLUGIN_VER" ${PLUGIN_DEFJS} | awk -F= '{print $2}' | sed -e 's/"//g' -e 's/;//g' -e 's/ //'`
+	NP_PLUGINDEF_VERSION=`grep "^[ \t]*var[ \t]*FF_VER" ${PLUGIN_DEFJS} | awk -F= '{print $2}' | sed -e 's/"//g' -e 's/;//g' -e 's/ //' -e 's/\./,/g'`
+	VNDPWRAPPER_PLUGINDEF_VERSION=` grep "^[ \t]*var[ \t]*VNDPWRAPPER_VER" ${PLUGIN_DEFJS} | awk -F= '{print $2}' | sed -e 's/"//g' -e 's/;//g' -e 's/ //'`
+	popd > /dev/null
+}
+
+firmware_version_init
+
+case $PluginType in
+	"Windowed")
+		get_plugindef_version
+		get_plugincab_version
+		HATHOR_WINDOW_PLUGIN=1
+		HATHOR_WINDOW_PLUGIN_VERSION=${PLUGIN_VERSION}
+		;;
+
+	"Winless")
+		get_plugindef_winless_version
+		get_plugindll_version
+		HATHOR_WINDOWLESS_PLUGIN=1
+		HATHOR_NP_PLUGIN_VERSION=${NP_PLUGIN_DLL_VERSION}
+		HATHOR_IE_PLUGIN_VERSION=${IE_PLUGINDEF_VERSION}
+		HATHOR_VNDP_WRAPPER_VERSION=${VNDPWRAPPER_PLUGINDEF_VERSION}
+		;;
+esac
+
+firmware_version_release
+

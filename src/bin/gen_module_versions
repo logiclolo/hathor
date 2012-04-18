@@ -1,0 +1,21 @@
+#!/bin/sh
+# generate module versions is combined by ident and MAKEFOURCC result
+
+source $HATHOR/config/basic_config
+
+# after these steps the result will be placed in 
+#  - $OUTPUT_DIR/ident-result and
+#  - $OUTPUT_DIR/makefourcc-result
+$EXEC/gen_ident_result
+$EXEC/gen_makefourcc_result
+
+MODULE_VERSIONS="$OUTPUT_DIR/module-versions.txt"
+[ -f "$MODULE_VERSIONS" ] && rm -f $MODULE_VERSIONS
+
+
+echo "**** ident strings ****" >> $MODULE_VERSIONS
+cat $OUTPUT_DIR/ident-result >> $MODULE_VERSIONS
+echo >> $MODULE_VERSIONS
+
+echo "**** MAKEFOURCC strings ****" >> $MODULE_VERSIONS
+cat $OUTPUT_DIR/makefourcc-result >> $MODULE_VERSIONS

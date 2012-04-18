@@ -1,0 +1,18 @@
+#!/bin/sh
+
+source $HATHOR/config/basic_config
+source $HATHOR/lib/libfirmwareinfo
+
+[ -f "$FIRMWARE_CONFIG" ] || exit
+source $FIRMWARE_CONFIG
+hathor_get_firmware_path
+
+FIRMWARE_PATH_SERVER_REVERTED=`echo "$FIRMWARE_PATH_SERVER" | sed -e 's:\\\\:\/:g'`
+HATHOR_FIRMWARE_PATH_PREFIX_REVERTED=`echo $HATHOR_FIRMWARE_PATH_PREFIX | sed -e 's:\\\\:\/:g'`
+[ -f "$HISTORY_ATHENA" ] && rm -f "$HISTORY_ATHENA"
+
+echo "Get previous history.txt from Athena, please input athena password:"
+smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -U klaymen.chang -D "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED" -c "get history.txt" 2> /dev/null
+dos2unix history.txt 2> /dev/null
+mv history.txt $HISTORY_ATHENA
+

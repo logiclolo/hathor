@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# My ident, I will echo file name and ident string in SINGLE line
+ident=`ident $@ 2>&1`
+has_no_ident_string=`echo $ident | grep "no id keywords"`
+if [ -z "$has_no_ident_string" ] ; then
+	echo "$ident"
+fi

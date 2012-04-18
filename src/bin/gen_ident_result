@@ -1,0 +1,25 @@
+#!/bin/sh
+
+Ident_files ()
+{
+	Directory=$1
+	for file in `cat $Directory` ; do
+		$EXEC/Ident $file
+	done
+}
+
+source $HATHOR/config/basic_config 
+ROOTFS_FILES="$OUTPUT_DIR/rootfs-files"
+FLASHFS_FILES="$OUTPUT_DIR/flashfs-files"
+MODULE_IDENT_FILE="$OUTPUT_DIR/ident-result"
+MODULE_IDENT_FILE_TEMP="$OUTPUT_DIR/ident-result-tmp"
+
+[ -f "$MODULE_IDENT_FILE" ] && rm -f $MODULE_IDENT_FILE
+
+find "$ROOTFSDIR" -type f | grep -v -f $HATHOR/config/ignore-ident > $ROOTFS_FILES
+find "$FLASHFSDIR" -type f | grep -v -f $HATHOR/config/ignore-ident > $FLASHFS_FILES
+
+Ident_files $ROOTFS_FILES | grep "\$Id:" | sed -e 's/^[ \t]*//' >> $MODULE_IDENT_FILE_TEMP
+Ident_files $FLASHFS_FILES | grep "\$Id:" | sed -e 's/^[ \t]*//' >> $MODULE_IDENT_FILE_TEMP
+sort $MODULE_IDENT_FILE_TEMP | uniq | sed -e 's/,/ /g' -e 's/  / /g' -e 's/  / /g' > $MODULE_IDENT_FILE
+rm -f $MODULE_IDENT_FILE_TEMP

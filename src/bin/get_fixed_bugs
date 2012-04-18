@@ -1,0 +1,23 @@
+#!/bin/sh
+
+source $HATHOR/config/basic_config
+
+OUTPUT="$OUTPUT_DIR/fixed-bugs.txt"
+CONFIG=$HATHOR/config/override_config
+BASE="http://dqa01/bugzilla/"
+BUGZ="bugz -q --columns 1024"
+BRAND="VVTK"
+
+echo "Get bug list from bugzilla ($BASE)..."
+
+[ -f $CONFIG ] && source $CONFIG
+
+MODEL="$BRAND $PRODUCTNAME"
+
+[ -z "$MODEL" ] && exit
+
+$BUGZ -b $BASE search --product "$MODEL" --status 'RESOLVED' --resolution 'fixed' > $OUTPUT
+
+# Generate "<None>" if no fixed bug found in this release
+OUTPUT_FILESIZE=`stat -c "%s" $OUTPUT`
+[ "$OUTPUT_FILESIZE" -eq "0" ] && echo "<None>" > $OUTPUT

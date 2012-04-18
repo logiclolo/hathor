@@ -1,0 +1,56 @@
+#!/bin/sh
+
+# $Id$
+
+source $HATHOR/config/basic_config
+source $HATHOR/lib/libfirmwareinfo
+
+# create current project tag
+
+# check if current project directory is clean
+cd ${PRODUCTDIR}
+WORKING_COPY_NOT_CLEAN=`svn st | grep -E "^M|^A|^D|^C|^\!"`
+if [ -n "$WORKING_COPY_NOT_CLEAN" ]; then
+	echo "Following files is modified:"
+	echo "$WORKING_COPY_NOT_CLEAN"
+	echo "Please commit all your code before proceeding!"
+	exit
+fi
+
+# prepare to copy firmware to remote
+SVN_URL=`svn info | grep ^URL | sed -e 's/^.*http/http/'`
+#echo "SVN_URL: $SVN_URL"
+SVN_PROJECT_ROOT=`dirname $SVN_URL`
+#echo "SVN_PROJECT_ROOT: $SVN_PROJECT_ROOT"
+
+# create firmware tag to remote
+SVN_TARGET_URL="$SVN_PROJECT_ROOT/tags/$PRODUCTVER"
+SVN_TARGET_URL_EXIST=`svn ls $SVN_TARGET_URL 2> /dev/null`
+if [ -n "$SVN_TARGET_URL_EXIST" ] ; then
+	echo "Destination $SVN_TARGET_URL already exists!"
+	echo "Please remove it before proceeding."
+	exit
+fi
+echo "Create firmware tag to $SVN_TARGET_URL"
+svn cp $SVN_URL $SVN_TARGET_URL -m "$PRODUCTVER" > /dev/null
+echo "Tag completed!"
+
+# check out firmware source code from remote
+echo "Check out source code from $SVN_TARGET_URL"
+TEMP_DIR="$HOME/hathor_temp"
+TEMP_PRODUCT_DIR="$TEMP_DIR/$PRODUCTVER"
+DEVEL_SOURCE_FILE="devel_`echo $PRODUCTVER | sed -e 's/-[^-]*$//' -e 's/-/_/g'`"
+svn co $SVN_TARGET_URL $TEMP_PRODUCT_DIR > /dev/null
+cd $TEMP_PRODUCT_DIR/build
+source $DEVEL_SOURCE_FILE
+
+# build
+echo "${PRODUCTNAME} script dir..." 
+cd ${PRODUCTDIR}/build/scripts
+./build_kernel
+./build_firmware
+
+# firmware build completed, check if there is something different
+#rm -rf $TEMP_DIR/$PRODUCTVER
+
+

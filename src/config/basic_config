@@ -1,0 +1,13 @@
+# Only change these stuff when you know what you are doing
+OUTPUT_DIR="$HATHOR/output"
+FIRMWARE_CONFIG="$OUTPUT_DIR/firmware_config"
+HISTORY_ATHENA="$OUTPUT_DIR/history-previous.txt"
+EXEC="$HATHOR/bin"
+
+# CC list, add people you want to notify on firmware release
+RT_CC=""
+
+if [ -z "$PRODUCTVER" ] ; then
+	echo "Please source devel_XXXX first, quitting"
+	exit
+fi

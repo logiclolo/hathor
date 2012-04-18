@@ -1,0 +1,58 @@
+FIRMWARE_VERSION=`echo $PRODUCTVER | awk -F- '{print $3}'`
+FIRMWARE_BRAND=`echo $PRODUCTVER | awk -F- '{print $2}'`
+
+function hathor_get_firmware_name
+{
+	HATHOR_FIRMWARE_NAME="$PRODUCTNAME-$FIRMWARE_BRAND firmware $FIRMWARE_VERSION"
+}
+
+function hathor_get_firmware_path
+{
+	FIRMWARE_PATH_SERVER="\\\\athena\\SQA"
+	FIRMWARE_PATH_SUFFIX="$FIRMWARE_BRAND\\Multi_lingual\\Application\\Firmware\\English"
+	HATHOR_FIRMWARE_PATH_PREFIX="\\Project\\$PRODUCTNAME\\$FIRMWARE_PATH_SUFFIX"
+	HATHOR_FIRMWARE_PATH="$FIRMWARE_PATH_SERVER\\$HATHOR_FIRMWARE_PATH_PREFIX\\$FIRMWARE_VERSION"
+}
+
+function hathor_get_firmware_file
+{
+	HATHOR_FIRMWARE_FILE="$PRODUCTVER.flash.pkg"
+}
+
+function hathor_get_firmware_end_date
+{
+	HATHOR_FIRMWARE_END_DATE=`date "+%Y/%m/%d"`
+}
+
+function hathor_get_author
+{
+	HATHOR_AUTHOR=`whoami`
+}
+
+function hathor_get_firmware_type
+{
+	echo $FIRMWARE_VERSION | grep "[0-9][0-9][0-9][a-z]$"
+	[ "$?" = "0" ] && HATHOR_FIRMWARE_TYPE="General"
+	[ "$?" = "1" ] && HATHOR_FIRMWARE_TYPE="Sample"
+}
+
+function hathor_get_firmware_version
+{
+	HATHOR_FIRMWARE_VERSION=$PRODUCTVER
+}
+
+function hathor_get_plugin_version
+{
+	source $HATHOR/lib/libpluginversion
+}
+
+function hathor_get_webpage_language
+{
+	HATHOR_WEBPAGE_LANGUAGE="de,en,es,fr,it,jp,pt,sc,tc"
+}
+
+function hathor_get_commonbug_list
+{
+	HATHOR_COMMONBUG_LIST=""
+}
+

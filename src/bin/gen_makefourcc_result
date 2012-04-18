@@ -1,0 +1,127 @@
+#!/bin/sh
+
+source $PRODUCTDIR/build/apps_config.config
+source $HATHOR/config/basic_config
+
+BOARDTYPE=$soc_platform
+VERSION="6"
+LAST_MODIFIED_DATE="2012/04/17"
+VER_FILE="$OUTPUT_DIR/makefourcc-result"
+DRIVER_DIR="${PRODUCTDIR}/drivers/lspdrivers"
+APP_CLUSTER_DIR="${PRODUCTDIR}/apps/app_cluster"
+
+if [ -z "${PRODUCTDIR}" ]; then
+    echo "Please source environment file first!"
+    exit 1
+fi
+
+[ -f "$VER_FILE" ] && rm -f $VER_FILE
+
+# Get u-boot version
+UBOOT_VER=`strings $PRODUCTDIR/images/$L2BOOT | grep svn | sed -e 's/^.*svn\([0-9]*\).*/\1/'`
+echo "U-Boot: $UBOOT_VER" >> $VER_FILE
+
+echo >> $VER_FILE
+
+CMD1="cut -d ( -f 2"
+CMD2="cut -d ) -f 1"
+
+get_mp4_encode_library_mozart3 ()
+{
+	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/mp4venc/inc/Mp4VEnc.h | $CMD1 | $CMD2 | sed s/,\ /./g
+}
+get_mp4_encode_library_dm365 ()
+{
+	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/mp4venc/inc/mp4venc.h | $CMD1 | $CMD2 | sed s/,\ /./g
+}
+
+get_h264_encode_library_mozart3 ()
+{
+	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/h264enc/inc/H264Enc.h | $CMD1 | $CMD2 | sed s/,\ /./g
+}
+
+get_h264_encode_library_dm365 ()
+{
+	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/h264enc/inc/h264enc.h | $CMD1 | $CMD2 | sed s/,\ /./g
+}
+
+get_mjpeg_encode_library_mozart3 ()
+{
+	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/jpegenc/inc/JPEGEnc.h | $CMD1 | $CMD2 | sed s/,\ /./g
+}
+
+get_mjpeg_encode_library_dm365 ()
+{
+	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/jpegenc/inc/jpegenc.h | $CMD1 | $CMD2 | sed s/,\ /./g
+}
+
+#-------------------------------------------------------------------------------------------------------------
+MP4VENC_VER=`eval get_mp4_encode_library_$soc_platform`
+echo "Mp4VEnc library: $MP4VENC_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+H264ENC_VER=`eval get_h264_encode_library_$soc_platform`
+echo "H264Enc library: $H264ENC_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+JPEGENC_VER=`eval get_mjpeg_encode_library_$soc_platform`
+echo "JpegEnc library: $JPEGENC_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+XMLSPARSER_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/xmlsparser/inc/xmlsparser.h | $CMD1 | $CMD2 | sed s/,\ /./g`
+echo "xmlsparser lib: $XMLSPARSER_VER" >> $VER_FILE
+DRM_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/drmservice/inc/drmservice.h | $CMD1 | $CMD2 | sed s/,\ /./g`
+echo "DRM: $DRM_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+DDNSC_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/ddnsclient/app/ddnsc/src/ddnsc.h | $CMD1 | $CMD2 | sed s/,/./g`
+echo "DDNSC: $DDNSC_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+UPNPDD_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/upnpdevice/app/upnpdd/src/upnpdd.c | $CMD1 | $CMD2 | sed s/,/./g`
+echo "UPNPDD: $UPNPDD_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+UPNPIGDCP_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/upnpcontrolpoint/app/upnpigdcp/src/upnpigdcp.h | $CMD1 | $CMD2 | sed s/,/./g`
+echo "UPNPIGDCP: $UPNPIGDCP_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+RTSPSVR_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/streamingserver/rtspstreamingserver/inc/rtspstreamingserver.h | awk '{print $4$5$6$7}' | sed s/,/./g`
+echo "RTSP streaming server: $RTSPSVR_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+LED_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/peripheral/led/app/led/src/led.h | $CMD1 | $CMD2 | sed s/,/./g`
+echo "LED module: $LED_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+if [ -d $APP_CLUSTER_DIR/manager/ptz ]; then
+	#PTZMGR_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/manager/ptz/app/ptzmanager/inc/ptzmanager.h | awk '{print $4$5$6$7}' | sed s/,/./g`
+	PTZMGR_VER=`grep "PTZMANAGER_VERSION_STRING" $APP_CLUSTER_DIR/manager/ptz/app/ptzmanager/inc/ptzmanager.h | awk '{print $3}' | sed s/,\ /./g`
+	echo "PTZ manager: $PTZMGR_VER" >> $VER_FILE
+fi
+#-------------------------------------------------------------------------------------------------------------
+if [ -d $APP_CLUSTER_DIR/peripheral/iris/${BOARDTYPE} ]; then
+	IRIS_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/peripheral/iris/${BOARDTYPE}/src/iris.c | $CMD1 | $CMD2 | sed s/,\ /./g`
+	echo "iris: $IRIS_VER" >> $VER_FILE
+fi
+#-------------------------------------------------------------------------------------------------------------
+ONVIFD_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/onvifmessage/inc/onvifmessage.h | $CMD1 | $CMD2 | sed s/,\ /./g`
+echo "ONVIF daemon: $ONVIFD_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+ONVIFDISCOVERY_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/onvifdiscovery/inc/ONVIFDiscovery.h | $CMD1 | $CMD2 | sed s/,\ /./g`
+echo "ONVIF discovery: $ONVIFDISCOVERY_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+ONVIFEVENT_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/onvifevent/inc/onvifeventmsg_defines.h | $CMD1 | $CMD2 | sed s/,\ /./g`
+echo "ONVIF eventd: $ONVIFEVENT_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+if [ -d $APP_CLUSTER_DIR/peripheral/uartd ]; then
+	UARTD_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/peripheral/uartd/inc/uartd.h | awk '{print $4$5$6$7}' | sed s/,/./g`
+	echo "UARTD: $UARTD_VER" >> $VER_FILE
+fi
+#-------------------------------------------------------------------------------------------------------------
+BOA_VER=`grep "Version " $APP_CLUSTER_DIR/network/boa/src/ReleaseNote.txt | head -1 | sed s/Version//`
+echo "boa: $BOA_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+SIPUA_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/sipua/inc/sipua.h | $CMD1 | $CMD2 | sed s/,\ /./g`
+echo "sipua: $SIPUA_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+UARTTUN_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/cgi/uarttun/src/uarttun.h | $CMD1 | $CMD2 | sed s/,\ /./g`
+echo "uarttun: $UARTTUN_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+IRCUTCTRL_VER=`grep "IRCUTCTRL_VERSION_STR" $APP_CLUSTER_DIR/peripheral/ircutctrl/app/ircutctrl/src/ircutctrl.h | awk '{print $3}' | sed s/,\ /./g`
+echo "ircutctrl: $IRCUTCTRL_VER" >> $VER_FILE
+
+sort $VER_FILE > $VER_FILE.sorted
+mv $VER_FILE.sorted $VER_FILE
+rm -f $VER_FILE.sorted
