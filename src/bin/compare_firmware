@@ -1,0 +1,3 @@
+#!/bin/sh
+
+source $HATHOR/config/basic_config
