@@ -1,0 +1,28 @@
+copy_firmware()
+{
+	pushd $RELEASE_DIR
+	cp ${PRODUCTDIR}/release/package/${PRODUCTVER}/${PRODUCTVER}.flash.pkg .
+	eval copy_firmware_$soc_platform
+	popd 
+}
+
+copy_firmware_mozart3 ()
+{
+	cp ${PRODUCTDIR}/release/package/${PRODUCTVER}/${PRODUCTVER}.flash.rom .
+}
+
+copy_firmware_dm365 ()
+{
+	echo # do nothing
+}
+
+copy_history ()
+{
+	pushd $RELEASE_DIR
+	cp $OUTPUT_DIR/history.txt .
+}
+
+copy_filesystem_log ()
+{
+	echo # do nothing
+}

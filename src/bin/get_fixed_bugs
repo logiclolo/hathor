@@ -14,8 +14,6 @@ echo "Get bug list from bugzilla ($BASE)..."
 
 MODEL="$BRAND $PRODUCTNAME"
 
-[ -z "$MODEL" ] && exit
-
 $BUGZ -b $BASE search --product "$MODEL" --status 'RESOLVED' --resolution 'fixed' > $OUTPUT
 
 # Generate "<None>" if no fixed bug found in this release

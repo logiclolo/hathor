@@ -12,7 +12,7 @@ if [ -n "$WORKING_COPY_NOT_CLEAN" ]; then
 	echo "Following files is modified:"
 	echo "$WORKING_COPY_NOT_CLEAN"
 	echo "Please commit all your code before proceeding!"
-	exit
+	exit 1
 fi
 
 # prepare to copy firmware to remote
@@ -25,7 +25,7 @@ SVN_TARGET_URL_EXIST=`svn ls $SVN_TARGET_URL 2> /dev/null`
 if [ -n "$SVN_TARGET_URL_EXIST" ] ; then
 	echo "Destination $SVN_TARGET_URL already exists!"
 	echo "Please remove it before proceeding."
-	exit
+	exit 1
 fi
 echo "Create firmware tag to $SVN_TARGET_URL"
 svn cp $SVN_URL $SVN_TARGET_URL -m "$PRODUCTVER" > /dev/null

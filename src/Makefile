@@ -22,7 +22,7 @@ firmware_check:
 	@bin/firmware_compare
 
 firmware_release: 
-	@bin/firmware_prelease
+	@bin/firmware_prerelease
 
 upload: product/history.txt product/firmware
 	@bin/rt_ticket_send

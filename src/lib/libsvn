@@ -1,0 +1,22 @@
+check_svn_repo ()
+{
+	dest=$1
+	svn ls $dest 2> /dev/null
+}
+
+check_exist_svn_repo ()
+{
+	if [ `check_svn_repo $1` -ne "0" ] ; then
+		echo "Repo $dest missing"
+		exit 
+	fi
+}
+
+check_not_exist_svn_repo ()
+{
+	if [ `check_svn_repo $1` -eq "0" ] ; then
+		echo "Repo $dest already exists"
+		exit
+	fi
+}
+

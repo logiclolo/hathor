@@ -10,5 +10,5 @@ RT_CC=""
 
 if [ -z "$PRODUCTVER" ] ; then
 	echo "Please source devel_XXXX first, quitting"
-	exit
+	exit 1;
 fi

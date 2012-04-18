@@ -1,0 +1,59 @@
+#!/bin/sh
+
+generate_prev_minor_version ()
+{
+	version=$1
+	URL_base=$2
+
+}
+
+generate_prev_major_version ()
+{
+	MODEL=$1
+	BRAND=$2
+	REV=$3
+	URL_base=$4
+
+	number_rev=`echo $REV | sed -e 's/[a-z]$//'`
+	if [ expr $number_rev % 100 ] ; then
+		number_rev=`expr $number_rev - 100`
+
+	else
+	fi
+
+
+}
+
+generate_previous_version ()
+{
+	version=$1
+	URL_base=$2
+
+	MODEL=`echo $version | awk -F- '{print $1}'`
+	BRAND=`echo $version | awk -F- '{print $2}'`
+	REV=`echo $version | awk -F- '{print $3}'`
+
+	PrevRev=`echo $REV | tr 'abcdefghijklmnopqrstuvwxyz' '#abcdefghijklmnopqrstuvwxy'`
+	if [ echo $PrevRev | grep '#' ] ; then
+		generate_prev_major_version $MODEL $BRAND $REV $URL_base
+	else
+		
+	fi
+}
+
+source $HATHOR/config/basic_config
+source $HATHOR/lib/libsvn
+source $HATHOR/lib/libfirmwareinfo
+
+cd $PRODUCTDIR;
+
+# use trunk directory to get other directories
+URL_trunk=`svn info $1 | grep ^URL | sed -e 's/^.*http/http/'`
+URL_base=`dirname $URL_trunk`
+URL_tag=$URL_base/tags
+URL_branches=$URL_base/branches
+
+# check if tag directory does exist
+check_exist_svn_repo $URL_tag
+
+previous_version=`generate_previous_version $PRODUCTVER $URL_base`

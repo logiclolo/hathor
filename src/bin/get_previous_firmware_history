@@ -3,7 +3,11 @@
 source $HATHOR/config/basic_config
 source $HATHOR/lib/libfirmwareinfo
 
-[ -f "$FIRMWARE_CONFIG" ] || exit
+if [ -f "$FIRMWARE_CONFIG" ]; then
+	echo "Firmware config ($FIRMWARE_CONFIG) not found"
+	exit 1
+fi
+
 source $FIRMWARE_CONFIG
 hathor_get_firmware_path
 

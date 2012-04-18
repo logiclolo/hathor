@@ -1,38 +1,11 @@
 #!/bin/sh
 
-copy_firmware()
-{
-	pushd $RELEASE_DIR
-	cp ${PRODUCTDIR}/release/package/${PRODUCTVER}/${PRODUCTVER}.flash.pkg .
-	eval copy_firmware_$soc_platform
-	popd 
-}
-
-copy_firmware_mozart3 ()
-{
-	cp ${PRODUCTDIR}/release/package/${PRODUCTVER}/${PRODUCTVER}.flash.rom .
-}
-
-copy_firmware_dm365 ()
-{
-	echo # do nothing
-}
-
-copy_history ()
-{
-	pushd $RELEASE_DIR
-	cp $OUTPUT_DIR/history.txt .
-}
-
-copy_filesystem_log ()
-{
-	echo # do nothing
-}
+source $HATHOR/config/basic_config
+source $HATHOR/lib/libfirmwarerelease
 
 TEMP_DIR="$HOME/hathor_temp"
 TEMP_PRODUCT_DIR="$TEMP_DIR/$PRODUCTVER"
 DEVEL_SOURCE_FILE="devel_`echo $PRODUCTVER | sed -e 's/-[^-]*$//' -e 's/-/_/g'`"
-source $HATHOR/config/basic_config
 source $TEMP_PRODUCT_DIR/build/apps_config.config
 cd $TEMP_PRODUCT_DIR/build/
 source $DEVEL_SOURCE_FILE
