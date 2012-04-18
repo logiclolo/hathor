@@ -1,0 +1,24 @@
+Project `Hathor'
+
+[Who is Hathor]
+Releasing firmware is a tedious and error-prone process.  People with even
+modest intelligence will hate to release firmware.  Hathor is thus created to
+save the poor engineer from the hell of various process while releasing
+firmwares.
+
+[What will Hathor do]
+Hathor is deligent, she takes all the hard work of releasing firmware, such as:
+ - Building and tagging firmware
+ - Comparing difference of firmwares
+ - Writing history.txt
+ - Sending RT tickets
+ - Uploading firmwares
+
+And other things like that.
+
+*** 
+Hathor (Egyptian: Ḥwt-Ḥr, "Mansion of Horus"),[1] is an Ancient Egyptian
+goddess who personified the principles of love, beauty, music, motherhood and
+joy.
+                                                      - Wikipedia
+
