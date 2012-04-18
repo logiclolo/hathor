@@ -39,5 +39,6 @@ if [ -z "$encoding_of_previous_history" ] ; then
 fi
 
 cat $HISTORY_THIS_TIME $HISTORY_ATHENA > $HISTORY_OUTPUT
+cp $HISTORY_OUTPUT release/history.txt
 
 echo 'history.txt generated.'
