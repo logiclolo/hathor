@@ -3,17 +3,18 @@
 help_ ()
 {
 	echo "Hi, I am hathor, an Ancient Egyptian goddess who personified the principles of love, beauty, music, motherhood and joy."
+	echo "version: $HATHOR_VERSION"
 	echo ""
-	echo "You could give command to me, such as:"
+	echo "You could give me commands, such as:"
 	echo "  $ make history (for generating history.txt)"
 	echo ""
-	echo "Available subcommands are:"
+	echo "Available commands are:"
 	echo "  firmware -- tag firmware, build tagged firmware and check/compare built firmware"
 	echo "  history  -- generate history.txt"
 	echo "  release  -- copy firmware to athena, send RT ticket"
 	echo ""
-	echo "make help_<subommand> for more help, for example"
-	echo "  $ make help_history"
+#	echo "make help_<command> for more help, for example"
+#	echo "  $ make help_history"
 }
 
 help_firmware ()

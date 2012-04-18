@@ -1,6 +1,8 @@
 copy_firmware()
 {
 	pushd $RELEASE_DIR
+	[ -d release ] || mkdir release
+	cd release
 	cp ${PRODUCTDIR}/release/package/${PRODUCTVER}/${PRODUCTVER}.flash.pkg .
 	eval copy_firmware_$soc_platform
 	popd 
