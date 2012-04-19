@@ -15,12 +15,12 @@ help_ ()
 	echo ""
 	echo "Typical workflow of using Hathor would be:"
 	echo "  $ make firmware"
-	echo "  ... check if output firmware is the same with the working copy"
-	echo "  ... modify working copy..."
+	echo "    ... check if output firmware is the same with the working copy"
+	echo "    ... modify working copy"
 	echo "  $ make firmware (again)"
 	echo "  $ make history"
 	echo "  $ make release"
-	echo ", then everything is done."
+	echo "Then everything is done."
 }
 
 action=$1
