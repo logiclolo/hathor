@@ -1,6 +1,6 @@
 # $Id$
 export HATHOR=.
-export HATHOR_VERSION=1.0.0.0
+export HATHOR_VERSION=0.0.1.0
 
 all:
 	@make help
@@ -8,27 +8,9 @@ all:
 history: 
 	@bin/gen_history
 
-firmware: tag build_kernel build_firmware firmware_check firmware_release
+firmware: _tag _build_kernel _build_firmware _firmware_check _firmware_release
 
-release: upload
-
-tag: 
-	@bin/firmware_tag_create
-
-build_kernel:
-	@bin/firmware_build kernel
-
-build_firmware:
-	@bin/firmware_build firmware
-
-firmware_check:
-	@bin/firmware_compare
-
-firmware_release: 
-	@bin/firmware_prerelease
-
-upload: product/history.txt product/firmware
-	@bin/rt_ticket_send
+release: _upload
 
 clean:
 	@rm -f output/*
@@ -36,13 +18,22 @@ clean:
 help:
 	@bin/help
 
-# help_firmware:
-#     @bin/help firmware
+_tag: 
+	@bin/firmware_tag_create
 
-# help_history:
-#     @bin/help history
+_build_kernel:
+	@bin/firmware_build kernel
 
-# help_release:
-#     @bin/help release
+_build_firmware:
+	@bin/firmware_build firmware
 
-.PHONY: all history firmware build_firmware tag build_kernel check_firmware firmware_release upload clean help
+_firmware_check:
+	@bin/firmware_compare
+
+_firmware_release: 
+	@bin/firmware_prerelease
+
+_upload: product/history.txt product/firmware
+	@bin/rt_ticket_send
+
+.PHONY: all history firmware _build_firmware _tag _build_kernel check_firmware _firmware_release _upload clean help

@@ -2,8 +2,8 @@
 
 help_ ()
 {
-	echo "Hathor, an Ancient Egyptian goddess who personified the principles of love, beauty, music, motherhood and joy."
-	echo "  version: $HATHOR_VERSION"
+	echo ""
+	echo "Hathor, an Ancient Egyptian goddess who personified the principles of love, beauty, music, motherhood and joy. Version: $HATHOR_VERSION"
 	echo ""
 	echo "You could give me commands, such as:"
 	echo "  $ make history (for generating history.txt)"
@@ -21,6 +21,7 @@ help_ ()
 	echo "  $ make history"
 	echo "  $ make release"
 	echo "Then everything is done."
+	echo ""
 }
 
 action=$1
