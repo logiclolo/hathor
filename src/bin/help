@@ -2,8 +2,8 @@
 
 help_ ()
 {
-	echo "Hi, I am hathor, an Ancient Egyptian goddess who personified the principles of love, beauty, music, motherhood and joy."
-	echo "version: $HATHOR_VERSION"
+	echo "Hathor, an Ancient Egyptian goddess who personified the principles of love, beauty, music, motherhood and joy."
+	echo "  version: $HATHOR_VERSION"
 	echo ""
 	echo "You could give me commands, such as:"
 	echo "  $ make history (for generating history.txt)"
@@ -13,23 +13,14 @@ help_ ()
 	echo "  history  -- generate history.txt"
 	echo "  release  -- copy firmware to athena, send RT ticket"
 	echo ""
-#	echo "make help_<command> for more help, for example"
-#	echo "  $ make help_history"
-}
-
-help_firmware ()
-{
-	echo "help_firmware, document needs to be done"
-}
-
-help_history ()
-{
-	echo "help_history, document needs to be done"
-}
-
-help_release ()
-{
-	echo "help_release, document needs to be done"
+	echo "Typical workflow of using Hathor would be:"
+	echo "  $ make firmware"
+	echo "  ... check if output firmware is the same with the working copy"
+	echo "  ... modify working copy..."
+	echo "  $ make firmware (again)"
+	echo "  $ make history"
+	echo "  $ make release"
+	echo ", then everything is done."
 }
 
 action=$1
