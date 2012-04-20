@@ -9,21 +9,23 @@ help_ ()
 	echo "  $ make history (for generating history.txt)"
 	echo ""
 	echo "Available commands are:"
-	echo "  firmware -- tag firmware, build tagged firmware and check/compare built firmware"
-	echo "  history  -- generate history.txt"
+	echo "  firmware -- tag firmware, build tagged firmware, check/compare built firmware and generate history"
+	echo "  history  -- generate history.txt (optional, $ make firmware will also do this)"
 	echo "  release  -- copy firmware to athena, send RT ticket"
 	echo ""
 	echo "Typical workflow of using Hathor would be:"
 	echo "  $ make firmware"
 	echo "    ... check if output firmware is the same with the working copy"
 	echo "    ... modify working copy"
-	echo "  $ make firmware (again)"
-	echo "  $ make history"
+	echo "  $ make firmware (repeat as many times as needed)"
 	echo "  $ make release"
 	echo "Then everything is done."
 	echo ""
 }
 
 action=$1
-eval help_$action
+eval help_$action 2> /dev/null
+if [ "$?" -ne "0" ] ; then
+	help_
+fi
 
