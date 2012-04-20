@@ -1,8 +1,6 @@
 # $Id$
-export HATHOR=.
+export HATHOR=$(shell pwd)
 export HATHOR_VERSION=0.0.1.0
-
-include lib/actions.mk
 
 all:
 	@make help
@@ -19,5 +17,7 @@ clean:
 
 help:
 	@bin/help
+
+include lib/actions.mk
 
 .PHONY: all history firmware release clean help

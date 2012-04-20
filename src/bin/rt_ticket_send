@@ -7,5 +7,5 @@ source $FIRMWARE_CONFIG
 [ -z "$QUEUE" ] && QUEUE="test-obm-fw (for test)"
 [ -n "$RT_CC" ] && CC_LIST="CC=$RT_CC"
 
-rt create -t ticket set subject="[Firmware Release] $PRODUCTVER" priority=10 text="`cat $RELEASE_DIR/history.txt`" queue="$QUEUE" $CC_LIST
+rt create -t ticket set subject="[Firmware Release] $PRODUCTVER" priority=10 text="`cat $RELEASE_DIR/history-$PRODUCTVER.txt`" queue="$QUEUE" $CC_LIST
 

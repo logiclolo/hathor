@@ -9,7 +9,10 @@ copy_firmware()
 copy_history ()
 {
 	pushd $RELEASE_DIR
+	echo 'here'
+	echo $OUTPUT_DIR
 	cp $OUTPUT_DIR/history.txt .
+	echo 'there'
 }
 
 copy_filesystem_log ()

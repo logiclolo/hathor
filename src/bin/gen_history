@@ -5,7 +5,7 @@ source $HATHOR/config/basic_config
 # This script is used for generate history.txt file
 FILEPP="filepp -e -I$OUTPUT_DIR"
 HISTORY_TEMPLATE="history.txt.pp"
-HISTORY_THIS_TIME="$OUTPUT_DIR/history-combined.txt"
+HISTORY_THIS_TIME="$OUTPUT_DIR/history-$PRODUCTVER.txt"
 HISTORY_OUTPUT="$OUTPUT_DIR/history.txt"
 
 # generate firmware connfig 
@@ -39,6 +39,8 @@ if [ -z "$encoding_of_previous_history" ] ; then
 fi
 
 cat $HISTORY_THIS_TIME $HISTORY_ATHENA > $HISTORY_OUTPUT
-cp $HISTORY_OUTPUT release/history.txt
+cp $HISTORY_OUTPUT $RELEASE_DIR/history.txt
+unix2dos $HISTORY_THIS_TIME $RELEASE_DIR/history.txt
+cp $HISTORY_THIS_TIME $RELEASE_DIR
 
 echo 'history.txt generated.'

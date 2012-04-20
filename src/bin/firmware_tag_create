@@ -25,8 +25,7 @@ SVN_TARGET_URL="$SVN_PROJECT_ROOT/tags/$PRODUCTVER"
 SVN_TARGET_URL_EXIST=`svn ls $SVN_TARGET_URL 2> /dev/null`
 echo "Tagging to $SVN_TARGET_URL"
 if [ -n "$SVN_TARGET_URL_EXIST" ] ; then
-	echo "Destination $SVN_TARGET_URL already exists!"
-	echo "Please remove it before proceeding."
+	echo "Destination $SVN_TARGET_URL already exists!  Remove it before proceeding."
 	exit 1
 fi
 svn cp $SVN_URL $SVN_TARGET_URL -m "$PRODUCTVER" > /dev/null
