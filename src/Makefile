@@ -15,7 +15,7 @@ firmware: _tag _build_kernel _build_firmware _firmware_check history _firmware_r
 release: _upload
 
 clean:
-	@rm -f output/*
+	@rm -f output/* release/*
 
 help:
 	@bin/help

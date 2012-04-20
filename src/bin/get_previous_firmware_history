@@ -6,15 +6,15 @@ source $HATHOR/lib/libfirmwareinfo
 [ -f "$FIRMWARE_CONFIG" ] && source $FIRMWARE_CONFIG
 hathor_get_firmware_path
 
-FIRMWARE_PATH_SERVER_REVERTED=`echo "$FIRMWARE_PATH_SERVER" | sed -e 's:\\\\:\/:g'`
-HATHOR_FIRMWARE_PATH_PREFIX_REVERTED=`echo $HATHOR_FIRMWARE_PATH_PREFIX | sed -e 's:\\\\:\/:g'`
+#FIRMWARE_PATH_SERVER_REVERTED=`echo "$FIRMWARE_PATH_SERVER" | sed -e 's:\\\\:\/:g'`
+#HATHOR_FIRMWARE_PATH_PREFIX_REVERTED=`echo $HATHOR_FIRMWARE_PATH_PREFIX | sed -e 's:\\\\:\/:g'`
 [ -f "$HISTORY_ATHENA" ] && rm -f "$HISTORY_ATHENA"
 
 echo "Get previous history.txt from Athena, please input athena password:"
 for i in `seq 1 3`; do
 	smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -U $USERNAME_ATHENA -D "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED" -c "get history.txt" 2> /dev/null
 	smbclient_result=$?
-	if [ "$?" = "0" ]; then
+	if [ "$smbclient_result" = "0" ]; then
 		# smbclient connect success
 		break
 	fi

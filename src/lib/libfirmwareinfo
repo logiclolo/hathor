@@ -1,6 +1,7 @@
 FIRMWARE_VERSION=`echo $PRODUCTVER | awk -F- '{print $3}'`
 FIRMWARE_BRAND=`echo $PRODUCTVER | awk -F- '{print $2}'`
 
+
 function hathor_get_firmware_name
 {
 	HATHOR_FIRMWARE_NAME="$PRODUCTNAME-$FIRMWARE_BRAND firmware $FIRMWARE_VERSION"
@@ -10,8 +11,10 @@ function hathor_get_firmware_path
 {
 	FIRMWARE_PATH_SERVER="\\\\athena\\SQA"
 	FIRMWARE_PATH_SUFFIX="$FIRMWARE_BRAND\\Multi_lingual\\Application\\Firmware\\English"
+	FIRMWARE_PATH_SERVER_REVERTED=`echo "$FIRMWARE_PATH_SERVER" | sed -e 's:\\\\:\/:g'`
 	HATHOR_FIRMWARE_PATH_PREFIX="\\Project\\$PRODUCTNAME\\$FIRMWARE_PATH_SUFFIX"
 	HATHOR_FIRMWARE_PATH="$FIRMWARE_PATH_SERVER\\$HATHOR_FIRMWARE_PATH_PREFIX\\$FIRMWARE_VERSION"
+	HATHOR_FIRMWARE_PATH_PREFIX_REVERTED=`echo $HATHOR_FIRMWARE_PATH_PREFIX | sed -e 's:\\\\:\/:g'`
 }
 
 function hathor_get_firmware_file
