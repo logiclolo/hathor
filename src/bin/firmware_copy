@@ -1,0 +1,17 @@
+#!/bin/sh 
+
+source $HATHOR/config/basic_config
+source $HATHOR/lib/libfirmwareinfo
+
+# calculate firmware md5
+pushd $RELEASE_DIR; 
+md5sum $PRODUCTVER.pkg
+popd
+
+DIRECTORY_TO_PUT_FIRMWARE=$FIRMWARE_VERSION
+
+SMB_COMMAND="mkdir $DIRECTORY_TO_PUT_FIRMWARE; cd $DIRECTORY_TO_PUT_FIRMWARE; put $RELEASE_DIR/$PRODUCTVER.pkg.*
+
+# create directory
+smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -U $USERNAME_ATHENA -D "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED" -c "$SMB_COMMAND" 2> /dev/null
+

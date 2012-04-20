@@ -3,6 +3,7 @@ OUTPUT_DIR="$HATHOR/output"
 RELEASE_DIR="$HATHOR/release"
 FIRMWARE_CONFIG="$OUTPUT_DIR/firmware_config"
 HISTORY_ATHENA="$OUTPUT_DIR/history-previous.txt"
+USERNAME_ATHENA="klaymen.chang"
 EXEC="$HATHOR/bin"
 
 # CC list, add people you want to notify on firmware release

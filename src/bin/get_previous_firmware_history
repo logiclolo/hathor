@@ -12,7 +12,7 @@ HATHOR_FIRMWARE_PATH_PREFIX_REVERTED=`echo $HATHOR_FIRMWARE_PATH_PREFIX | sed -e
 
 echo "Get previous history.txt from Athena, please input athena password:"
 for i in `seq 1 3`; do
-	smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -U klaymen.chang -D "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED" -c "get history.txt" 2> /dev/null
+	smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -U $USERNAME_ATHENA -D "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED" -c "get history.txt" 2> /dev/null
 	smbclient_result=$?
 	if [ "$?" = "0" ]; then
 		# smbclient connect success
