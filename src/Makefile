@@ -2,7 +2,7 @@
 export HATHOR=.
 export HATHOR_VERSION=0.0.1.0
 
-include actions.mk
+include lib/actions.mk
 
 all:
 	@make help

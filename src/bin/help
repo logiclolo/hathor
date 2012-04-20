@@ -1,26 +1,29 @@
 #!/bin/sh
 
+NORMAL='\033[0m'
+HIGHLIGHT='\033[1m'
+
 help_ ()
 {
-	echo ""
-	echo "Hathor, an Ancient Egyptian goddess who personified the principles of love, beauty, music, motherhood and joy. Version: $HATHOR_VERSION"
-	echo ""
-	echo "You could give me commands, such as:"
-	echo "  $ make history (for generating history.txt)"
-	echo ""
-	echo "Available commands are:"
-	echo "  firmware -- tag firmware, build tagged firmware, check/compare built firmware and generate history"
-	echo "  history  -- generate history.txt (optional, $ make firmware will also do this)"
-	echo "  release  -- copy firmware to athena, send RT ticket"
-	echo ""
-	echo "Typical workflow of using Hathor would be:"
-	echo "  $ make firmware"
-	echo "    ... check if output firmware is the same with the working copy"
-	echo "    ... modify working copy"
-	echo "  $ make firmware (repeat as many times as needed)"
-	echo "  $ make release"
-	echo "Then everything is done."
-	echo ""
+	echo -e ""
+	echo -e "Hathor, an Ancient Egyptian goddess who personified the principles of love, beauty, music, motherhood and joy. Version: $HATHOR_VERSION"
+	echo -e ""
+	echo -e "You could give me commands, such as:"
+	echo -e "  $ make history (for generating history.txt)"
+	echo -e ""
+	echo -e "Available commands are:"
+	echo -e "  $HIGHLIGHT firmware $NORMAL-- tag firmware, build tagged firmware, check/compare built firmware and generate history"
+	echo -e "  $HIGHLIGHT history $NORMAL -- generate history.txt (optional, $HIGHLIGHT$ make firmware$NORMAL will also do this)"
+	echo -e "  $HIGHLIGHT release $NORMAL -- copy firmware to athena, send RT ticket"
+	echo -e ""
+	echo -e "Typical workflow of using Hathor would be:"
+	echo -e "  $ make firmware"
+	echo -e "    ... check if output firmware is the same with the working copy"
+	echo -e "    ... modify working copy"
+	echo -e "  $ make firmware (repeat as many times as needed)"
+	echo -e "  $ make release"
+	echo -e "Then everything is done."
+	echo -e ""
 }
 
 action=$1
