@@ -6,7 +6,6 @@ source $HATHOR/config/basic_config
 FILEPP="filepp -e -I$OUTPUT_DIR"
 HISTORY_TEMPLATE="history.txt.pp"
 HISTORY_THIS_TIME="$OUTPUT_DIR/history-$PRODUCTVER.txt"
-HISTORY_OUTPUT="$OUTPUT_DIR/history.txt"
 
 # generate firmware connfig 
 $HATHOR/bin/gen_firmware_config
@@ -38,9 +37,9 @@ if [ -z "$encoding_of_previous_history" ] ; then
 	mv $HISTORY_ATHENA.utf8 $HISTORY_ATHENA
 fi
 
-cat $HISTORY_THIS_TIME $HISTORY_ATHENA > $HISTORY_OUTPUT
-cp $HISTORY_OUTPUT $RELEASE_DIR/history.txt
-unix2dos $HISTORY_THIS_TIME $RELEASE_DIR/history.txt
+unix2dos $HISTORY_ATHENA
+cp $HISTORY_ATHENA $RELEASE_DIR
+unix2dos $HISTORY_THIS_TIME 
 cp $HISTORY_THIS_TIME $RELEASE_DIR
 
 echo 'history.txt generated.'

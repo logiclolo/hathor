@@ -1,0 +1,5 @@
+#!/bin/sh
+
+source $HATHOR/config/basic_config
+
+cat $RELEASE_DIR/history-$PRODUCTVER.txt $HISTORY_ATHENA > $RELEASE_DIR/history.txt

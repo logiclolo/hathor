@@ -14,6 +14,7 @@ _firmware_release:
 	@bin/firmware_prerelease
 
 _upload:
+	@bin/merge_history
 	@bin/rt_ticket_send
 	@bin/firmware_copy
 
