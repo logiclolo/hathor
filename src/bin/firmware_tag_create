@@ -32,7 +32,6 @@ svn cp $SVN_URL $SVN_TARGET_URL -m "$PRODUCTVER" > /dev/null
 
 # check out firmware source code from remote
 echo "Checkout from $SVN_TARGET_URL"
-TEMP_DIR="$HOME/hathor_temp"
 TEMP_PRODUCT_DIR="$TEMP_DIR/$PRODUCTVER"
 DEVEL_SOURCE_FILE="devel_`echo $PRODUCTVER | sed -e 's/-[^-]*$//' -e 's/-/_/g'`"
 svn co $SVN_TARGET_URL $TEMP_PRODUCT_DIR > /dev/null

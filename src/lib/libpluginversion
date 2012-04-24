@@ -4,7 +4,7 @@ GOOD='\033[32;01m'
 WARN='\033[33;01m'
 BAD='\033[31;01m'
 
-WEBPAGE_ROOT=${ROOTFSDIR}/www
+WEBPAGE_ROOT="${TEMP_DIR}/${PRODUCTVER}/release/rootfs/www"
 
 # Plugin type detection
 if [ -e ${WEBPAGE_ROOT}/VVTK_Plugin_Installer.exe ]; then
@@ -19,7 +19,8 @@ elif [ -e ${WEBPAGE_ROOT}/RtspVaPgDecNew2.cab ]; then
 	PLUGIN_DEFJS=plugindef.js
 	CABEXTRACT=/home/klaymen/usr/bin/cabextract
 else
-	echo -e "${BAD}Plugin not found!${NORMAL}"
+	echo -e "${BAD}Plugin not found! ${NORMAL}"
+	echo -e "Both ${WEBPAGE_ROOT}/VVTK_Plugin_Installer.exe and ${WEBPAGE_ROOT}/RtspVaPgDecNew2.cab are missing"
 	exit 1
 fi	
 

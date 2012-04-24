@@ -20,16 +20,32 @@ fi
 
 # gathering fixed bugs from bugzilla
 $EXEC/get_fixed_bugs
+if [ "$?" != "0" ] ; then
+	echo "Get fixed bugs error, quit"
+	exit 1
+fi
 
 # gathering history related stuff from athena
 $EXEC/get_previous_firmware_history
+if [ "$?" != "0" ]; then
+	echo "Get previous firmware history error, quit"
+	exit 1
+fi
 
 # gathering module versions, we will filter out stuff that we don't care (such as open source programs)
 $EXEC/gen_module_versions
+if [ "$?" != "0" ]; then
+	echo "Get module versions error, quit"
+	exit 1
+fi
 
 # all done, generate history.txt
 echo 'Generating history.txt...'
 $FILEPP $HATHOR/template/$HISTORY_TEMPLATE -o $HISTORY_THIS_TIME
+if [ "$?" != "0" ]; then
+	echo "Generate history.txt failed, quit"
+	exit 1
+fi
 
 encoding_of_previous_history=`file $HISTORY_ATHENA | grep "UTF-8"`
 if [ -z "$encoding_of_previous_history" ] ; then

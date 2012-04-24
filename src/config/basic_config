@@ -5,6 +5,7 @@ RELEASE_DIR="$HATHOR/release"
 FIRMWARE_CONFIG="$OUTPUT_DIR/firmware_config"
 HISTORY_ATHENA="$OUTPUT_DIR/history-previous.txt"
 EXEC="$HATHOR/bin"
+TEMP_DIR="$HOME/hathor_temp"
 
 # CC list, add people you want to notify on firmware release
 RT_CC=""
