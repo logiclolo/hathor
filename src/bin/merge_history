@@ -2,4 +2,15 @@
 
 source $HATHOR/config/basic_config
 
+
+found_not_finished_fields=`grep "FILL IN" $RELEASE_DIR/history-$PRODUCTVER.txt`
+if [ "$found_not_finished_fields" != "" ]; then
+	echo "These fields are not filled yet:"
+	echo ""
+	echo "$found_not_finished_fields"
+	echo ""
+	echo "Please finish your history-$PRODUCTVER.txt before continuing"
+	exit 1
+fi
+
 cat $RELEASE_DIR/history-$PRODUCTVER.txt $HISTORY_ATHENA > $RELEASE_DIR/history.txt

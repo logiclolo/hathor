@@ -6,8 +6,8 @@
 Name:         <$HATHOR_FIRMWARE_NAME>
 Path:         <$HATHOR_FIRMWARE_PATH>
 File:         <$HATHOR_FIRMWARE_FILE>
-DCR No:       </* PLEASE FILL IN */>
-Start Date:   </* PLEASE FILL IN */>
+DCR No:       </* FILL IN DCR No.*/>
+Start Date:   </* FILL IN Start Date */>
 Release Date: <$HATHOR_FIRMWARE_END_DATE>
 Author:       <$HATHOR_AUTHOR>
 --------------------------------------------------------------------
@@ -31,7 +31,7 @@ Web page language:          <$HATHOR_WEBPAGE_LANGUAGE>
 #ifdef $HATHOR_COMMONBUG_LIST
 Verify major bug fixed:     <$HATHOR_COMMONBUG_LIST>
 #else
-Verify major bug fixed:     </* PLEASE FILL IN */>
+Verify major bug fixed:     </* FILL IN MAJOR BUGS FIXED*/>
 #endif
 -----------------------------------------------------------------------
 #include "module-versions.txt"
@@ -39,24 +39,24 @@ Verify major bug fixed:     </* PLEASE FILL IN */>
 #include "svn-log.txt"
 
 1. New features:
-    /* Fill description of the new feature here */
+    /* FILL IN NEW FEATURE DESCRIPTION */
 
 2. Changed features:
-    /* Fill description of the changed feature here */
+    /* FILL IN CHANGED FEATURE DESCRIPTION */
 
 3. Known bugs and issues
-    /* Fill description of the known issue here */
+    /* FILL IN KNOWN ISSUES DESCRIPTION */
 
 4. Bugs fixed:
 #include "fixed-bugs.txt"
 
 6. Unfixed stable common bugs:
-    /* Fill unfixed common bug here */
+    /* FILL IN UNFIXED STABLE COMMON BUGS */
 
 7. Untranslated string:
-    /* Fill untranslated strings here */
+    /* FILL IN UNTRANSLATED STRINGS */
 
 8. Test scope about this release:
-    /* Fill test scope request here */
+    /* FILL IN TEST SCOPE */
 
 #comment #include "history-previous.txt" 
