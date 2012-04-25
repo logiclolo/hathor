@@ -1,6 +1,6 @@
-# $Id: Makefile 110755 2012-04-25 02:09:15Z klaymen $
+# $Id: Makefile 110756 2012-04-25 02:10:32Z klaymen $
 export HATHOR=$(shell pwd)
-export HATHOR_VERSION=$Revision$
+export HATHOR_VERSION=0.0.1.1
 
 all:
 	@make help
