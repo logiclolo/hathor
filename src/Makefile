@@ -1,6 +1,6 @@
 # $Id$
 export HATHOR=$(shell pwd)
-export HATHOR_VERSION=0.0.1.1
+export HATHOR_VERSION=$Revision$
 
 all:
 	@make help
