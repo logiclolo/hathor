@@ -18,6 +18,8 @@ MODULE_IDENT_FILE_TEMP="$OUTPUT_DIR/ident-result-tmp"
 
 find "$TEMP_DIR/$PRODUCTVER/release/rootfs" -type f | grep -v -f $HATHOR/config/ignore-ident > $ROOTFS_FILES
 find "$TEMP_DIR/$PRODUCTVER/release/flashfs" -type f | grep -v -f $HATHOR/config/ignore-ident > $FLASHFS_FILES
+#find "$PRODUCTDIR/release/rootfs" -type f | grep -v -f $HATHOR/config/ignore-ident > $ROOTFS_FILES
+#find "$PRODUCTDIR/release/flashfs" -type f | grep -v -f $HATHOR/config/ignore-ident > $FLASHFS_FILES
 
 Ident_files $ROOTFS_FILES | grep "\$Id:" | sed -e 's/^[ \t]*//' >> $MODULE_IDENT_FILE_TEMP
 Ident_files $FLASHFS_FILES | grep "\$Id:" | sed -e 's/^[ \t]*//' >> $MODULE_IDENT_FILE_TEMP
