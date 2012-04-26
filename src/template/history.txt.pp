@@ -36,7 +36,7 @@ Verify major bug fixed:     </* FILL IN MAJOR BUGS FIXED*/>
 -----------------------------------------------------------------------
 #include "module-versions.txt"
 
-#include "svn-log.txt"
+#comment #include "svn-log.txt"
 
 1. New features:
     /* FILL IN NEW FEATURE DESCRIPTION */

@@ -4,7 +4,12 @@ GOOD='\033[32;01m'
 WARN='\033[33;01m'
 BAD='\033[31;01m'
 
-WEBPAGE_ROOT="${TEMP_DIR}/${PRODUCTVER}/release/rootfs/www"
+if [ -d "$TEMP_DIR/$PRODUCTVER/release/rootfs/www" ]; then
+	WEBPAGE_ROOT="$TEMP_DIR/${PRODUCTVER}/release/rootfs/www"
+else
+	WEBPAGE_ROOT="$PRODUCTDIR/release/rootfs/www"
+fi
+
 
 # Plugin type detection
 if [ -e ${WEBPAGE_ROOT}/VVTK_Plugin_Installer.exe ]; then

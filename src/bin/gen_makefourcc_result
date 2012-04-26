@@ -1,7 +1,12 @@
 #!/bin/sh
 
 source $HATHOR/config/basic_config
-source $TEMP_DIR/$PRODUCTVER/build/apps_config.config
+if [ -d "$TEMP_DIR/$PRODUCTVER" ]; then
+	source $TEMP_DIR/$PRODUCTVER/build/apps_config.config
+else
+	source $PRODUCTDIR/build/apps_config.config
+fi
+
 
 BOARDTYPE=$soc_platform
 VERSION="6"
