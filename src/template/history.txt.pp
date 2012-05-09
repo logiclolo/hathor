@@ -50,13 +50,13 @@ Verify major bug fixed:     </* FILL IN MAJOR BUGS FIXED*/>
 4. Bugs fixed:
 #include "fixed-bugs.txt"
 
-6. Unfixed stable common bugs:
+5. Unfixed stable common bugs:
     /* FILL IN UNFIXED STABLE COMMON BUGS */
 
-7. Untranslated string:
+6. Untranslated string:
     /* FILL IN UNTRANSLATED STRINGS */
 
-8. Test scope about this release:
+7. Test scope about this release:
     /* FILL IN TEST SCOPE */
 
 #comment #include "history-previous.txt" 

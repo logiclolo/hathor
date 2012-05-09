@@ -3,8 +3,7 @@
 source $HATHOR/config/basic_config
 source $FIRMWARE_CONFIG
 
-# set default queue to harmless queue 'test-obm-fw (for test)' temporarily
-[ -z "$QUEUE" ] && QUEUE="test-obm-fw (for test)"
+[ -z "$QUEUE" ] && QUEUE="05_Test Firmware"
 [ -n "$RT_CC" ] && CC_LIST="CC=$RT_CC"
 
 rt create -t ticket set subject="[Firmware Release] $PRODUCTVER" priority=10 text="`cat $RELEASE_DIR/history-$PRODUCTVER.txt`" queue="$QUEUE" $CC_LIST
