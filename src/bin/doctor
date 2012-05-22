@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# This is hathor doctor speaking. I will check if everything need for hathor running are ok
+
+# check hathorrc
+if [ ! -f $HOME/.hathor/hathorrc ] ; then
+	echo "hathor rc not exist. Generate hathorrc to $HOME/.hathor/hathorrc"
+	echo "Please input your id for logging to VIVOTEK."
+	echo "This information will be used when uploading firmware to athena."
+	read -p "ID: " athena_id
+	mkdir -p $HOME/.hathor
+	echo "USERNAME_ATHENA=\"$athena_id\"" > "$HOME/.hathor/hathorrc"
+fi
+
+echo "You are very healthy."
