@@ -3,6 +3,7 @@
 source $HATHOR/config/basic_config
 source $HATHOR/lib/libfirmwareinfo
 
+RETRY_COUNT=2
 WARN='\033[33;01m'
 NORMAL='\033[0m'
 
@@ -16,16 +17,19 @@ hathor_get_firmware_path
 echo ""
 echo -e "Get previous history.txt from Athena"
 echo -e "Please input athena password:"
-echo -e "$WARN密碼錯誤重試次數只有 3 次，請小心輸入$NORMAL"
-for i in `seq 1 3`; do
-	smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -U $USERNAME_ATHENA -D "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED" -c "get history.txt" 2> /dev/null
-	smbclient_result=$?
-	if [ "$smbclient_result" = "0" ]; then
-		# smbclient connect success
-		break
+echo -e "$WARN密碼錯誤重試次數只有 $RETRY_COUNT 次，請小心輸入$NORMAL"
+for i in `seq 1 $RETRY_COUNT`; do
+	smbclient_result=`smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -U $USERNAME_ATHENA -D "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED" -c "get history.txt" 2> /dev/null`
+	echo "$smbclient_result" | grep "NT_STATUS_LOGON_FAILURE"
+	LOGON_FAILED=$?
+	if [ "$LOGON_FAILED" != "0" ] ; then
+		break;
 	fi
-	echo "Unable to retrieve history.txt from athena, retry $i"
+	echo "Unable to retrieve history.txt from athena (error code $smbclient_result, retry $i)"
 done
+
 dos2unix history.txt 2> /dev/null
 mv history.txt $HISTORY_ATHENA
+
+exit 0
 

@@ -2,14 +2,23 @@
 
 # This is hathor doctor speaking. I will check if everything need for hathor running are ok
 
+NORMAL='\033[0m'
+HIGHLIGHT='\033[1m'
+
 # check hathorrc
 if [ ! -f $HOME/.hathor/hathorrc ] ; then
-	echo "hathor rc not exist. Generate hathorrc to $HOME/.hathor/hathorrc"
+	echo "Hathor rc file does not exist. I'm going to generate hathorrc to $HOME/.hathor/hathorrc"
 	echo "Please input your id for logging to VIVOTEK."
 	echo "This information will be used when uploading firmware to athena."
+	echo "For example, if your e-mail is klaymen.chang@vivotek.com,"
+	echo -ne "then you should enter$HIGHLIGHT klaymen.chang$NORMAL\n"
 	read -p "ID: " athena_id
 	mkdir -p $HOME/.hathor
 	echo "USERNAME_ATHENA=\"$athena_id\"" > "$HOME/.hathor/hathorrc"
 fi
 
+source $HOME/.hathor/hathorrc
+echo "-- Hathor setting --" 
+echo "  Athena username: $USERNAME_ATHENA"
+echo ""
 echo "You are very healthy."

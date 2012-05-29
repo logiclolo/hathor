@@ -24,3 +24,4 @@ fi
 # Generate "<None>" if no fixed bug found in this release
 OUTPUT_FILESIZE=`stat -c "%s" $OUTPUT`
 [ "$OUTPUT_FILESIZE" -eq "0" ] && echo "<None>" > $OUTPUT
+exit 0
