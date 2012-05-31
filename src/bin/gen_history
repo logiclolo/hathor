@@ -59,3 +59,4 @@ unix2dos $HISTORY_THIS_TIME
 cp $HISTORY_THIS_TIME $RELEASE_DIR
 
 echo 'history.txt generated.'
+echo "Please find history file in $RELEASE_DIR/$HISTORY_THIS_TIME"
