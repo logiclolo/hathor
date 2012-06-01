@@ -15,7 +15,7 @@ _firmware_release:
 
 _upload:
 	@bin/merge_history
-	@bin/rt_ticket_send
 	@bin/firmware_copy
+	@bin/rt_ticket_send
 
 .PHONY: _tag _build_kernel _build_firmware _firmware_check _firmware_release _upload

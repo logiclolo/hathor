@@ -5,7 +5,16 @@
 NORMAL='\033[0m'
 HIGHLIGHT='\033[1m'
 
-# check hathorrc
+# check .rtrc
+if [ ! -f $HOME/.rtrc ] ; then
+	echo "RT rc file does not exist. I'm going to generate rtrc to $HOME/.rtrc"
+	echo "Please input your id for logging to PMRT"
+	read -p "PMRT ID:" pmrt_id
+	echo "server http://dqa01/rt/" > "$HOME/.rtrc"
+	echo "user $pmrt_id" >> "$HOME/.rtrc"
+fi
+
+# check .hathor/hathorrc
 if [ ! -f $HOME/.hathor/hathorrc ] ; then
 	echo "Hathor rc file does not exist. I'm going to generate hathorrc to $HOME/.hathor/hathorrc"
 	echo "Please input your id for logging to VIVOTEK."
@@ -17,8 +26,12 @@ if [ ! -f $HOME/.hathor/hathorrc ] ; then
 	echo "USERNAME_ATHENA=\"$athena_id\"" > "$HOME/.hathor/hathorrc"
 fi
 
-source $HOME/.hathor/hathorrc
-echo "-- Hathor setting --" 
-echo "  Athena username: $USERNAME_ATHENA"
-echo ""
+#source $HOME/.hathor/hathorrc
+#echo "-- Hathor setting --" 
+#echo "  Athena username: $USERNAME_ATHENA"
+#echo "  RT rcfile content:"
+#echo "  ==== start ===="
+#cat $HOME/.rtrc
+#echo "  ====  end ===="
+#echo ""
 echo "You are very healthy."
