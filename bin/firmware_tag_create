@@ -6,11 +6,13 @@ source $HATHOR/config/basic_config
 source $HATHOR/lib/libfirmwareinfo
 
 DEVEL_SOURCE_FILE="devel_`echo $PRODUCTVER | sed -e 's/-[^-]*$//' -e 's/-/_/g'`"
+cd ${PRODUCTDIR}
+pushd build
 source $DEVEL_SOURCE_FILE
+popd
 
 # check if current project directory is clean
 echo "Check if everything is committed to subversion..."
-cd ${PRODUCTDIR}
 WORKING_COPY_NOT_CLEAN=`svn st | grep -E "^M|^A|^D|^C|^\!"`
 if [ -n "$WORKING_COPY_NOT_CLEAN" ]; then
 	echo "Following files is modified:"
