@@ -17,6 +17,12 @@ cd $TEMP_PRODUCT_DIR/build
 source $DEVEL_SOURCE_FILE
 
 # build
+if [ "$action" == "kernel" ] && [ -d "$PRODUCTDIR/tmp/include" ] ; then 
+	# we have kernel built so we could skip building kernels
+	echo "Kernel headers detected, we skip kernel building"
+	exit 0
+fi
+
 echo "${PRODUCTNAME} script dir..." 
 cd ${PRODUCTDIR}/build/scripts
 eval ./build_$action
