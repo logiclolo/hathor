@@ -1,6 +1,7 @@
 #!/bin/sh
 
 source $HATHOR/config/basic_config
+source $HATHOR/lib/libmessage
 
 # This script is used for generate history.txt file
 FILEPP="filepp -e -I$OUTPUT_DIR"

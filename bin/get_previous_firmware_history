@@ -2,15 +2,13 @@
 
 source $HATHOR/config/basic_config
 source $HATHOR/lib/libfirmwareinfo
-source $HATHOR/lib/libmessages
+source $HATHOR/lib/libmessage
 
 RETRY_COUNT=2
 
 [ -f "$FIRMWARE_CONFIG" ] && source $FIRMWARE_CONFIG
 hathor_get_firmware_path
 
-#FIRMWARE_PATH_SERVER_REVERTED=`echo "$FIRMWARE_PATH_SERVER" | sed -e 's:\\\\:\/:g'`
-#HATHOR_FIRMWARE_PATH_PREFIX_REVERTED=`echo $HATHOR_FIRMWARE_PATH_PREFIX | sed -e 's:\\\\:\/:g'`
 [ -f "$HISTORY_ATHENA" ] && rm -f "$HISTORY_ATHENA"
 
 echo ""

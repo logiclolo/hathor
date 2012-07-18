@@ -1,6 +1,7 @@
 #!/bin/sh
 
 source $HATHOR/config/basic_config
+source $HATHOR/lib/libmessage
 if [ -d "$TEMP_DIR/$PRODUCTVER" ]; then
 	source $TEMP_DIR/$PRODUCTVER/build/apps_config.config
 else

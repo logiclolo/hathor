@@ -1,6 +1,7 @@
 #!/bin/sh
 
 source $HATHOR/config/basic_config
+source $HATHOR/lib/libmessage
 
 
 found_not_finished_fields=`grep "FILL IN" $RELEASE_DIR/history-$PRODUCTVER.txt`
