@@ -5,28 +5,42 @@ source $HATHOR/lib/libfirmwareinfo
 source $HATHOR/lib/libmessage
 
 RETRY_COUNT=2
+SMBCLIENT_OUTPUT="smbclient_coutput.$$"
 
 [ -f "$FIRMWARE_CONFIG" ] && source $FIRMWARE_CONFIG
 hathor_get_firmware_path
 
 [ -f "$HISTORY_ATHENA" ] && rm -f "$HISTORY_ATHENA"
 
+local get_history_success=0 
 echo ""
 info "Get previous history.txt from Athena. Athena password is VIVOTEK password."
 info "Please input athena password:"
 warn "密碼錯誤重試次數只有 $RETRY_COUNT 次，請小心輸入"
 for i in `seq 1 $RETRY_COUNT`; do
-	smbclient_result=`smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -U $USERNAME_ATHENA -D "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED" -c "get history.txt" 2> /dev/null`
-	echo "$smbclient_result" | grep "NT_STATUS_LOGON_FAILURE"
-	LOGON_FAILED=$?
-	if [ "$LOGON_FAILED" != "0" ] ; then
+	smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -U $USERNAME_ATHENA -D "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED" -c "get history.txt" 2> /dev/null 1> $SMBCLIENT_OUTPUT
+	if [ "$?" == "0" ] ; then
+		get_history_success=1
+		# download 'history.txt' success
 		break;
 	fi
-	warn "Unable to retrieve history.txt from athena (error code $smbclient_result, retry $i)"
+
+	cat "$SMBCLIENT_OUTPUT" | grep "NT_STATUS_LOGON_FAILURE"
+	LOGON_FAILED=$?
+	if [ "$LOGON_FAILED" != "0" ] ; then
+		# not log in failed, other elase, skip this 
+		echo "Unable to retrieve history.txt from athena (error code $smbclient_result)"
+		break;
+	fi
 done
 
-dos2unix history.txt 2> /dev/null
-mv history.txt $HISTORY_ATHENA
+rm -f $SMBCLIENT_OUTPUT
 
-exit 0
+if [ "$get_history_success" == "1" ] ; then
+	dos2unix history.txt 2> /dev/null
+	mv history.txt $HISTORY_ATHENA
+	exit 0
+else
+	exit 1
+fi
 
