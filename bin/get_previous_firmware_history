@@ -16,8 +16,8 @@ hathor_get_firmware_path
 
 echo ""
 echo -e "Get previous history.txt from Athena"
-echo -e "Please input athena password:"
-echo -e "$WARN密碼錯誤重試次數只有 $RETRY_COUNT 次，請小心輸入$NORMAL"
+info "Please input athena password:"
+warn "密碼錯誤重試次數只有 $RETRY_COUNT 次，請小心輸入"
 for i in `seq 1 $RETRY_COUNT`; do
 	smbclient_result=`smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -U $USERNAME_ATHENA -D "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED" -c "get history.txt" 2> /dev/null`
 	echo "$smbclient_result" | grep "NT_STATUS_LOGON_FAILURE"
@@ -25,7 +25,7 @@ for i in `seq 1 $RETRY_COUNT`; do
 	if [ "$LOGON_FAILED" != "0" ] ; then
 		break;
 	fi
-	echo "Unable to retrieve history.txt from athena (error code $smbclient_result, retry $i)"
+	warn "Unable to retrieve history.txt from athena (error code $smbclient_result, retry $i)"
 done
 
 dos2unix history.txt 2> /dev/null

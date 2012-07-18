@@ -4,6 +4,8 @@
 
 source $HATHOR/config/basic_config
 source $HATHOR/lib/libfirmwareinfo
+source $HATHOR/lib/libmessage
+
 
 # currently variable action could be 'kernel' or 'firmware'
 action=$1
@@ -19,7 +21,7 @@ source $DEVEL_SOURCE_FILE
 # build
 if [ "$action" == "kernel" ] && [ -d "$PRODUCTDIR/tmp/include" ] ; then 
 	# we have kernel built so we could skip building kernels
-	echo "Kernel headers detected, we skip kernel building"
+	info "Kernel headers detected, we skip kernel building"
 	exit 0
 fi
 

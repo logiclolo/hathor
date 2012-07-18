@@ -1,0 +1,13 @@
+WARN='\033[33;01m'
+NORMAL='\033[0m'
+INFO='\033[1m'
+
+function warn ()
+{
+	echo -e "$WARN$@$NORMAL"
+}
+
+function info ()
+{
+	echo -e "$INFO$@$NORMAL"
+}

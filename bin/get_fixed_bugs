@@ -17,7 +17,7 @@ MODEL="$BRAND $PRODUCTNAME"
 $BUGZ -b $BASE search --product "$MODEL" --status 'RESOLVED' --resolution 'fixed' > $OUTPUT
 bugz_result=$?
 if [ "$bugz_result" -ne "0" ] ; then
-	echo "Unable to retrieve bug list from bugzilla"
+	warn "Unable to retrieve bug list from bugzilla"
 	exit 1
 fi
 

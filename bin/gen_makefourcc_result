@@ -16,7 +16,7 @@ DRIVER_DIR="${PRODUCTDIR}/drivers/lspdrivers"
 APP_CLUSTER_DIR="${PRODUCTDIR}/apps/app_cluster"
 
 if [ -z "${PRODUCTDIR}" ]; then
-    echo "Please source environment file first!"
+    warn "Please source environment file first!"
     exit 1
 fi
 
