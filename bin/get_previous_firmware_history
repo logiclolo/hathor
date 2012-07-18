@@ -2,10 +2,9 @@
 
 source $HATHOR/config/basic_config
 source $HATHOR/lib/libfirmwareinfo
+source $HATHOR/lib/libmessages
 
 RETRY_COUNT=2
-WARN='\033[33;01m'
-NORMAL='\033[0m'
 
 [ -f "$FIRMWARE_CONFIG" ] && source $FIRMWARE_CONFIG
 hathor_get_firmware_path
@@ -15,7 +14,7 @@ hathor_get_firmware_path
 [ -f "$HISTORY_ATHENA" ] && rm -f "$HISTORY_ATHENA"
 
 echo ""
-echo -e "Get previous history.txt from Athena"
+info "Get previous history.txt from Athena. Athena password is VIVOTEK password."
 info "Please input athena password:"
 warn "密碼錯誤重試次數只有 $RETRY_COUNT 次，請小心輸入"
 for i in `seq 1 $RETRY_COUNT`; do

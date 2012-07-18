@@ -1,0 +1,7 @@
+#!/bin/sh
+
+source $HATHOR/config/basic_config
+source $HATHOR/lib/libfirmwareinfo
+
+[ -d "$OUTPUT_DIR" ] || mkdir -p "$OUTPUT_DIR"
+[ -d "$RELEASE_DIR" ] || mkdir -p "$RELEASE_DIR"

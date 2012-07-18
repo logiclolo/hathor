@@ -18,4 +18,7 @@ _upload:
 	@bin/firmware_copy
 	@bin/rt_ticket_send
 
+_prepare:
+	@bin/prepare_config_generation
+
 .PHONY: _tag _build_kernel _build_firmware _firmware_check _firmware_release _upload

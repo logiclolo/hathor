@@ -1,6 +1,7 @@
 #!/bin/sh
 
 source $HATHOR/config/basic_config
+source $HATHOR/lib/libmessage
 
 OUTPUT="$OUTPUT_DIR/fixed-bugs.txt"
 CONFIG=$HATHOR/config/override_config

@@ -8,7 +8,7 @@ all:
 history: 
 	@bin/gen_history
 
-firmware: _tag _build_kernel _build_firmware _firmware_check history _firmware_release
+firmware: _tag _build_kernel _build_firmware _prepare _firmware_check history _firmware_release
 
 release: _upload
 
