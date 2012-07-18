@@ -10,7 +10,7 @@ _build_firmware:
 _firmware_check:
 	@bin/firmware_compare
 
-_firmware_release: 
+_firmware_prerelease: 
 	@bin/firmware_prerelease
 
 _upload:
@@ -21,4 +21,4 @@ _upload:
 _prepare:
 	@bin/prepare_config_generation
 
-.PHONY: _tag _build_kernel _build_firmware _firmware_check _firmware_release _upload
+.PHONY: _tag _build_kernel _build_firmware _firmware_check _firmware_prerelease _upload
