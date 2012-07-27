@@ -17,6 +17,36 @@ function hathor_get_firmware_path
 	HATHOR_FIRMWARE_PATH_PREFIX_REVERTED=`echo $HATHOR_FIRMWARE_PATH_PREFIX | sed -e 's:\\\\:\/:g'`
 }
 
+function hathor_get_history_path 
+{
+	local SMBSERVER=$1
+	local SMBPATH=$2
+	local USER=$3
+	local PASS=$4
+	export USER=$USER ; export PASSWD=$PASS
+
+	local temp=`mktemp -d`
+	pushd $temp 2>&1 > /dev/null
+	smbclient $SMBSERVER -D $SMBPATH -c 'exit' 2>&1 > /dev/null
+	[ "$?" != "0" ] && exit 1
+	smbclient $SMBSERVER -D $SMBPATH -c 'get history.txt; get history.txt.lnk' 2>&1 > /dev/null
+	if [ -f "history.txt.lnk" ] ; then
+		HATHOR_FIRMWARE_HISTORY_PATH=`strings history.txt.lnk | grep "Project_ReleaseNote" | sed -e 's:\\\\:\/:g'`
+		HATHOR_FIRMWARE_HISTORY_NAME=`basename $HATHOR_FIRMWARE_HISTORY_PATH`
+		HATHOR_FIRMWARE_HISTORY_FOLDER=`dirname $HATHOR_FIRMWARE_HISTORY_PATH`
+	else 
+		HATHOR_FIRMWARE_HISTORY_PATH="$SMBSERVER/$SMBPATH/history.txt"
+		HATHOR_FIRMWARE_HISTORY_NAME="history.txt"
+		HATHOR_FIRMWARE_HISTORY_FOLDER=$HATHOR_FIRMWARE_HISTORY_PATH
+	fi
+
+	unset USER; unset PASSWD
+
+	rm -f history.txt history.txt.lnk
+	popd 2>&1 > /dev/null && rm -rf $temp
+	return 0
+}
+
 function hathor_get_firmware_file
 {
 	HATHOR_FIRMWARE_FILE="$PRODUCTVER.flash.pkg"

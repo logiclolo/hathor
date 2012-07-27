@@ -2,8 +2,16 @@
 
 source $HATHOR/config/basic_config
 source $HATHOR/lib/libfirmwareinfo
+source $HATHOR/lib/libmessage
 
 hathor_get_firmware_path
+
+info "上傳 firmware 和 history.txt 至 Athena"
+read -s -p "密碼: " PASSWORD
+echo 
+
+export USER=$USERNAME_ATHENA
+export PASS=$PASSWORD
 
 DIRECTORY_TO_PUT_FIRMWARE=$FIRMWARE_VERSION
 
@@ -12,9 +20,18 @@ for f in $FIRMWARE_TO_UPLOAD; do
 	PUT_COMMAND="put $f `basename $f`; $PUT_COMMAND"
 done
 SMB_CMD_FIRMWARE="mkdir $DIRECTORY_TO_PUT_FIRMWARE; cd $DIRECTORY_TO_PUT_FIRMWARE; $PUT_COMMAND; cd .."
-SMB_CMD_HISTORY="get history.txt history.txt.bak; put $RELEASE_DIR/history.txt history.txt; put history.txt.bak"
-SMB_COMMAND="$SMB_CMD_FIRMWARE; $SMB_CMD_HISTORY"
+
 
 # create directory
-smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -U $USERNAME_ATHENA -D "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED/" -c "$SMB_COMMAND"
+smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -D "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED/" -c "$SMB_CMD_FIRMWARE"
 
+
+###  upload history.txt
+
+# get correct history path first
+hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED $USERNAME_ATHENA $PASSWORD
+
+SMB_CMD_HISTORY="get $HATHOR_FIRMWARE_HISTORY_NAME $HATHOR_FIRMWARE_HISTORY_NAME.bak; put $RELEASE_DIR/history.txt $HATHOR_FIRMWARE_HISTORY_NAME; put $HATHOR_FIRMWARE_HISTORY_NAME.bak"
+smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -D "$HATHOR_FIRMWARE_HISTORY_FOLDER" -c "$SMB_CMD_HISTORY"
+
+unset PASS; unset USER
