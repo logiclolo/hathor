@@ -16,7 +16,7 @@ doctor:
 	@bin/doctor
 
 clean:
-	@rm -f output/* release/*
+	@rm -rf output/${PRODUCTVER} release/${PRODUCTVER}
 
 help:
 	@bin/help
