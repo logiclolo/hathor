@@ -22,6 +22,7 @@ for i in `seq 1 $RETRY_COUNT`; do
 	hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED $USERNAME_ATHENA $PASSWORD
 	if [ "$?" == "0" ] ; then
 		get_history_success=1
+		break;
 	fi
 done
 
@@ -31,7 +32,7 @@ if [ "$get_history_success" == "0" ] ; then
 fi
 
 export USER=$USERNAME_ATHENA; export PASSWD=$PASSWORD
-smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -D $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED -c "get history.txt ; get $HATHOR_FIRMWARE_HISTORY_NAME" 
+smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -D $HATHOR_FIRMWARE_HISTORY_FOLDER -c "get history.txt ; get $HATHOR_FIRMWARE_HISTORY_NAME" 
 [ -f $HATHOR_FIRMWARE_HISTORY_NAME ] && mv $HATHOR_FIRMWARE_HISTORY_NAME history.txt
 if [ -f "history.txt" ] ; then
 	dos2unix history.txt 2> /dev/null
