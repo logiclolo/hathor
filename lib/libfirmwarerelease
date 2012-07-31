@@ -1,19 +1,17 @@
 copy_firmware()
 {
 	pushd $RELEASE_DIR
-	cp ${PRODUCTDIR}/release/package/${PRODUCTVER}/${PRODUCTVER}.flash.* .
+	cp ${PRODUCTDIR}/release/package/${PRODUCTVER}/${PRODUCTVER}.flash.* $RELEASE_DIR
 	md5sum $PRODUCTVER.flash.pkg $PRODUCTVER.flash.rom > $PRODUCTVER.md5
 	popd 
 }
 
 copy_history ()
 {
-	pushd $RELEASE_DIR
-	echo $OUTPUT_DIR
-	cp $OUTPUT_DIR/history.txt .
+	cp $OUTPUT_DIR/history.txt $RELEASE_DIR
 }
 
 copy_filesystem_log ()
 {
-	cp $PRODUCTDIR/release/log/* . 
+	cp $PRODUCTDIR/release/log/* $RELEASE_DIR
 }
