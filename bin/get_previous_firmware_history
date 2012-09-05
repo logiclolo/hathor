@@ -13,15 +13,16 @@ hathor_get_firmware_path
 
 get_history_success=0 
 echo ""
-info "Get previous history.txt from Athena. Athena password is VIVOTEK password."
-info "Please input athena password:"
+info "準備從雅典娜下載之前的 history.txt，請輸入雅典娜密碼"
 warn "密碼錯誤重試次數只有 $RETRY_COUNT 次，請小心輸入"
 read -s -p "密碼: " PASSWORD
-echo 
+echo
+info "連線中..."
 for i in `seq 1 $RETRY_COUNT`; do
 	hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED $USERNAME_ATHENA $PASSWORD
 	if [ "$?" == "0" ] ; then
 		get_history_success=1
+	else
 		break;
 	fi
 done
@@ -30,6 +31,8 @@ if [ "$get_history_success" == "0" ] ; then
 	warn "與 Athena 連線失敗!"
 	exit 1
 fi
+
+info "下載 history.txt"
 
 export USER=$USERNAME_ATHENA; export PASSWD=$PASSWORD
 smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -D $HATHOR_FIRMWARE_HISTORY_FOLDER -c "get history.txt ; get $HATHOR_FIRMWARE_HISTORY_NAME" 
@@ -42,5 +45,11 @@ fi
 
 unset USER; unset PASSWD
 
-exit 1
+read -p "找不到 history.txt 或是 history.txt 的捷徑，這是第一次 release firmware 嗎? [Y/n]" first_release_firmware
+
+if [ "$first_release_firmware" == "y" ] || [ "$first_release_firmware" == "Y" ] || [ "$first_release_firmware" == "" ] ; then
+	exit 0
+else
+	exit 1
+fi
 
