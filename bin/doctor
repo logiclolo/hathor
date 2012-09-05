@@ -43,7 +43,6 @@ if [ ! -f $HOME/.bugz_cookie ] ; then
 fi
 
 
-echo ""
 if [ "$AllPass" == "1" ]; then
 	echo "You are very healthy."
 else
