@@ -3,3 +3,7 @@ Bugs reported
  - Check subvesion for `make doctor'
  - make release unable to cache password correctly
  - rt should be able to cache password
+Features requested from RD1 seminar
+ - Auto fixperm in hathor 
+ - Check missing file in hathor
+ - make sample in hathor
