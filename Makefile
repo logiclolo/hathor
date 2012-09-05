@@ -7,12 +7,19 @@ all:
 history: 
 	@bin/gen_history
 
-firmware: _tag _build_kernel _build_firmware _prepare _firmware_check history _firmware_prerelease
+# ordinary firmware release flow
+firmware: doctor_check_config _tag _build_kernel _build_firmware _prepare _firmware_check history _firmware_prerelease
+release: doctor_check_config _upload
 
-release: _upload
+# sample firmwar release flow
+sample: doctor_check_config _tag_sample _build_kernel _build_firmware _prepare _firmware_check history _firmware_prerelease
+release-sample: doctor_check_config _upload_sample
 	
 doctor: 
 	@bin/doctor
+
+doctor_check_config:
+	@bin/doctor_check_config
 
 clean:
 	@rm -rf output/${PRODUCTVER}
@@ -22,6 +29,7 @@ cleanall: clean
 
 help:
 	@bin/help
+
 
 include lib/actions.mk
 

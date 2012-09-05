@@ -1,6 +1,9 @@
 _tag: 
 	@bin/firmware_tag_create
 
+_tag_sample: 
+	@bin/firmware_tag_create "sample"
+
 _build_kernel:
 	@bin/firmware_build kernel
 
@@ -17,6 +20,10 @@ _upload:
 	@bin/merge_history
 	@bin/firmware_copy
 	@bin/rt_ticket_send
+
+_upload_sample:
+	@bin/merge_history
+	@bin/firmware_copy
 
 _prepare:
 	@bin/prepare_config_generation

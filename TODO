@@ -1,9 +1,4 @@
-Bugs reported
- - Hathor will stop on first firmware release (fixed)
- - Check subvesion for `make doctor' (fixed)
- - make release unable to cache password correctly (fixed)
- - rt should be able to cache password (fixed)
 Features requested from RD1 seminar
  - Auto fixperm in hathor 
- - Check missing file in hathor
+ - Check missing file in hathor (implemented)
  - make sample in hathor
