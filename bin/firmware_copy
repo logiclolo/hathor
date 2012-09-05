@@ -6,13 +6,6 @@ source $HATHOR/lib/libmessage
 
 hathor_get_firmware_path
 
-info "準備將 firmware 和 history.txt 上傳至雅典娜"
-warn "密碼錯誤重試次數只有 $RETRY_COUNT 次，請小心輸入"
-read -s -p "密碼: " PASSWORD
-echo 
-
-export USER=$USERNAME_ATHENA
-export PASSWD=$PASSWORD
 
 DIRECTORY_TO_PUT_FIRMWARE=$FIRMWARE_VERSION
 
@@ -23,15 +16,24 @@ done
 SMB_CMD_FIRMWARE="mkdir $DIRECTORY_TO_PUT_FIRMWARE; cd $DIRECTORY_TO_PUT_FIRMWARE; $PUT_COMMAND; cd .."
 
 
+RETRY_COUNT=2
+info "準備將 firmware 和 history.txt 上傳至雅典娜"
+warn "密碼錯誤重試次數只有 $RETRY_COUNT 次，請小心輸入"
+read -s -p "密碼: " PASSWORD
+echo 
+
+export USER=$USERNAME_ATHENA
+export PASSWD=$PASSWORD
 # create directory
 smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -D "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED/" -c "$SMB_CMD_FIRMWARE"
-
 
 ###  upload history.txt
 
 # get correct history path first
 hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED $USERNAME_ATHENA $PASSWORD
 
+export USER=$USERNAME_ATHENA
+export PASSWD=$PASSWORD
 SMB_CMD_HISTORY="get $HATHOR_FIRMWARE_HISTORY_NAME $HATHOR_FIRMWARE_HISTORY_NAME.bak; put $RELEASE_DIR/history.txt $HATHOR_FIRMWARE_HISTORY_NAME; put $HATHOR_FIRMWARE_HISTORY_NAME.bak"
 smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -D "$HATHOR_FIRMWARE_HISTORY_FOLDER" -c "$SMB_CMD_HISTORY"
 
