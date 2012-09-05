@@ -24,4 +24,10 @@ _prepare:
 _check_healthiness:
 	@bin/check_healthiness
 
+test_release: 
+	@bin/merge_history
+	@bin/firmware_copy
+	@bin/rt_ticket_send "test"
+
+
 .PHONY: _tag _build_kernel _build_firmware _firmware_check _firmware_prerelease _upload

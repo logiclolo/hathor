@@ -1,7 +1,10 @@
 #!/bin/sh
 
+[ "$1" == "test" ] && QUEUE="test-obm-fw (for test)"
+
 source $HATHOR/config/basic_config
 source $FIRMWARE_CONFIG
+
 
 [ -z "$QUEUE" ] && QUEUE="05_Test Firmware"
 [ -n "$RT_CC" ] && CC_LIST="CC=$RT_CC"
