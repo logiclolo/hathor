@@ -5,6 +5,8 @@
 NORMAL='\033[0m'
 HIGHLIGHT='\033[1m'
 
+AllPass=1
+
 # check .rtrc
 if [ ! -f $HOME/.rtrc ] ; then
 	echo "RT rc file does not exist. I'm going to generate rtrc to $HOME/.rtrc"
@@ -26,4 +28,24 @@ if [ ! -f $HOME/.hathor/hathorrc ] ; then
 	echo "USERNAME_ATHENA=\"$athena_id\"" > "$HOME/.hathor/hathorrc"
 fi
 
-echo "You are very healthy."
+# check .bug_cookie
+if [ ! -f $HOME/.bugz_cookie ] ; then
+	echo "Setup bugzilla configuration. I'm going to make a test search to generate cookie for bugz."
+	echo "Please enter bugzilla username/password on request"
+	read -p "Username: " USERNAME
+	read -s -p "Password: " PASSWORD
+	bugz -q -u $USERNAME -p $PASSWORD -b http://dqa01/bugzilla/ search --product 'VVTK IP8332' > bugz_output
+	if [ "$?" != "0" ] ; then
+		cat bugz_output
+		AllPass=0
+	fi
+	rm -f bugz_output
+fi
+
+
+echo ""
+if [ "$AllPass" == "1" ]; then
+	echo "You are very healthy."
+else
+	echo "Hathor config is not ready! Run \`make doctor' again to setup hathor"
+fi
