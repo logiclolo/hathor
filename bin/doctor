@@ -26,12 +26,4 @@ if [ ! -f $HOME/.hathor/hathorrc ] ; then
 	echo "USERNAME_ATHENA=\"$athena_id\"" > "$HOME/.hathor/hathorrc"
 fi
 
-#source $HOME/.hathor/hathorrc
-#echo "-- Hathor setting --" 
-#echo "  Athena username: $USERNAME_ATHENA"
-#echo "  RT rcfile content:"
-#echo "  ==== start ===="
-#cat $HOME/.rtrc
-#echo "  ====  end ===="
-#echo ""
 echo "You are very healthy."
