@@ -1,0 +1,6 @@
+#!/bin/sh
+
+[ -d $HOME/.hathor ] && exit 0 
+echo "Hathor is not configured properly, please \`make doctor' before continuing"
+exit 1
+

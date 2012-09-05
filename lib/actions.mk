@@ -21,4 +21,7 @@ _upload:
 _prepare:
 	@bin/prepare_config_generation
 
+_check_healthiness:
+	@bin/check_healthiness
+
 .PHONY: _tag _build_kernel _build_firmware _firmware_check _firmware_prerelease _upload
