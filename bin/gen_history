@@ -59,5 +59,4 @@ cp $HISTORY_ATHENA $RELEASE_DIR
 unix2dos $HISTORY_THIS_TIME 
 cp $HISTORY_THIS_TIME $RELEASE_DIR
 
-info 'history.txt generated.'
-info "Please find history file in $RELEASE_DIR/history-$PRODUCTVER.txt"
+info "history.txt 已產生至 $RELEASE_DIR/history-$PRODUCTVER.txt"
