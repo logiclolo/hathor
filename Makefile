@@ -8,10 +8,10 @@ all:
 history: 
 	@bin/gen_history
 
-firmware: _check_healthiness _tag _build_kernel _build_firmware _prepare _firmware_check history _firmware_prerelease
+firmware: _tag _build_kernel _build_firmware _prepare _firmware_check history _firmware_prerelease
 
-release: _check_healthiness _upload
-
+release: _upload
+	
 doctor: 
 	@bin/doctor
 
