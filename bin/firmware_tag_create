@@ -13,16 +13,28 @@ source $DEVEL_SOURCE_FILE
 popd
 
 # check if current project directory is clean
-echo "Check if everything is committed to subversion..."
+info "Check if everything is committed to subversion..."
 WORKING_COPY_NOT_CLEAN=`svn st | grep -E "^M|^A|^D|^C|^\!"`
 if [ -n "$WORKING_COPY_NOT_CLEAN" ]; then
-	echo "Following files is modified:"
-	echo "$WORKING_COPY_NOT_CLEAN"
-	echo "Please commit all your code before proceeding!"
+	warn "Following files is modified:"
+	warn "$WORKING_COPY_NOT_CLEAN"
+	warn "Please commit all your code before proceeding!"
 	exit 1
 fi
 
+WORKING_COPY_HAS_MISSING_FILE=`svn st | grep -E "^\?"`
+if [ -n "$WORKING_COPY_HAS_MISSING_FILE" ]; then
+	info "You might want to add these files to subversion first."
+	info "You could also use svn to ignore these files in working copy."
+	echo "$WORKING_COPY_HAS_MISSING_FILE"
+	read -p "Do you still want to continue? [y/N] " SKIP_MISSING_FILES
+	if [ "$SKIP_MISSING_FILES" != "y" ] && [ "$SKIP_MISSING_FILES" != "Y" ] ; then
+		exit 1
+	fi
+fi
+
 # prepare to copy firmware to remote
+SVN_WC_PATH=`pwd`
 SVN_URL=`svn info | grep ^URL | sed -e 's/^.*http/http/'`
 SVN_PROJECT_ROOT=`dirname $SVN_URL`
 
@@ -34,7 +46,7 @@ if [ -n "$SVN_TARGET_URL_EXIST" ] ; then
 	warn "Destination $SVN_TARGET_URL already exists!  Remove it before proceeding." 
 	exit 1
 fi
-svn cp $SVN_URL $SVN_TARGET_URL -m "$PRODUCTVER" > /dev/null
+svn cp $SVN_WC_PATH $SVN_TARGET_URL -m "$PRODUCTVER" > /dev/null
 
 # check out firmware source code from remote
 echo "Checkout from $SVN_TARGET_URL"
