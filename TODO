@@ -1,0 +1,5 @@
+Bugs reported
+ - Hathor will stop on first firmware release
+ - Check subvesion for `make doctor'
+ - make release unable to cache password correctly
+ - rt should be able to cache password
