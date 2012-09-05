@@ -16,6 +16,13 @@ if [ ! -f $HOME/.rtrc ] ; then
 	echo "user $pmrt_id" >> "$HOME/.rtrc"
 fi
 
+# check .rt_sessions 
+if [ ! -f $HOME/.rt_sessions ] ; then
+	echo "Setup rt session. I'm going to make a test search to generate cookie for pmrt client."
+	echo "Please enter PMRT username/password on request"
+	rt ls subject='rt-doctor-query'
+fi
+
 # check .hathor/hathorrc
 if [ ! -f $HOME/.hathor/hathorrc ] ; then
 	echo "Hathor rc file does not exist. I'm going to generate hathorrc to $HOME/.hathor/hathorrc"
@@ -44,7 +51,7 @@ fi
 
 
 if [ "$AllPass" == "1" ]; then
-	echo "You are very healthy."
+	echo "You are healthy."
 else
 	echo "Hathor config is not ready! Run \`make doctor' again to setup hathor"
 fi
