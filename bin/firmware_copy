@@ -6,12 +6,13 @@ source $HATHOR/lib/libmessage
 
 hathor_get_firmware_path
 
-info "上傳 firmware 和 history.txt 至 Athena"
+info "準備將 firmware 和 history.txt 上傳至雅典娜"
+warn "密碼錯誤重試次數只有 $RETRY_COUNT 次，請小心輸入"
 read -s -p "密碼: " PASSWORD
 echo 
 
 export USER=$USERNAME_ATHENA
-export PASS=$PASSWORD
+export PASSWD=$PASSWORD
 
 DIRECTORY_TO_PUT_FIRMWARE=$FIRMWARE_VERSION
 
@@ -34,4 +35,4 @@ hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PRE
 SMB_CMD_HISTORY="get $HATHOR_FIRMWARE_HISTORY_NAME $HATHOR_FIRMWARE_HISTORY_NAME.bak; put $RELEASE_DIR/history.txt $HATHOR_FIRMWARE_HISTORY_NAME; put $HATHOR_FIRMWARE_HISTORY_NAME.bak"
 smbclient "$FIRMWARE_PATH_SERVER_REVERTED" -D "$HATHOR_FIRMWARE_HISTORY_FOLDER" -c "$SMB_CMD_HISTORY"
 
-unset PASS; unset USER
+unset PASSWD; unset USER
