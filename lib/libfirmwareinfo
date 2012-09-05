@@ -27,9 +27,9 @@ function hathor_get_history_path
 
 	local temp=`mktemp -d`
 	pushd $temp 2>&1 > /dev/null
-	smbclient $SMBSERVER -D $SMBPATH -c 'exit' 2>&1 > /dev/null
-	[ "$?" != "0" ] && exit 1
-	smbclient $SMBSERVER -D $SMBPATH -c 'get history.txt; get history.txt.lnk' 2>&1 > /dev/null
+	smbclient $SMBSERVER -D $SMBPATH -c 'exit'
+	[ "$?" != "0" ] && return 1
+	smbclient $SMBSERVER -D $SMBPATH -c 'get history.txt; get history.txt.lnk'  2>&1 > /dev/null
 	if [ -f "history.txt.lnk" ] ; then
 		HATHOR_FIRMWARE_HISTORY_PATH=`strings history.txt.lnk | grep "Project_ReleaseNote" | sed -e 's:\\\\:\/:g'`
 		HATHOR_FIRMWARE_HISTORY_NAME=`basename $HATHOR_FIRMWARE_HISTORY_PATH`
