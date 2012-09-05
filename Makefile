@@ -1,6 +1,5 @@
 # $Id: Makefile 110756 2012-04-25 02:10:32Z klaymen $
 export HATHOR=$(shell pwd)
-export HATHOR_VERSION=1.0.0.1
 
 all:
 	@make help

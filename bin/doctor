@@ -2,6 +2,8 @@
 
 # This is hathor doctor speaking. I will check if everything need for hathor running are ok
 
+source $HATHOR/config/version
+
 NORMAL='\033[0m'
 HIGHLIGHT='\033[1m'
 
@@ -23,18 +25,6 @@ if [ ! -f $HOME/.rt_sessions ] ; then
 	rt ls subject='rt-doctor-query'
 fi
 
-# check .hathor/hathorrc
-if [ ! -f $HOME/.hathor/hathorrc ] ; then
-	echo "Hathor rc file does not exist. I'm going to generate hathorrc to $HOME/.hathor/hathorrc"
-	echo "Please input your id for logging to VIVOTEK."
-	echo "This information will be used when uploading firmware to athena."
-	echo "For example, if your e-mail is klaymen.chang@vivotek.com,"
-	echo -ne "then you should enter$HIGHLIGHT klaymen.chang$NORMAL\n"
-	read -p "ID: " athena_id
-	mkdir -p $HOME/.hathor
-	echo "USERNAME_ATHENA=\"$athena_id\"" > "$HOME/.hathor/hathorrc"
-fi
-
 # check .bug_cookie
 if [ ! -f $HOME/.bugz_cookie ] ; then
 	echo "Setup bugzilla configuration. I'm going to make a test search to generate cookie for bugz."
@@ -49,9 +39,21 @@ if [ ! -f $HOME/.bugz_cookie ] ; then
 	rm -f bugz_output
 fi
 
+# check .hathor/hathorrc
+if [ ! -f $HOME/.hathor/hathorrc ] ; then
+	echo "Hathor rc file does not exist. I'm going to generate hathorrc to $HOME/.hathor/hathorrc"
+	echo "Please input your id for logging to VIVOTEK."
+	echo "This information will be used when uploading firmware to athena."
+	echo "For example, if your e-mail is klaymen.chang@vivotek.com,"
+	echo -ne "then you should enter$HIGHLIGHT klaymen.chang$NORMAL\n"
+	read -p "ID: " athena_id
+	mkdir -p $HOME/.hathor
+	echo "USERNAME_ATHENA=\"$athena_id\"" > "$HOME/.hathor/hathorrc"
+fi
 
 if [ "$AllPass" == "1" ]; then
 	echo "You are healthy."
+	echo "HATHOR_CONFIG_VERSION=$THIS_HATHOR_VERSION" > "$HOME/.hathor/version"
 else
 	echo "Hathor config is not ready! Run \`make doctor' again to setup hathor"
 fi

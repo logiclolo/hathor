@@ -1,0 +1,22 @@
+#!/bin/sh
+
+[ -f $HOME/.hathor/version ] && source $HOME/.hathor/version
+[ -f $HATHOR/config/version ] && source $HATHOR/config/version
+source $HATHOR/lib/libmessage
+
+[ -z "$HATHOR_CONFIG_VERSION" ] && HATHOR_CONFIG_VERSION="0.0.0.0"
+
+HATHOR_CONFIG_MAJOR=`echo $HATHOR_CONFIG_VERSION | awk -F. '{print $1}'`
+HATHOR_CONFIG_MINOR=`echo $HATHOR_CONFIG_VERSION | awk -F. '{print $2$3}'`
+HATHOR_CONFIG_REVISION=`echo $HATHOR_CONFIG_VERSION | awk -F. '{print $4}'`
+
+THIS_HATHOR_MAJOR=`echo $THIS_HATHOR_VERSION | awk -F. '{print $1}'`
+THIS_HATHOR_MINOR=`echo $THIS_HATHOR_VERSION | awk -F. '{print $2$3}'`
+THIS_HATHOR_REVISION=`echo $THIS_HATHOR_VERSION | awk -F. '{print $4}'`
+
+if [ "$HATHOR_CONFIG_MAJOR" -lt "$THIS_HATHOR_MAJOR" ] || [ "$HATHOR_CONFIG_MINOR" -lt "$THIS_HATHOR_MINOR" ] ; then
+	warn "Hathor upgraded, please \`make doctor' again to upgrade hathor configurations"
+	exit 1
+fi
+
+exit 0
