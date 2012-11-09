@@ -54,6 +54,10 @@ fi
 SVN_WC_PATH=`pwd`
 SVN_URL=`svn info | grep ^URL | sed -e 's/^.*http/http/'`
 SVN_PROJECT_ROOT=`dirname $SVN_URL`
+SVN_PROJECT_ROOT_BRANCH=`basename $SVN_PROJECT_ROOT`
+if [ "$SVN_PROJECT_ROOT_BRANCH" == "branches" ] ; then
+	SVN_PROJECT_ROOT=`dirname $SVN_PROJECT_ROOT`
+fi
 
 # tag to remote
 SVN_TARGET_URL="$SVN_PROJECT_ROOT/tags/$PRODUCTVER"
