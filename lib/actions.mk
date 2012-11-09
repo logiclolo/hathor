@@ -15,6 +15,7 @@ _firmware_check:
 
 _firmware_prerelease: 
 	@bin/firmware_prerelease
+	echo "編譯成功! 請記得檢查做出來的 firmware 是否與原本的 firmware 相同"
 
 _upload:
 	@bin/merge_history
