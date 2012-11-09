@@ -1,5 +1,9 @@
 Project `Hathor'
 
+
+[Usage]
+Type `make help' to get hathor basic usage introduction
+
 [Who is Hathor]
 Releasing firmware is a tedious and error-prone process.  People with even
 modest intelligence will hate to release firmware.  Hathor is thus created to
