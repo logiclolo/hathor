@@ -31,7 +31,7 @@ function spinning ()
 			usleep 100000
 			if [ ! -f "$1" ]; then 
 				rm -f $1 
-				echo -ne "\b\n"
+				echo -ne "\n"
 				return
 			fi
 		done
@@ -41,7 +41,9 @@ function spinning ()
 function RunCommandWithSpinningIndicator ()
 {
 	local CommandToRun="$1"
+	local MessageToShow="$2"
 	local READY_FILE=`mktemp`
+	echo -ne "$MessageToShow  "
 	background "$CommandToRun" $READY_FILE &
 	spinning $READY_FILE
 }
