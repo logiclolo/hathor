@@ -1,8 +1,16 @@
 copy_firmware()
 {
 	pushd $RELEASE_DIR
-	cp ${PRODUCTDIR}/release/package/${PRODUCTVER}/${PRODUCTVER}.flash.* $RELEASE_DIR
-	md5sum $PRODUCTVER.flash.pkg $PRODUCTVER.flash.rom > $PRODUCTVER.md5
+
+	FW_DIR="${PRODUCTDIR}/release/package/${PRODUCTVER}"
+	cp ${FW_DIR}/${PRODUCTVER}.flash.* ${FW_DIR}/${PRODUCTVER}.*.rom $RELEASE_DIR
+	[ -f $PRODUCTVER.flash.pkg ] && md5sum $PRODUCTVER.flash.pkg > $PRODUCTVER.md5
+	[ -f $PRODUCTVER.flash.rom ] && md5sum $PRODUCTVER.flash.rom >> $PRODUCTVER.md5
+
+	# mozart only
+	SDFW="${PRODUCTVER}/release/package/${PRODUCTVER}/sdfw/sd.rom"
+	[ -f "$SDFW" ] && cp $SDFW $RELEASE_DIR
+
 	popd 
 }
 
