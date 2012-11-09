@@ -35,7 +35,12 @@ function GenerateRTSession ()
 {
 	echo "Setup rt session. I'm going to make a test search to generate cookie for pmrt client."
 	echo "Please enter PMRT username/password on request"
-	rt ls subject='rt-doctor-query'
+	rt ls subject='rt-doctor-query' > rt_output
+	if [ "$?" != "0" ] ; then
+		cat rt_output
+		AllPass=0
+	fi
+	rm -f rt_output
 }
 
 function GenerateHathorRC ()
