@@ -36,5 +36,9 @@ test_release:
 	@bin/firmware_copy
 	@bin/rt_ticket_send "test"
 
+_doctor_check_config:
+	@bin/doctor_check_config
+
+
 
 .PHONY: _tag _build_kernel _build_firmware _firmware_check _firmware_prerelease _upload
