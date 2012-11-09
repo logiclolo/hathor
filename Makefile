@@ -9,10 +9,12 @@ history:
 
 # ordinary firmware release flow
 firmware: doctor_check_config _tag _build_kernel _build_firmware _prepare _firmware_check history _firmware_prerelease
+firmware-skip-kernel: doctor_check_config _tag _build_firmware _prepare _firmware_check history _firmware_prerelease
 release: doctor_check_config _upload
 
 # sample firmwar release flow
 sample: doctor_check_config _tag_sample _build_kernel _build_firmware _prepare _firmware_check history _firmware_prerelease
+sample-skip-kernel: doctor_check_config _tag_sample _build_firmware _prepare _firmware_check history _firmware_prerelease
 release-sample: doctor_check_config _upload_sample
 	
 doctor: 
