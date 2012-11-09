@@ -2,6 +2,19 @@
 
 # This is hathor doctor speaking. I will check if everything need for hathor running are ok
 
+FORCE=0
+INVALID_PARAMS=0
+
+ParsedParams=`getopt "f" $*`
+
+for param in $ParsedParams ; do 
+	if [ "$param" == "-f" ]; then
+		FORCE=1
+	elif [ "$param" == "--" ]; then
+		INVALID_PARAMS=1
+	fi
+done
+
 source $HATHOR/config/version
 
 NORMAL='\033[0m'
@@ -9,24 +22,36 @@ HIGHLIGHT='\033[1m'
 
 AllPass=1
 
-# check .rtrc
-if [ ! -f $HOME/.rtrc ] ; then
+function GenerateRTRC ()
+{
 	echo "RT rc file does not exist. I'm going to generate rtrc to $HOME/.rtrc"
 	echo "Please input your id for logging to PMRT"
 	read -p "PMRT ID:" pmrt_id
 	echo "server http://dqa01/rt/" > "$HOME/.rtrc"
 	echo "user $pmrt_id" >> "$HOME/.rtrc"
-fi
+}
 
-# check .rt_sessions 
-if [ ! -f $HOME/.rt_sessions ] ; then
+function GenerateRTSession ()
+{
 	echo "Setup rt session. I'm going to make a test search to generate cookie for pmrt client."
 	echo "Please enter PMRT username/password on request"
 	rt ls subject='rt-doctor-query'
-fi
+}
 
-# check .bug_cookie
-if [ ! -f $HOME/.bugz_cookie ] ; then
+function GenerateHathorRC ()
+{
+	echo "Hathor rc file does not exist. I'm going to generate hathorrc to $HOME/.hathor/hathorrc"
+	echo "Please input your id for logging to VIVOTEK."
+	echo "This information will be used when uploading firmware to athena."
+	echo "For example, if your e-mail is klaymen.chang@vivotek.com,"
+	echo -ne "then you should enter$HIGHLIGHT klaymen.chang$NORMAL\n"
+	read -p "ID: " athena_id
+	mkdir -p $HOME/.hathor
+	echo "USERNAME_ATHENA=\"$athena_id\"" > "$HOME/.hathor/hathorrc"
+}
+
+function GenerateBugzCookie ()
+{
 	echo "Setup bugzilla configuration. I'm going to make a test search to generate cookie for bugz."
 	echo "Please enter bugzilla username/password on request"
 	read -p "Username: " USERNAME
@@ -37,18 +62,38 @@ if [ ! -f $HOME/.bugz_cookie ] ; then
 		AllPass=0
 	fi
 	rm -f bugz_output
+}
+
+function GenerateAllConfig ()
+{
+	GenerateRTRC
+	GenerateRTSession
+	GenerateHathorRC
+	GenerateBugzCookie
+}
+
+# force generate configs
+[ $FORCE -ne 0 ] && GenerateAllConfig && exit 
+
+
+# check .rtrc
+if [ ! -f $HOME/.rtrc ] ; then
+	GenerateRTRC
+fi
+
+# check .rt_sessions 
+if [ ! -f $HOME/.rt_sessions ] ; then
+	GenerateRTSession
+fi
+
+# check .bug_cookie
+if [ ! -f $HOME/.bugz_cookie ] ; then
+	GenerateBugzCookie
 fi
 
 # check .hathor/hathorrc
 if [ ! -f $HOME/.hathor/hathorrc ] ; then
-	echo "Hathor rc file does not exist. I'm going to generate hathorrc to $HOME/.hathor/hathorrc"
-	echo "Please input your id for logging to VIVOTEK."
-	echo "This information will be used when uploading firmware to athena."
-	echo "For example, if your e-mail is klaymen.chang@vivotek.com,"
-	echo -ne "then you should enter$HIGHLIGHT klaymen.chang$NORMAL\n"
-	read -p "ID: " athena_id
-	mkdir -p $HOME/.hathor
-	echo "USERNAME_ATHENA=\"$athena_id\"" > "$HOME/.hathor/hathorrc"
+	GenerateHathorRC
 fi
 
 if [ "$AllPass" == "1" ]; then

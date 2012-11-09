@@ -20,6 +20,8 @@ release-sample: _doctor_check_config _upload_sample
 doctor: 
 	@bin/doctor
 
+doctor-again:
+	@bin/doctor -f 
 
 clean:
 	@rm -rf output/${PRODUCTVER}
