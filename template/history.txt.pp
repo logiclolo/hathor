@@ -6,13 +6,6 @@
 Name:         <$HATHOR_FIRMWARE_NAME>
 Path:         <$HATHOR_FIRMWARE_PATH>
 File:         <$HATHOR_FIRMWARE_FILE>
-#if defined $HATHOR_FIRMWARE_DCRNO
-DCR No:       <$HATHOR_FIRMWARE_DCRNO>
-#elif defined $HATHOR_FIRMWARE_PROJECTNO
-Project No:       <$HATHOR_FIRMWARE_PROJECTNO>
-#else
-DCR No:       </* FILL IN DCR No.*/>
-#endif
 Start Date:   </* FILL IN Start Date */>
 Release Date: <$HATHOR_FIRMWARE_END_DATE>
 Author:       <$HATHOR_AUTHOR>
