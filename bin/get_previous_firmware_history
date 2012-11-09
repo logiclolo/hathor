@@ -13,7 +13,7 @@ hathor_get_firmware_path
 
 get_history_success=0 
 echo ""
-info "準備從雅典娜下載之前的 history.txt，請輸入雅典娜密碼"
+info "準備從雅典娜下載之前的 history.txt，請輸入雅典娜密碼 (即電腦登入的密碼)"
 warn "密碼錯誤重試次數只有 $RETRY_COUNT 次，請小心輸入"
 read -s -p "密碼: " PASSWORD
 echo
