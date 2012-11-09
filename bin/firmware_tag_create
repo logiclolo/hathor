@@ -65,13 +65,14 @@ if [ -n "$SVN_TARGET_URL_EXIST" ] ; then
 	if [ "$FORCE_REMOVE_TAG" != "y" ] && [ "$FORCE_REMOVE_TAG" != "Y" ]; then
 		exit 1
 	else
-		info "Removing $SVN_TARGET_URL"
 		svn rm -q "$SVN_TARGET_URL" -m "Force remove tag"
+		info "$SVN_TARGET_URL removed."
 	fi
 fi
-svn cp -q $SVN_WC_PATH $SVN_TARGET_URL -m "$PRODUCTVER" 
+echo -ne "Tagging $SVN_TARGET_URL  "
+RunCommandWithSpinningIndicator "svn cp -q $SVN_WC_PATH $SVN_TARGET_URL -m \"$PRODUCTVER\""
 
 # check out firmware source code from remote
-echo "Checkout from $SVN_TARGET_URL"
+echo -ne "Checkout from $SVN_TARGET_URL  "
 TEMP_PRODUCT_DIR="$TEMP_DIR/$PRODUCTVER"
-svn co $SVN_TARGET_URL $TEMP_PRODUCT_DIR > /dev/null
+RunCommandWithSpinningIndicator "svn co $SVN_TARGET_URL $TEMP_PRODUCT_DIR > /dev/null"

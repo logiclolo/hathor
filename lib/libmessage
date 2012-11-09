@@ -11,3 +11,38 @@ function info ()
 {
 	echo -e "$INFO$@$NORMAL"
 }
+
+function background ()
+{
+	local Command="$1"
+	local ReadyFile=$2
+	eval "$Command" 2>&1 > /dev/null 
+	rm -f $ReadyFile
+}
+
+function spinning ()
+{
+	local ReadyFile=$1
+	echo -ne " "
+	while true ; do
+		for i in \| \/ \- \\ \| \/ \- \\
+		do
+			echo -ne "\b$i  \b\b\c"
+			usleep 100000
+			if [ ! -f "$1" ]; then 
+				rm -f $1 
+				echo -ne "\b\n"
+				return
+			fi
+		done
+	done
+}
+
+function RunCommandWithSpinningIndicator ()
+{
+	local CommandToRun="$1"
+	local READY_FILE=`mktemp`
+	background "$CommandToRun" $READY_FILE &
+	spinning $READY_FILE
+}
+
