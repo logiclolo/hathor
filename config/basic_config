@@ -1,6 +1,6 @@
 # Only change these stuff when you know what you are doing
 source $HOME/.hathor/hathorrc
-OUTPUT_DIR="$HATHOR/output/$PRODUCTVER"
+OUTPUT_DIR="$HATHOR/temp/$PRODUCTVER"
 RELEASE_DIR="$HATHOR/release/$PRODUCTVER"
 FIRMWARE_CONFIG="$OUTPUT_DIR/firmware_config"
 HISTORY_ATHENA="$OUTPUT_DIR/history-previous.txt"
