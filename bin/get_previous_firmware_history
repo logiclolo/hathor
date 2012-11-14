@@ -29,7 +29,6 @@ done
 
 if [ "$get_history_success" == "0" ] ; then
 	warn "與 Athena 連線失敗!"
-	exit 1
 fi
 
 info "下載 history.txt"

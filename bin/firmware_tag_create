@@ -18,8 +18,7 @@ popd > /dev/null
 if [ "$THIS_IS_SAMPLE_FIRMWARE" != "y" ] ; then
 
 	# check if current project directory is clean
-	info "Check if everything is committed to subversion..."
-	WORKING_COPY_NOT_CLEAN=`svn st | grep -E "^M|^A|^D|^C|^\!"`
+	RunCommandWithSpinningIndicator "WORKING_COPY_NOT_CLEAN=`svn st | grep -E "^M|^A|^D|^C|^\!"`" "Check if everything is committed to subversion..."
 	if [ -n "$WORKING_COPY_NOT_CLEAN" ]; then
 		warn "Following files is modified:"
 		warn "$WORKING_COPY_NOT_CLEAN"

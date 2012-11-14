@@ -1,25 +1,34 @@
 copy_firmware()
 {
-	pushd $RELEASE_DIR
+	pushd $RELEASE_DIR 2>&1 > /dev/null
 
 	FW_DIR="${PRODUCTDIR}/release/package/${PRODUCTVER}"
-	cp ${FW_DIR}/${PRODUCTVER}.flash.* ${FW_DIR}/${PRODUCTVER}.*.rom $RELEASE_DIR
+
+	cp ${FW_DIR}/${PRODUCTVER}.flash.* $RELEASE_DIR 
 	[ -f $PRODUCTVER.flash.pkg ] && md5sum $PRODUCTVER.flash.pkg > $PRODUCTVER.md5
-	[ -f $PRODUCTVER.flash.rom ] && md5sum $PRODUCTVER.flash.rom >> $PRODUCTVER.md5
 
-	# mozart only
-	SDFW="${PRODUCTVER}/release/package/${PRODUCTVER}/sdfw/sd.rom"
-	[ -f "$SDFW" ] && cp $SDFW $RELEASE_DIR
+	# run platform dependent copy_fiware_xxx routine, see below
+	declare -F "copy_firmware_${soc_platform}" && eval "copy_firmware_${soc_platform}" 
 
-	popd 
+	popd 2>&1 > /dev/null
 }
 
 copy_history ()
 {
-	cp $OUTPUT_DIR/history.txt $RELEASE_DIR
+	cp $OUTPUT_DIR/history-$PRODUCTVER.txt $RELEASE_DIR
 }
 
 copy_filesystem_log ()
 {
 	cp $PRODUCTDIR/release/log/* $RELEASE_DIR
+}
+
+# platform dependent firmware copying
+function copy_firmware_mozart3()
+{
+	cp ${FW_DIR}/${PRODUCTVER}.*.rom $RELEASE_DIR 
+	SDFW="${PRODUCTVER}/release/package/${PRODUCTVER}/sdfw/sd.rom"
+	[ -f "$SDFW" ] && cp $SDFW $RELEASE_DIR
+
+	[ -f $PRODUCTVER.flash.rom ] && md5sum $PRODUCTVER.flash.rom >> $PRODUCTVER.md5
 }

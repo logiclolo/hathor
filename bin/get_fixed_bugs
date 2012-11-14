@@ -15,7 +15,7 @@ echo "Get bug list from bugzilla ($BASE)..."
 
 MODEL="$BRAND $PRODUCTNAME"
 
-$BUGZ -b $BASE search --product "$MODEL" --status 'RESOLVED' --resolution 'fixed' > $OUTPUT
+$BUGZ -b $BASE search --product "$MODEL" --status 'RESOLVED' --resolution 'fixed' | tee $OUTPUT
 bugz_result=$?
 if [ "$bugz_result" -ne "0" ] ; then
 	warn "Unable to retrieve bug list from bugzilla"

@@ -16,8 +16,7 @@ source $DEVEL_SOURCE_FILE
 copy_firmware
 echo "Firmware copied (${PRODUCTVER})."
 
-# copy history.txt
-# copy_history
+copy_history
 
 # copy rootfs/flashfs log
 copy_filesystem_log
