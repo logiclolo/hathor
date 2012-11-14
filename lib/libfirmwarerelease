@@ -32,3 +32,6 @@ function copy_firmware_mozart3()
 
 	[ -f $PRODUCTVER.flash.rom ] && md5sum $PRODUCTVER.flash.rom >> $PRODUCTVER.md5
 }
+
+# tell vim to use shell script highlight automagically
+# vim:ft=sh

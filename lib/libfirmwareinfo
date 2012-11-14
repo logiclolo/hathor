@@ -88,3 +88,7 @@ function hathor_get_commonbug_list
 	HATHOR_COMMONBUG_LIST=""
 }
 
+# tell vim to use shell script highlight automagically
+# vim:ft=sh
+
+

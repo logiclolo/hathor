@@ -48,3 +48,6 @@ function RunCommandWithSpinningIndicator ()
 	spinning $READY_FILE
 }
 
+
+# tell vim to use shell script highlight automagically
+# vim:ft=sh

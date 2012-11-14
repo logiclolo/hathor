@@ -106,3 +106,5 @@ esac
 
 firmware_version_release
 
+# tell vim to use shell script highlight automagically
+# vim:ft=sh
