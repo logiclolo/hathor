@@ -1,0 +1,91 @@
+SMB_KNOWN_ERRORS="NT_STATUS_OBJECT_NAME_NOT_FOUND NT_STATUS_LOGON_FAILURE"
+
+function SMB_Command
+{
+	local server=$1
+	local directory=$2
+	local command=$3
+
+	# do not login if USER/PASSWD is not set
+	if [ -z "$USER" ] || [ -z "$PASSWD" ] ; then 
+		echo "NT_STATUS_OBJECT_LOGON_FAILURE"
+		return 1
+	fi
+
+	ret=`smbclient $server -D $directory -c "$command" 2>&1`
+	actual_error_code=`echo $ret | grep NT_STATUS | sed -e 's/.*\(NT_STATUS[^ \t]*\).*/\1/'`
+
+	if [ "$actual_error_code" == "" ] ; then
+		return 0
+	else 
+		echo $actual_error_code
+	fi
+	return 1
+
+}
+
+# check if a directory exists at the remote. 0 for exists, 1 for not exist
+function SMB_CheckIfDirectoryExists
+{
+	local server=$1
+	local directory=$2
+
+	ret=`SMB_Command $server $directory 'exit'`
+	if [ "$ret" == "NT_STATUS_OBJECT_NAME_NOT_FOUND" ] ; then
+		return 0
+	elif [ "$ret" != "" ] ; then
+		echo $ret
+		return 1
+	fi
+
+	return 1
+}
+
+function SMB_GetFile
+{
+	local server=$1
+	local directory=$2
+	local file=$3
+	
+	ret=`SMB_Command $server $directory "get $file"`
+	if [ "$ret" != "" ] ; then
+		echo $ret
+		return 1
+	fi
+	return 0
+}
+
+function SMB_GetBunchOfFiles
+{
+	local server=$1; shift
+	local directory=$1; shift
+	local files=$@
+	local commands=""
+	for file in $files; do
+		commands=`echo $commands ";get $file"`
+	done
+
+	ret=`SMB_Command $server $directory "$commands"`
+	if [ "$ret" != "" ]; then
+		echo $ret
+		return 1
+	fi
+
+	return 0
+}
+
+#function SMBUploadFile
+#{
+#
+#}
+#
+#function SMBUploadFiles
+#{
+#
+#}
+#
+
+# test 
+# SMBDownloadFile "//athena/SQA" "/Project/IP8332/VVTK/Multi_lingual/Application/Firmware/English" "history.txt"
+
+# vim:ft=sh
