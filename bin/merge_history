@@ -10,7 +10,7 @@ if [ "$found_not_finished_fields" != "" ]; then
 	warn ""
 	warn "$found_not_finished_fields"
 	warn ""
-	warn "Please finish your history-$PRODUCTVER.txt before continuing"
+	warn "Please finish your $RELEASE_DIR/history-$PRODUCTVER.txt before continuing"
 	exit 1
 fi
 
