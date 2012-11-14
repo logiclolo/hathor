@@ -1,3 +1,5 @@
+source $HATHOR/lib/libsmb
+
 FIRMWARE_VERSION=`echo $PRODUCTVER | awk -F- '{print $3}'`
 FIRMWARE_BRAND=`echo $PRODUCTVER | awk -F- '{print $2}'`
 
@@ -16,28 +18,72 @@ function hathor_get_firmware_path
 	HATHOR_FIRMWARE_PATH_PREFIX_REVERTED=`echo $HATHOR_FIRMWARE_PATH_PREFIX | sed -e 's:\\\\:\/:g'`
 }
 
+function hathor_get_specific_product_name
+{
+    local PRODUCTNAME=$1
+    PRODUCT_WITH_SPECIFIC_NAMING="BD5171V FD8132V FD8151V FD8362E IP8133W IP8336W IP8136W IP8135W SD8332E SD8363E"
+    for PRODUCT in $PRODUCT_WITH_SPECIFIC_NAMING; do
+
+        if [ "$PRODUCTNAME" == "${PRODUCT:0:6}" ] ; then
+            PRODUCTNAME=$PRODUCT
+            break;
+        fi
+
+    done
+    echo $PRODUCTNAME
+}
+
 function hathor_get_history_path 
 {
 	local SMBSERVER=$1
 	local SMBPATH=$2
 	local USER=$3
 	local PASS=$4
+
+	local get_history_succeed='true'
+
 	export USER=$USER ; export PASSWD=$PASS
 
 	local temp=`mktemp -d`
 	pushd $temp 2>&1 > /dev/null
-	smbclient $SMBSERVER -D $SMBPATH -c 'exit'
-	[ "$?" != "0" ] && return 1
-	smbclient $SMBSERVER -D $SMBPATH -c 'get history.txt; get history.txt.lnk'  2>&1 > /dev/null
-	if [ -f "history.txt.lnk" ] ; then
-		HATHOR_FIRMWARE_HISTORY_PATH=`strings history.txt.lnk | grep "Project_ReleaseNote" | sed -e 's:\\\\:\/:g'`
-		HATHOR_FIRMWARE_HISTORY_NAME=`basename $HATHOR_FIRMWARE_HISTORY_PATH`
-		HATHOR_FIRMWARE_HISTORY_FOLDER=`dirname $HATHOR_FIRMWARE_HISTORY_PATH`
-	else 
-		HATHOR_FIRMWARE_HISTORY_PATH="$SMBPATH/history.txt"
-		HATHOR_FIRMWARE_HISTORY_NAME="history.txt"
-		HATHOR_FIRMWARE_HISTORY_FOLDER=`dirname $HATHOR_FIRMWARE_HISTORY_PATH`
+	ret=`SMB_CheckIfDirectoryExists $SMBSERVER $SMBPATH`
+	if [ "$ret" == "NT_STATUS_OBJECT_LOGON_FAILURE" ]; then
+		get_history_succeed='false'
+
+	elif [ "$ret" == "NT_STATUS_OBJECT_NAME_NOT_FOUND" ]; then
+		# if we are unable to find this product's directory. 
+		# Fallback to special suffix version of firmware name
+
+		ORIGINAL_PRODUCTNAME=$PRODUCTNAME
+		PRODUCTNAME=`hathor_get_specific_product_name $PRODUCTNAME`
+		hathor_get_firmware_path
+		ret=`SMB_CheckIfDirectoryExists $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED`
+		if [ "$ret" != "" ] ; then
+			echo $ret
+			return 1
+		fi
+
+		# bingo! we've successfully discovered the correct path by known path database
+		# over-write SMBPATH 
+		SMBPATH=$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED
+		# recover PRODUCTNAME
+		PRODUCTNAME=$ORIGINAL_PRODUCTNAME
 	fi
+
+	if [ "$get_history_succeed" == "true" ]; then
+		SMB_GetBunchOfFiles $SMBSERVER $SMBPATH "history.txt history.txt.lnk"
+
+		if [ -f "history.txt.lnk" ] ; then
+			HATHOR_FIRMWARE_HISTORY_PATH=`strings history.txt.lnk | grep "Project_ReleaseNote" | sed -e 's:\\\\:\/:g'`
+			HATHOR_FIRMWARE_HISTORY_NAME=`basename $HATHOR_FIRMWARE_HISTORY_PATH`
+			HATHOR_FIRMWARE_HISTORY_FOLDER=`dirname $HATHOR_FIRMWARE_HISTORY_PATH`
+		else 
+			HATHOR_FIRMWARE_HISTORY_PATH="$SMBPATH/history.txt"
+			HATHOR_FIRMWARE_HISTORY_NAME="history.txt"
+			HATHOR_FIRMWARE_HISTORY_FOLDER=`dirname $HATHOR_FIRMWARE_HISTORY_PATH`
+		fi
+
+	fi 
 
 	unset USER; unset PASSWD
 
