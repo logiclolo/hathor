@@ -50,7 +50,7 @@ function hathor_get_history_path
 	if [ "$ret" == "NT_STATUS_OBJECT_LOGON_FAILURE" ]; then
 		get_history_succeed='false'
 
-	elif [ "$ret" == "NT_STATUS_OBJECT_NAME_NOT_FOUND" ]; then
+	elif [ "$ret" == "false" ]; then
 		# if we are unable to find this product's directory. 
 		# Fallback to special suffix version of firmware name
 
@@ -58,7 +58,7 @@ function hathor_get_history_path
 		PRODUCTNAME=`hathor_get_specific_product_name $PRODUCTNAME`
 		hathor_get_firmware_path
 		ret=`SMB_CheckIfDirectoryExists $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED`
-		if [ "$ret" != "" ] ; then
+		if [ "$ret" == "false" ] || [ "$ret" != "true" ] ; then
 			echo $ret
 			return 1
 		fi

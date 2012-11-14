@@ -31,11 +31,15 @@ function SMB_CheckIfDirectoryExists
 	local directory=$2
 
 	ret=`SMB_Command $server $directory 'exit'`
-	if [ "$ret" == "NT_STATUS_OBJECT_NAME_NOT_FOUND" ] ; then
-		return 0
+	if [ "$ret" == "NT_STATUS_OBJECT_PATH_NOT_FOUND" ] ; then
+		echo 'false'
+		return 1
 	elif [ "$ret" != "" ] ; then
 		echo $ret
 		return 1
+	else
+		echo 'true'
+		return 0
 	fi
 
 	return 1
