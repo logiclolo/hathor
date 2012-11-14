@@ -34,7 +34,7 @@ if [ "$?" != "0" ]; then
 fi
 
 # gathering module versions, we will filter out stuff that we don't care (such as open source programs)
-$EXEC/gen_module_versions
+RunCommandWithSpinningIndicator "$EXEC/gen_module_versions" "產生模組版本資訊"
 if [ "$?" != "0" ]; then
 	warn "Get module versions error, quit"
 	exit 1
