@@ -119,9 +119,6 @@ fi
 BOA_VER=`grep "Version " $APP_CLUSTER_DIR/network/boa/src/ReleaseNote.txt | head -1 | sed s/Version//`
 echo "boa: $BOA_VER" >> $VER_FILE
 #-------------------------------------------------------------------------------------------------------------
-SIPUA_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/sipua/inc/sipua.h | $CMD1 | $CMD2 | sed s/,\ /./g`
-echo "sipua: $SIPUA_VER" >> $VER_FILE
-#-------------------------------------------------------------------------------------------------------------
 UARTTUN_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/cgi/uarttun/src/uarttun.h | $CMD1 | $CMD2 | sed s/,\ /./g`
 echo "uarttun: $UARTTUN_VER" >> $VER_FILE
 #-------------------------------------------------------------------------------------------------------------
