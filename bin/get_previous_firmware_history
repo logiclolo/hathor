@@ -16,7 +16,6 @@ get_history_success=0
 for i in `seq 1 $RETRY_COUNT`; do
 	echo ""
 	info "準備從雅典娜下載之前的 history.txt，請輸入雅典娜密碼 (就是你的電腦登入密碼)"
-	warn "密碼錯誤重試次數只有 $RETRY_COUNT 次，請小心輸入"
 	read -s -p "密碼: " PASSWORD_ATHENA
 	echo
 	info "連線中..."
@@ -26,6 +25,7 @@ for i in `seq 1 $RETRY_COUNT`; do
 		break;
 	else 
 		warn '連線失敗!!'
+		warn "重試次數還有 `expr $RETRY_COUNT - $i` 次，請小心輸入"
 	fi
 done
 
