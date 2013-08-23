@@ -64,13 +64,14 @@ SVN_TARGET_URL="$SVN_PROJECT_ROOT/tags/$PRODUCTVER"
 SVN_TARGET_URL_EXIST=`svn ls $SVN_TARGET_URL 2> /dev/null`
 echo "Tagging to $SVN_TARGET_URL"
 if [ -n "$SVN_TARGET_URL_EXIST" ] ; then
-	warn "Destination $SVN_TARGET_URL already exists!"
-	read -p "Do you want to remove it? [y/N] " FORCE_REMOVE_TAG
+	warn "Tag 路徑 $SVN_TARGET_URL 已存在!!"
+	read -p "你是否想要強制更新這個 tag? [y/N] " FORCE_REMOVE_TAG
 	if [ "$FORCE_REMOVE_TAG" != "y" ] && [ "$FORCE_REMOVE_TAG" != "Y" ]; then
+		info "請手動移除 tag 後再重新 make firmware"
 		exit 1
 	else
 		svn rm -q "$SVN_TARGET_URL" -m "Force remove tag"
-		info "$SVN_TARGET_URL removed."
+		info "$SVN_TARGET_URL 已移除"
 	fi
 fi
 RunCommandWithSpinningIndicator "svn cp -q $SVN_WC_PATH $SVN_TARGET_URL -m \"$PRODUCTVER\"" "Tagging $SVN_TARGET_URL"
