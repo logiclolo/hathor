@@ -7,7 +7,7 @@ OUTPUT="$OUTPUT_DIR/fixed-bugs.txt"
 CONFIG=$HATHOR/config/override_config
 BASE="http://dqa01/bugzilla/"
 BUGZ="bugz -q --columns 1024"
-BRAND="VVTK"
+BRAND=`echo $PRODUCTVER | awk -F- '{print $2}'`
 
 echo "Get bug list from bugzilla ($BASE)..."
 
