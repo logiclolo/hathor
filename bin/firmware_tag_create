@@ -74,6 +74,8 @@ if [ -n "$SVN_TARGET_URL_EXIST" ] ; then
 		info "$SVN_TARGET_URL 已移除"
 	fi
 fi
+
+RunCommandWithSpinningIndicator "svn up --depth=empty" "Updating working copy"
 RunCommandWithSpinningIndicator "svn cp -q $SVN_WC_PATH $SVN_TARGET_URL -m \"$PRODUCTVER\"" "Tagging $SVN_TARGET_URL"
 
 # check out firmware source code from remote
