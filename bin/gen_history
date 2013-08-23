@@ -41,19 +41,24 @@ if [ "$?" != "0" ]; then
 fi
 
 # all done, generate history.txt
-echo 'Generating history.txt...'
+echo '產生 history.txt...'
 $FILEPP $HATHOR/template/$HISTORY_TEMPLATE -o $HISTORY_THIS_TIME
 if [ "$?" != "0" ]; then
 	warn "Generate history.txt failed, quit"
 	exit 1
 fi
 
-encoding_of_previous_history=`file $HISTORY_ATHENA | grep "UTF-8"`
-if [ -z "$encoding_of_previous_history" ] ; then
-	iconv -f CP950 -t UTF-8 $HISTORY_ATHENA > $HISTORY_ATHENA.utf8
+# 把 athena 上面的編碼轉成 utf-8
+encoding_of_previous_history=`file -bi $HISTORY_ATHENA | awk -F\; '{print $2}' | awk -F= '{print $2}'`
+if [ "$encoding_of_previous_history" == "" ]; then
+	echo "iconv) Unable to determine previous encoding!" 1>&2 
+elif [ "$encoding_of_previous_history" != "utf-8" ]; then
+	iconv -f $encoding_of_previous_history -t utf-8 $HISTORY_ATHENA > $HISTORY_ATHENA.utf8
+	[ "$?" != "0" ] && echo "iconv error!!!!!"
 	mv $HISTORY_ATHENA.utf8 $HISTORY_ATHENA
 fi
 
+# 轉換格式為 dos format (CRLF)
 unix2dos $HISTORY_ATHENA
 cp $HISTORY_ATHENA $RELEASE_DIR
 unix2dos $HISTORY_THIS_TIME 
