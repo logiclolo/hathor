@@ -1,0 +1,47 @@
+#!/bin/sh
+#REDMINE_URL=http://dqa02/projects/test-area-forrdtest1/issues.xml
+REDMINE_URL=http://dqa02/projects/dqa-test-1-request-fwtest/issues.xml
+REDMINE_API_KEY=`cat $DQA_REDMINE_API_KEY`
+source $HATHOR/config/basic_config
+source $FIRMWARE_CONFIG
+
+dos2unix -q $RELEASE_DIR/history-$PRODUCTVER.txt 
+
+# Change & to &amp; , < to &amp;lt;  , and > to &amp;gt;  
+# Add <p> in HEAD and </p> in TAIL in every line
+HISTORY_TEXT="`cat $RELEASE_DIR/history-$PRODUCTVER.txt | sed 's/\&/\&amp;/g'| sed '{s/</\&amp;lt;/g ; s/>/\&amp;gt;/g}' | sed '{s/^/\&lt;p\&gt;/g ; s/$/\&lt;\/p\&gt;/g}'`"
+
+
+echo "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" >issues.xml
+echo "<issue>" >>issues.xml
+echo "    <subject>[Firmware Release] $PRODUCTVER</subject>" >>issues.xml
+echo "    <project_id></project_id>" >>issues.xml
+echo "    <tracker_id>1</tracker_id>" >>issues.xml #tracker_id needs to be checked
+echo "    <priority_id>3</priority_id>" >>issues.xml
+echo "    <custom_fields type=\"array\">" >>issues.xml
+echo "        <custom_field name=\"Model\" id=\"10\">" >>issues.xml # check mode id
+echo "            <value>$PRODUCTVER</value>" >>issues.xml
+echo "        </custom_field>" >>issues.xml
+echo "    </custom_fields>" >>issues.xml
+echo "    <description>" >>issues.xml
+echo "    $HISTORY_TEXT" >>issues.xml
+echo "    </description>" >>issues.xml
+echo "</issue>" >>issues.xml
+
+curl -s -H "Content-Type: application/xml" -X POST --data "@issues.xml" -H "X-Redmine-API-Key:$REDMINE_API_KEY" $REDMINE_URL -D dump_header.log > create_result.log
+
+#Check the response status and response to user
+dos2unix -q dump_header.log
+
+Status=`cat dump_header.log | grep 'Status' |awk '{print $2}'`
+
+if [ "$Status" == "201" ]; then
+	echo "Create Redmine issue successfuly!"
+	rm dump_header.log create_result.log
+else
+	echo "Create Redmine issue failed!"
+	echo "please see dump_header.log and create_result.log to check the result"
+fi
+
+rm issues.xml 
+

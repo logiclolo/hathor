@@ -20,7 +20,8 @@ _firmware_prerelease:
 _upload:
 	@bin/merge_history
 	@bin/firmware_copy
-	@bin/rt_ticket_send
+	# @bin/rt_ticket_send
+	@bin/redmine_issue_create
 
 _upload_sample:
 	@bin/merge_history

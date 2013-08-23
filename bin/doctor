@@ -22,25 +22,32 @@ HIGHLIGHT='\033[1m'
 
 AllPass=1
 
-function GenerateRTRC ()
-{
-	echo "RT rc file does not exist. I'm going to generate rtrc to $HOME/.rtrc"
-	echo "Please input your id for logging to PMRT"
-	read -p "PMRT ID:" pmrt_id
-	echo "server http://dqa01/rt/" > "$HOME/.rtrc"
-	echo "user $pmrt_id" >> "$HOME/.rtrc"
-}
+REDMINE_URL=http://dqa02/projects/dqa-test-1-request-fwtest/issues.xml
 
-function GenerateRTSession ()
+function GenerateRedmineRC ()
 {
-	echo "Setup rt session. I'm going to make a test search to generate cookie for pmrt client."
-	echo "Please enter PMRT username/password on request"
-	rt ls subject='rt-doctor-query' > rt_output
-	if [ "$?" != "0" ] ; then
-		cat rt_output
-		AllPass=0
+	# check redmine_api_key
+	if [ ! -f $DQA_REDMINE_API_KEY ] ; then
+		echo "Redmine API Key file does not exist. I'm going to generate redmine api key to $DQA_REDMINE_API_KEY"
+		echo "You can find your API key on your account page ( /my/account ) when logged in, on the right-hand pane of the default layout."
+		echo "Please input your Redmine API Key"
+		read -p "Redmine API Key ID:" redmine_api_key
+		echo "$redmine_api_key" >> $DQA_REDMINE_API_KEY
+		chmod 600 $DQA_REDMINE_API_KEY 
+		#Test for Redmine API Key
+		curl -s -X POST -H "X-Redmine-API-Key:$redmine_api_key" $REDMINE_URL -D test_api_key >/dev/null
+		dos2unix -q test_api_key 
+		Status=`cat test_api_key | grep 'Status' |awk '{print $2}'`
+
+		if [ "$Status" == "401" ]; then
+			echo "Your Redmine API Key is invalid !"
+			AllPass=0
+			rm $DQA_REDMINE_API_KEY
+		fi
+		rm test_api_key 
+
 	fi
-	rm -f rt_output
+
 }
 
 function GenerateHathorRC ()
@@ -71,8 +78,7 @@ function GenerateBugzCookie ()
 
 function GenerateAllConfig ()
 {
-	GenerateRTRC
-	GenerateRTSession
+	GenerateRedmineRC
 	GenerateHathorRC
 	GenerateBugzCookie
 }
@@ -81,9 +87,8 @@ function GenerateAllConfig ()
 [ $FORCE -ne 0 ] && GenerateAllConfig && exit 
 
 
-# check .rtrc
-if [ ! -f $HOME/.rtrc ] ; then
-	GenerateRTRC
+if [ ! -f $DQA_REDMINE_API_KEY ] ; then
+	GenerateRedmineRC
 fi
 
 # check .rt_sessions 

@@ -6,6 +6,7 @@ FIRMWARE_CONFIG="$OUTPUT_DIR/firmware_config"
 HISTORY_ATHENA="$OUTPUT_DIR/history-previous.txt"
 EXEC="$HATHOR/bin"
 TEMP_DIR="$HOME/hathor_temp"
+DQA_REDMINE_API_KEY="$HATHOR/config/.redmine_api_key"
 
 if [ -z "$PRODUCTVER" ] ; then
 	echo "Please source devel_XXXX first, quitting"
