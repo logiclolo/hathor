@@ -41,13 +41,15 @@ function hathor_get_history_path
 	local PASS=$4
 
 	local get_history_succeed='true'
+	local result=0
 
 	export USER=$USER ; export PASSWD=$PASS
 
 	local temp=`mktemp -d`
 	pushd $temp 2>&1 > /dev/null
 	ret=`SMB_CheckIfDirectoryExists $SMBSERVER $SMBPATH`
-	if [ "$ret" == "NT_STATUS_OBJECT_LOGON_FAILURE" ]; then
+	if [ "$ret" != "" ]; then
+		echo $ret
 		get_history_succeed='false'
 
 	elif [ "$ret" == "false" ]; then
@@ -83,13 +85,15 @@ function hathor_get_history_path
 			HATHOR_FIRMWARE_HISTORY_FOLDER=`dirname $HATHOR_FIRMWARE_HISTORY_PATH`
 		fi
 
+	else
+		result=1
 	fi 
 
 	unset USER; unset PASSWD
 
 	rm -f history.txt history.txt.lnk
 	popd 2>&1 > /dev/null && rm -rf $temp
-	return 0
+	return $result
 }
 
 function hathor_get_firmware_file
