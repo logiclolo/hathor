@@ -29,8 +29,13 @@ fi
 # gathering history related stuff from athena
 $EXEC/get_previous_firmware_history
 if [ "$?" != "0" ]; then
-	warn "Get previous firmware history error, quit"
-	exit 1
+	if [ "$FIRMWARE_VERSION" == "0100a" ]; then
+		info "看來你是第一次 release $PRODUCTVER，所以找不到 history.txt 也是很正常的。"
+		touch history.txt
+	else
+		warn "Get previous firmware history error, quit"
+		exit 1
+	fi
 fi
 
 # gathering module versions, we will filter out stuff that we don't care (such as open source programs)

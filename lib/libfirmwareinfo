@@ -49,7 +49,6 @@ function hathor_get_history_path
 	pushd $temp 2>&1 > /dev/null
 	ret=`SMB_CheckIfDirectoryExists $SMBSERVER $SMBPATH`
 	if [ "$ret" != "" ]; then
-		echo $ret
 		get_history_succeed='false'
 
 	elif [ "$ret" == "false" ]; then

@@ -8,7 +8,7 @@ function SMB_Command
 
 	# do not login if USER/PASSWD is not set
 	if [ -z "$USER" ] || [ -z "$PASSWD" ] ; then 
-		echo "NT_STATUS_OBJECT_LOGON_FAILURE"
+		echo "NT_STATUS_LOGON_FAILURE"
 		return 1
 	fi
 
@@ -32,6 +32,7 @@ function SMB_CheckIfDirectoryExists
 
 	ret=`SMB_Command $server $directory 'exit'`
 	if [ "$ret" == "NT_STATUS_OBJECT_PATH_NOT_FOUND" ] ; then
+		warn "$directory 找不到!" 1>&2
 		echo 'false'
 		return 1
 	elif [ "$ret" != "" ] ; then

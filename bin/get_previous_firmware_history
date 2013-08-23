@@ -5,7 +5,12 @@ source $HATHOR/lib/libfirmwareinfo
 source $HATHOR/lib/libmessage
 source $HATHOR/lib/libsmb
 
+FIRST_RELEASE=0
 RETRY_COUNT=2
+
+if [ `echo "$FIRMWARE_VERSION" | awk '{print $3}'` == "0100a" ]; then
+	FIRST_RELEASE=1
+fi
 
 [ -f "$FIRMWARE_CONFIG" ] && source $FIRMWARE_CONFIG
 hathor_get_firmware_path
@@ -19,18 +24,23 @@ for i in `seq 1 $RETRY_COUNT`; do
 	read -s -p "密碼: " PASSWORD_ATHENA
 	echo
 	info "連線中..."
-	hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED $USERNAME_ATHENA $PASSWORD_ATHENA
-	if [ "$?" == "0" ] ; then
+	ret=`hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED $USERNAME_ATHENA $PASSWORD_ATHENA`
+	if [ "$?" == "0" ]; then
 		get_history_success=1
 		break;
 	else 
-		warn '連線失敗!!'
-		warn "重試次數還有 `expr $RETRY_COUNT - $i` 次，請小心輸入"
+		if [ "$ret" == "NT_STATUS_LOGON_FAILURE" ]; then
+			warn '連線失敗!!'
+			warn "重試次數還有 `expr $RETRY_COUNT - $i` 次，請小心輸入"
+		else
+			warn "Error: $ret"
+			break
+		fi
 	fi
 done
 
 if [ "$get_history_success" == "0" ] ; then
-	warn "與 Athena 連線失敗!"
+	warn "偵測 firmware 目錄失敗"
 	exit 1
 fi
 

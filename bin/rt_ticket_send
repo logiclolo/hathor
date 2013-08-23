@@ -9,5 +9,6 @@ source $FIRMWARE_CONFIG
 [ -z "$QUEUE" ] && QUEUE="05_Test Firmware"
 [ -n "$RT_CC" ] && CC_LIST="CC=$RT_CC"
 
+info "準備產生 RT ticket。如果出現密碼提示請輸入 PMRT 的密碼"
 rt create -t ticket set subject="[Firmware Release] $PRODUCTVER" priority=10 text="`cat $RELEASE_DIR/history-$PRODUCTVER.txt`" queue="$QUEUE" $CC_LIST
 
