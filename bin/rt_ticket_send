@@ -9,6 +9,14 @@ source $FIRMWARE_CONFIG
 [ -z "$QUEUE" ] && QUEUE="05_Test Firmware"
 [ -n "$RT_CC" ] && CC_LIST="CC=$RT_CC"
 
+if [ -z "$CC_LIST" ] ; then
+	local CC_LIST_DECISION
+	read -p "CC 清單沒有指定的收件者，是否要設定?  [y/N] " CC_LIST_DECISION
+	if [ "$CC_LIST_DECISION" == "Y" ] || [ $"CC_LIST_DECISION" == "y"] ; then
+		read -p "CC 收件者 (如：klaymen.chang@vivotek.com, kent.chen@vivotek.com)" CC_LIST
+	fi
+fi
+
 info "準備產生 RT ticket。如果出現密碼提示請輸入 PMRT 的密碼"
 rt create -t ticket set subject="[Firmware Release] $PRODUCTVER" priority=10 text="`cat $RELEASE_DIR/history-$PRODUCTVER.txt`" queue="$QUEUE" $CC_LIST
 
