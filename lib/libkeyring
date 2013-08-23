@@ -1,0 +1,61 @@
+KEYRINGDB=$HOME/.hathor/.pwsafe.dat
+PWSAFE="pwsafe -q -f $KEYRINGDB"
+
+# usage, get_username "service-name"
+function keyring_get_username ()
+{
+	local servicename=$1
+	$PWSAFE -u $servicename
+}
+
+
+function keyring_get_password ()
+{
+	local servicename=$1
+	$PWSAFE -p $servicename
+}
+
+function keyring_createdb ()
+{
+	$PWSAFE --createdb
+}
+
+function keyring_deletedb ()
+{
+	[ -f $KEYRINGDB ] && rm -f $KEYRINGDB
+}
+
+function keyring_dbexist ()
+{
+	if [ -f "$KEYRINGDB" ] ; then
+		echo 0
+		return 
+	fi
+	echo 1
+}
+
+function keyring_addservice ()
+{
+	local servicename=$1
+	$PWSAFE --add $servicename
+}
+
+function keyring_delservice ()
+{
+	local servicename=$1
+	$PWSAFE --delete=$servicename
+}
+
+function keyring_updateservice ()
+{
+	local servicename=$1
+	$PWSAFE --edit=$servicename
+}
+
+function keyring_getservices ()
+{
+	$PWSAFE -l
+}
+
+# tell vim to use shell script highlight automagically
+# vim:ft=sh
