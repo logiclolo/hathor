@@ -16,13 +16,13 @@ if [ -e ${WEBPAGE_ROOT}/VVTK_Plugin_Installer.exe ]; then
 	PluginType="Winless"
 	PLUGIN_FILE=${WEBPAGE_ROOT}/VVTK_Plugin_Installer.exe
 	PLUGIN_DEFJS=plugindef_winless.js
-	EXEEXTRACT=/home/kent/usr/bin/7z.exe
-	GET_DLL_VERSION=/home/kent/Repos/Tools/get_dll_version.pl
+	EXEEXTRACT=7z
+	GET_DLL_VERSION=get_dll_version.pl
 elif [ -e ${WEBPAGE_ROOT}/RtspVaPgDecNew2.cab ]; then
 	PluginType="Windowed"
     PLUGIN_FILE=${WEBPAGE_ROOT}/RtspVaPgDecNew2.cab
 	PLUGIN_DEFJS=plugindef.js
-	CABEXTRACT=/home/klaymen/usr/bin/cabextract
+	CABEXTRACT=cabextract
 else
 	echo -e "${BAD}Plugin not found! ${NORMAL}"
 	echo -e "Both ${WEBPAGE_ROOT}/VVTK_Plugin_Installer.exe and ${WEBPAGE_ROOT}/RtspVaPgDecNew2.cab are missing"
@@ -67,7 +67,8 @@ get_plugindll_version ()
 {
 	pushd ${TEMP}  > /dev/null
 	cp ${PLUGIN_FILE} . 
-	$(DISPLAY= /usr/bin/wine ${EXEEXTRACT} e ${PLUGIN_FILE} > /dev/null 2> /dev/null)
+	${EXEEXTRACT} e ${PLUGIN_FILE} > /dev/null 2> /dev/null
+
 	IE_PLUGIN_DLL_VERSION=`${GET_DLL_VERSION} WinLessRtspCtrl.dll`
 	NP_PLUGIN_DLL_VERSION=`${GET_DLL_VERSION} npWinLessRtspCtrl.dll`
 	VNDPWRAPPER_DLL_VERSION=`${GET_DLL_VERSION} VNDPWrapper.dll`
