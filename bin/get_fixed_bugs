@@ -9,13 +9,17 @@ BASE="http://dqa01/bugzilla/"
 BUGZ="bugz -q --columns 1024"
 BRAND=`echo $PRODUCTVER | awk -F- '{print $2}'`
 
+echo "Get bug list from redmine (http://dqa02/redmine/)..."
+
+$HATHOR/bin/bug_report.py $OUTPUT
+
 echo "Get bug list from bugzilla ($BASE)..."
 
 [ -f $CONFIG ] && source $CONFIG
 
 MODEL="$BRAND $PRODUCTNAME"
 
-$BUGZ -b $BASE search --product "$MODEL" --status 'RESOLVED' --resolution 'fixed' | tee $OUTPUT
+$BUGZ -b $BASE search --product "$MODEL" --status 'RESOLVED' --resolution 'fixed' | tee -a $OUTPUT
 bugz_result=$?
 if [ "$bugz_result" -ne "0" ] ; then
 	warn "Unable to retrieve bug list from bugzilla"

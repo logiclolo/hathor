@@ -4,7 +4,7 @@ OUTPUT_DIR="$HATHOR/temp/$PRODUCTVER"
 RELEASE_DIR="$HATHOR/release/$PRODUCTVER"
 FIRMWARE_CONFIG="$OUTPUT_DIR/firmware_config"
 HISTORY_ATHENA="$OUTPUT_DIR/history-previous.txt"
-EXEC="$HATHOR/bin"
+[ "$HATHORDEBUG" == "1" ] && EXEC="sh -x $HATHOR/bin" || EXEC="$HATHOR/bin"
 TEMP_DIR="$HOME/hathor_temp"
 DQA_REDMINE_API_KEY="$HATHOR/config/.redmine_api_key"
 

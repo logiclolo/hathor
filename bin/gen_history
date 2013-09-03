@@ -1,6 +1,7 @@
 #!/bin/sh
 
 source $HATHOR/config/basic_config
+source $HATHOR/lib/libfirmwareinfo
 source $HATHOR/lib/libmessage
 
 # This script is used for generate history.txt file
@@ -10,7 +11,6 @@ HISTORY_THIS_TIME="$OUTPUT_DIR/history-$PRODUCTVER.txt"
 
 # generate firmware connfig 
 $HATHOR/bin/gen_firmware_config
-source $FIRMWARE_CONFIG
 
 if [ -f $FIRMWARE_CONFIG ] ; then 
 	source $FIRMWARE_CONFIG
@@ -31,7 +31,7 @@ $EXEC/get_previous_firmware_history
 if [ "$?" != "0" ]; then
 	if [ "$FIRMWARE_VERSION" == "0100a" ]; then
 		info "看來你是第一次 release $PRODUCTVER，所以找不到 history.txt 也是很正常的。"
-		touch history.txt
+		touch $HISTORY_ATHENA
 	else
 		warn "Get previous firmware history error, quit"
 		exit 1

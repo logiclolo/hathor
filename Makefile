@@ -1,11 +1,26 @@
 # $Id: Makefile 110756 2012-04-25 02:10:32Z klaymen $
 export HATHOR=$(shell pwd)
 
+# A literal space.
+space :=
+space +=
+
+sep := _WTF_SEPARATOR_
+
+ifeq "$(HATHORDEBUG)" "1"
+a		   := @sh -x$(space)
+else
+a		   := @
+endif
+
+# Concatenate string $(a) and $(1)
+SHELLCMD = $(subst $(sep),$(a),$(sep)$(1))
+
 all:
 	@make help
 
-history: 
-	@bin/gen_history
+history: _doctor_check_config
+	$(call SHELLCMD,bin/gen_history)
 
 # ordinary firmware release flow
 firmware: _doctor_check_config _tag _build_kernel _build_firmware _prepare _firmware_check history _firmware_prerelease
@@ -16,12 +31,12 @@ release: _doctor_check_config _upload
 sample: _doctor_check_config _tag_sample _build_kernel _build_firmware _prepare _firmware_check history _firmware_prerelease
 sample-skip-kernel: _doctor_check_config _tag_sample _build_firmware _prepare _firmware_check history _firmware_prerelease
 release-sample: _doctor_check_config _upload_sample
-	
-doctor: 
-	@bin/doctor
+
+doctor:
+	$(call SHELLCMD,bin/doctor)
 
 doctor-again:
-	@bin/doctor -f 
+	$(call SHELLCMD,bin/doctor -f)
 
 clean:
 	@rm -rf output/${PRODUCTVER}

@@ -1,4 +1,7 @@
 #!/bin/sh
+
+source $HATHOR/config/basic_config
+
 #REDMINE_URL=http://dqa02/projects/test-area-forrdtest1/issues.xml
 REDMINE_URL=http://dqa02/projects/dqa-test-1-request-fwtest/issues.xml
 REDMINE_API_KEY=`cat $DQA_REDMINE_API_KEY`

@@ -8,7 +8,7 @@ source $HATHOR/lib/libsmb
 FIRST_RELEASE=0
 RETRY_COUNT=2
 
-if [ `echo "$FIRMWARE_VERSION" | awk '{print $3}'` == "0100a" ]; then
+if [ "$FIRMWARE_VERSION" == "0100a" ]; then
 	FIRST_RELEASE=1
 fi
 
@@ -24,7 +24,7 @@ for i in `seq 1 $RETRY_COUNT`; do
 	read -s -p "密碼: " PASSWORD_ATHENA
 	echo
 	info "連線中..."
-	ret=`hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED $USERNAME_ATHENA $PASSWORD_ATHENA`
+	hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED $USERNAME_ATHENA $PASSWORD_ATHENA
 	if [ "$?" == "0" ]; then
 		get_history_success=1
 		break;
@@ -47,9 +47,9 @@ fi
 info "下載 history.txt"
 
 export USER=$USERNAME_ATHENA; export PASSWD=$PASSWORD_ATHENA
-ret=`SMB_GetFile $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_HISTORY_FOLDER "$HATHOR_FIRMWARE_HISTORY_NAME"`
+SMB_GetFile $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_HISTORY_FOLDER "$HATHOR_FIRMWARE_HISTORY_NAME"
 if [ "$ret" != "" ] ; then
-	ret=`SMB_GetFile $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_HISTORY_FOLDER "history.txt"`
+	SMB_GetFile $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_HISTORY_FOLDER "history.txt"
 	if [ "$ret" != "" ] ; then
 		warn "下載 history.txt 失敗!!"
 		exit 1

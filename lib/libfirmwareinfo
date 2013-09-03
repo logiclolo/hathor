@@ -47,7 +47,7 @@ function hathor_get_history_path
 
 	local temp=`mktemp -d`
 	pushd $temp 2>&1 > /dev/null
-	ret=`SMB_CheckIfDirectoryExists $SMBSERVER $SMBPATH`
+	SMB_CheckIfDirectoryExists $SMBSERVER $SMBPATH
 	if [ "$ret" != "" ]; then
 		get_history_succeed='false'
 
@@ -58,7 +58,7 @@ function hathor_get_history_path
 		ORIGINAL_PRODUCTNAME=$PRODUCTNAME
 		PRODUCTNAME=`hathor_get_specific_product_name $PRODUCTNAME`
 		hathor_get_firmware_path
-		ret=`SMB_CheckIfDirectoryExists $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED`
+		SMB_CheckIfDirectoryExists $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED
 		if [ "$ret" == "false" ] || [ "$ret" != "true" ] ; then
 			echo $ret
 			return 1

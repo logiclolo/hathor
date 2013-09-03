@@ -39,7 +39,7 @@ function SMB_CheckIfDirectoryExists
 		echo $ret
 		return 1
 	else
-		echo 'true'
+        echo 'true'
 		return 0
 	fi
 

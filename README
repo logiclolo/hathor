@@ -11,7 +11,7 @@ save the poor engineer from the hell of various process while releasing
 firmwares.
 
 [What will Hathor do]
-Hathor is deligent, she takes all the hard work of releasing firmware, such as:
+Hathor is diligent, she takes all the hard work of releasing firmware, such as:
  - Building and tagging firmware
  - Comparing difference of firmwares
  - Writing history.txt
