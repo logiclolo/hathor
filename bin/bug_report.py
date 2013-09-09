@@ -8,22 +8,32 @@ import sys
 import os
 import getopt
 import pickle
+import re
 
 username = None
 password = None
-base = 'http://dqa02'
+base = 'http://dqa02.vivotek.tw'
 
 severity_abbr_map = {
 	'normal': 'NRML',
 	'major': 'MJR',
 	'minor': 'MNR',
 	'suggestion': 'SGST',
+	'unconfirmed': 'UNCM',
 }
 
 plat_map = {
-	'mozart330': 'Mozart330',
-	'mozart330o': 'Mozart330',
-	'dm365': 'Ti-DM365'
+	'mozart325': ['Mozart325'],
+	'mozart330': ['Mozart330 (V2)'],
+	'mozart330o': ['Mozart330 (V2)'],
+	'mozart330s': ['Mozart330 (V3)'],
+	'mozart365': ['Mozart365'],
+	'mozart370': ['Mozart370'],
+	'mozart380': ['Mozart380'],
+	'mozart385s': ['Mozart385s (V3)'],
+	'dm365': ['Ti-DM365', 'Ti-DM368'],
+	'dm385': ['Ti-DM385'],
+	'xarina': ['Xarina'],
 }
 
 new_bugs = []
@@ -166,14 +176,71 @@ def get_dqa_proj():
 
 	return proj
 
+def ask_user(name):
+	while True:
+		print 'I found a model "%s" in Redmine. Is it correct? [Y/n]' % name,
+		ans = raw_input()
+
+		if ans.lower() == 'y' or ans == '':
+			print 'Ok. I will cache your choice for next time.'
+			return True
+		elif ans.lower() == 'n':
+			return False
+		else:
+			print 'Not a valid answer.'
+
+	return False
+
+def matching(product, model):
+	if product.has_key('cached_guessing') and product['cached_guessing'] == model:
+		return True
+
+	name = product['name']
+	# Try to match the whole string
+	if name == model:
+		return True
+
+	# Try to match the first part (eg. IPXXXX)
+	first = model.split('-')[0]
+	if re.match(first, name):
+		return True
+
+	# Try to match the saperated type & number part (eg. FD8163/8363)
+	mtype = first[:2]
+	number = first[2:]
+	if re.match(mtype, name) and re.search(number, name):
+		return True
+
+	# The followings are guessing
+	# Requisite: the model type must be matched
+	if re.match(mtype, name):
+		# Guessing 1: try to match the last two digits of the model name
+		m = re.match('.*(\d\d).*', name)
+		if m:
+			last_digits = m.group(1)
+			if number.index(last_digits) > 0:
+				if ask_user(name):
+					product['cached_guessing'] = model
+					return True
+
+		# Guessing 2: try to match the 'X' part in model name (eg. SD83X3)
+		m = re.match('.*([xX]\d).*', name)
+		if m:
+			if ask_user(name):
+				product['cached_guessing'] = model
+				return True
+
+	return False
+		
+
 def get_product_proj(plat_id, product):
 	p = read_cache('product_proj')
-	if p and p['name'] == product:
+	if p and matching(p, product):
 		return p
 
 	product_list = get_subproj(plat_id)
 	for p in product_list:
-		if p['name'] == product:
+		if matching(p, product):
 			write_cache('product_proj', p)
 			return p
 
@@ -308,7 +375,7 @@ def load_cache():
 		cache = pickle.load(h)
 		h.close()
 	except IOError as e:
-		print str(e)
+		print '%s not found. Will try to create one before exiting.' % cache_path
 	except pickle.UnpicklingError as e:
 		print str(e)
 
@@ -324,7 +391,6 @@ def write_cache(key, obj):
 	cache_updated = True
 
 def gen_bug_report(model, vendor, plat):
-	load_cache()
 	proj = get_dqa_proj()
 #	print 'Project id: %s' % proj['project']['id']
 #	print 'Project name: %s' % proj['project']['name'] 
@@ -356,11 +422,12 @@ def gen_bug_report(model, vendor, plat):
 		classify_issues(issues)
 
 		output()
-		save_cache()
 		print 'Total %d bugs' % len(issues)
 
+		return True
 	else:
 		print 'Project not find.'
+		return False
 
 def get_plat(env):
 	if plat_map.has_key(env):
@@ -374,7 +441,11 @@ def get_info_from_envs():
 
 	plat = get_plat(os.getenv('OSEXTENSION'))
 
-	return ('%s-%s' % (model, vendor), vendor, plat)
+	tmp = []
+	for p in plat:
+		tmp.append(('%s-%s' % (model, vendor), vendor, p))
+
+	return tmp
 
 def check_envs():
 	if not os.getenv('PRODUCTVER') or not os.getenv('OSEXTENSION'):
@@ -404,8 +475,14 @@ if __name__ == '__main__':
 		print 'Have you source the project devel file?'
 		sys.exit(1)
 
-	(model, vendor, plat) = get_info_from_envs()
+	infos = get_info_from_envs()
 #	print '%s:%s:%s' % (model, vendor, plat)
 
 #	auth_setup()
-	gen_bug_report(model, vendor, plat)
+	load_cache()
+	for i in infos:
+		(model, vendor, plat) = i[:]
+		if gen_bug_report(model, vendor, plat):
+			save_cache()
+			break
+
