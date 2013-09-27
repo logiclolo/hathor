@@ -104,7 +104,18 @@ def get_assignee(issue):
 
 	return '<none>'
 
+def issue_compare(x, y):
+	if x['id'] > y['id']:
+		return 1
+	elif x['id'] < y['id']:
+		return -1
+	else:
+		return 0
+
 def classify_issues(issues):
+	issues.sort(issue_compare)
+	bugid_max_width = len(str(issues[-1]['id']))
+
 	for i in issues:
 		bugid = i['id']
 		desc = i['subject']
@@ -113,34 +124,34 @@ def classify_issues(issues):
 		status = get_status(i)
 		assignee = get_assignee(i)
 
-		str = '[%s][%s][%-4s] %-15s %s\n' % (bugid, prio, get_abbr(severity), assignee, desc)
-#		str = '%s   %s  %-10s         %-20s %s\n' % (bugid, prio, get_abbr(severity), assignee, desc)
+		bug_str = u'[{:{width}d}][{:s}][{:4s}] {:15s} {:s}\n'.format(bugid, prio, get_abbr(severity), assignee, desc, width = bugid_max_width)
+#		bug_str = '%s   %s  %-10s         %-20s %s\n' % (bugid, prio, get_abbr(severity), assignee, desc)
 
 		if status == 'NEW':
 			if severity == 'suggestion':
-				suggestion_bugs.append(str)
+				suggestion_bugs.append(bug_str)
 			else:
-				new_bugs.append(str)
+				new_bugs.append(bug_str)
 		elif status == 'FIXED':
-			fixed_bugs.append(str)
+			fixed_bugs.append(bug_str)
 		elif status == 'INVALID':
-			invalid_bugs.append(str)
+			invalid_bugs.append(bug_str)
 		elif status == 'WORK':
-			worksforme_bugs.append(str)
+			worksforme_bugs.append(bug_str)
 		elif status == 'WONTFIX':
-			wontfix_bugs.append(str)
+			wontfix_bugs.append(bug_str)
 		elif status == 'LATER':
-			fixlater_bugs.append(str)
+			fixlater_bugs.append(bug_str)
 		elif status == 'ASSIGNED':
 			if severity == 'suggestion':
-				suggestion_bugs.append(str)
+				suggestion_bugs.append(bug_str)
 			else:
-				new_bugs.append(str)
+				new_bugs.append(bug_str)
 		elif status == 'REOPENED':
 			if severity == 'suggestion':
-				suggestion_bugs.append(str)
+				suggestion_bugs.append(bug_str)
 			else:
-				new_bugs.append(str)
+				new_bugs.append(bug_str)
 		else:
 			pass
 
