@@ -124,7 +124,7 @@ def classify_issues(issues):
 		status = get_status(i)
 		assignee = get_assignee(i)
 
-		bug_str = u'[{:{width}d}][{:s}][{:4s}] {:15s} {:s}\n'.format(bugid, prio, get_abbr(severity), assignee, desc, width = bugid_max_width)
+		bug_str = u'[{0:{width}d}][{1:s}][{2:4s}] {3:15s} {4:s}\n'.format(bugid, prio, get_abbr(severity), assignee, desc, width = bugid_max_width)
 #		bug_str = '%s   %s  %-10s         %-20s %s\n' % (bugid, prio, get_abbr(severity), assignee, desc)
 
 		if status == 'NEW':
