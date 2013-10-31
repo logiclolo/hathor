@@ -81,7 +81,11 @@ def get_bug_id(issue):
 	return issue['id']
 
 def get_priority(issue):
-	return issue['priority']['name']
+	tmp = issue['priority']['name']
+	if tmp == 'Unconfirmed':
+		tmp = 'Un'
+
+	return tmp
 
 def get_severity(issue):
 	tmp = get_custom_field(issue, 1)
