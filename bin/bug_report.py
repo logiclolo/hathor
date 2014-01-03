@@ -223,8 +223,9 @@ def matching(product, model):
 	# Try to match the saperated type & number part (eg. FD8163/8363)
 	mtype = first[:2]
 	number = first[2:]
-	if re.match(mtype, name) and re.search(number, name):
-		return True
+	if re.search(mtype, name) and re.search(number, name):
+		if ask_user(name):
+			return True
 
 	# The followings are guessing
 	# Requisite: the model type must be matched
@@ -233,7 +234,7 @@ def matching(product, model):
 		m = re.match('.*(\d\d).*', name)
 		if m:
 			last_digits = m.group(1)
-			if number.index(last_digits) > 0:
+			if number.find(last_digits) > 0:
 				if ask_user(name):
 					product['cached_guessing'] = model
 					return True
