@@ -225,6 +225,7 @@ def matching(product, model):
 	number = first[2:]
 	if re.search(mtype, name) and re.search(number, name):
 		if ask_user(name):
+			product['cached_guessing'] = model
 			return True
 
 	# The followings are guessing
