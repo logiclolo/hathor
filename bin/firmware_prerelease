@@ -3,6 +3,7 @@
 source $HATHOR/config/basic_config
 source $HATHOR/lib/libfirmwarerelease
 
+set +o posix
 TEMP_PRODUCT_DIR="$TEMP_DIR/$PRODUCTVER"
 DEVEL_SOURCE_FILE="devel_`echo $PRODUCTVER | sed -e 's/-[^-]*$//' -e 's/-/_/g'`"
 source $TEMP_PRODUCT_DIR/build/apps_config.config

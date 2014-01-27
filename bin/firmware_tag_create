@@ -11,6 +11,7 @@ source $HATHOR/lib/libmessage
 HATHOR_METADATA_EXECUTABLE_ADD="$HATHOR/.hathor_metadata_executable_add"
 HATHOR_METADATA_EXECUTABLE_TEMP="$HATHOR/.hathor_metadata_executable_temp"
 
+set +o posix
 DEVEL_SOURCE_FILE="devel_`echo $PRODUCTVER | sed -e 's/-[^-]*$//' -e 's/-/_/g'`"
 cd ${PRODUCTDIR}
 pushd build > /dev/null

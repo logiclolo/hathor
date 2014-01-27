@@ -10,6 +10,7 @@ source $HATHOR/lib/libmessage
 # currently variable action could be 'kernel' or 'firmware'
 action=$1
 
+set +o posix
 # check out firmware source code from remote
 echo "Check out source code from $SVN_TARGET_URL"
 TEMP_PRODUCT_DIR="$TEMP_DIR/$PRODUCTVER"
