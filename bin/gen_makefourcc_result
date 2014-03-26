@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 source $HATHOR/config/basic_config
 source $HATHOR/lib/libmessage
@@ -34,7 +34,7 @@ CMD2="cut -d ) -f 1"
 
 get_mp4_encode_library_mozart3 ()
 {
-	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/mp4venc/inc/Mp4VEnc.h | $CMD1 | $CMD2 | sed s/,\ /./g
+	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/${soc_version}/mp4venc/inc/Mp4VEnc.h | $CMD1 | $CMD2 | sed s/,\ /./g
 }
 get_mp4_encode_library_dm365 ()
 {
@@ -43,7 +43,7 @@ get_mp4_encode_library_dm365 ()
 
 get_h264_encode_library_mozart3 ()
 {
-	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/h264enc/inc/H264Enc.h | $CMD1 | $CMD2 | sed s/,\ /./g
+	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/${soc_version}/h264enc/inc/H264Enc.h | $CMD1 | $CMD2 | sed s/,\ /./g
 }
 
 get_h264_encode_library_dm365 ()
@@ -53,7 +53,7 @@ get_h264_encode_library_dm365 ()
 
 get_mjpeg_encode_library_mozart3 ()
 {
-	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/jpegenc/inc/JPEGEnc.h | $CMD1 | $CMD2 | sed s/,\ /./g
+	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/${soc_version}/jpegenc/inc/JPEGEnc.h | $CMD1 | $CMD2 | sed s/,\ /./g
 }
 
 get_mjpeg_encode_library_dm365 ()
