@@ -8,6 +8,7 @@ source $HATHOR/config/basic_config
 #  - $OUTPUT_DIR/makefourcc-result
 $EXEC/gen_ident_result
 $EXEC/gen_makefourcc_result
+$EXEC/gen_other_result
 
 MODULE_VERSIONS="$OUTPUT_DIR/module-versions.txt"
 [ -f "$MODULE_VERSIONS" ] && rm -f $MODULE_VERSIONS
@@ -19,3 +20,6 @@ echo >> $MODULE_VERSIONS
 
 echo "**** MAKEFOURCC strings ****" >> $MODULE_VERSIONS
 cat $OUTPUT_DIR/makefourcc-result >> $MODULE_VERSIONS
+
+echo "**** other strings ****" >> $MODULE_VERSIONS
+cat $OUTPUT_DIR/other-result >> $MODULE_VERSIONS

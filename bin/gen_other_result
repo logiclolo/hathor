@@ -1,0 +1,107 @@
+#!/bin/sh
+
+red='\033[1;31m'
+nocolor='\033[0m'
+check_result=0
+
+error ()
+{
+	echo -e "${red}$@${nocolor}"
+}
+
+_which ()
+{
+	local file_path="${EXTENSION_SRCDIR} ${PRODUCTDIR}"
+	local file=$2
+	local rootfs=$1
+
+	for path in $file_path; do
+		path_to_test="$path/$rootfs"
+		result=`find $path_to_test -iname $file`
+		if [ "$result" != "" ] ; then
+			echo $result
+			return
+		fi
+	done
+}
+
+which_rootfs ()
+{
+	local file=$1
+	_which "rootfs" $file
+}
+
+which_flashfs ()
+{
+	local file=$1
+	_which "flashfs" $file
+}
+
+firmware_which ()
+{
+	result=`which_rootfs $1`
+	if [ "$result" != "" ] ; then
+		echo $result
+		return
+	fi
+	result=`which_flashfs $1`
+	if [ "$result" != "" ]; then
+		echo $result
+		return
+	fi
+}
+
+assert_xml_node ()
+{
+	local xml=`firmware_which $1`
+	local node_name="$2"
+	local node_correct="$3"
+
+	local node_actual="`xpath -e "$node_name/*/text()" -q ${xml} | tr -d "\r\n" 2> /dev/null`"
+
+	if [ "$node_actual" != "$node_correct" ] ; then
+		echo -e "${red}${xml} tag <$node_name> incorrect!${nocolor}"
+		echo -e "  Expected: $node_correct"
+		echo -e "  Actual:   $node_actual"
+		check_result=1
+	fi
+}
+
+assert_text_file ()
+{
+	local text_file=$1
+	local assert_string=$2
+	if [ -f "$text_file" ] ; then
+		assert_result=`grep $assert_string $text_file`
+		if [ "$assert_result" == "" ] ; then
+			error "Missing string in $text_file"
+			echo -e "   Expected: '$assert_string' should exist in above file"
+			check_result=1
+		fi
+	else
+		error "File $text_file not found"
+		check_result=1
+	fi
+}
+
+assert_module_text_file ()
+{
+	local module_path=$1
+	local file_path=$2
+	local assert_string=$3
+	local module_full_path="$PRODUCTDIR/apps/app_cluster/$module_path"
+
+	assert_text_file "$module_full_path/$file_path" $assert_string
+}
+
+get_genetec_version_from_capability ()
+{
+	local capability_xml=`which_flashfs "config_capability.xml"`
+	local genetec_version=`xpath -e "root/capability/version/genetec/text()" -q $capability_xml`
+	echo "Genetec protocol: $genetec_version"
+}
+
+VER_FILE="$OUTPUT_DIR/other-result"
+
+get_genetec_version_from_capability #>> $VER_FILE
+#get_genetec_version_from_capability >> $VER_FILE
