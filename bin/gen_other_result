@@ -103,5 +103,4 @@ get_genetec_version_from_capability ()
 
 VER_FILE="$OUTPUT_DIR/other-result"
 
-get_genetec_version_from_capability #>> $VER_FILE
-#get_genetec_version_from_capability >> $VER_FILE
+get_genetec_version_from_capability >> $VER_FILE
