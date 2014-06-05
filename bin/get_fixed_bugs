@@ -5,7 +5,7 @@ source $HATHOR/lib/libmessage
 
 OUTPUT="$OUTPUT_DIR/fixed-bugs.txt"
 CONFIG=$HATHOR/config/override_config
-BASE="http://dqa01/bugzilla/"
+BASE="http://dqa01.vivotek.tw/bugzilla/"
 BUGZ="bugz -q --columns 1024"
 BRAND=`echo $PRODUCTVER | awk -F- '{print $2}'`
 
