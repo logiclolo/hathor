@@ -1,5 +1,8 @@
 #!/bin/sh
 
+source $HATHOR/config/basic_config
+
+
 red='\033[1;31m'
 nocolor='\033[0m'
 check_result=0
@@ -98,7 +101,17 @@ get_genetec_version_from_capability ()
 {
 	local capability_xml=`which_flashfs "config_capability.xml"`
 	local genetec_version=`xpath -e "root/capability/version/genetec/text()" -q $capability_xml`
-	echo "Genetec protocol: $genetec_version"
+	local genetec_param_cgi_installed=0
+
+	[ -f $ROOTFSDIR/usr/share/www/cgi-bin/param.cgi ] && genetec_param_cgi_installed=1
+
+	if [ "$genetec_version" != "" ] ; then
+		echo "Genetec protocol: <$genetec_version>"
+	elif [ $genetec_param_cgi_installed -eq 1 ] ; then
+		echo "Genetec protocol: << Before 1.0.0.0 >>"
+	else 
+		echo "Genetec protocol: <None>"
+	fi
 }
 
 VER_FILE="$OUTPUT_DIR/other-result"
