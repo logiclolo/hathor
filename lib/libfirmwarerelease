@@ -26,7 +26,8 @@ copy_filesystem_log ()
 # platform dependent firmware copying
 function copy_firmware_mozart3()
 {
-	cp ${FW_DIR}/${PRODUCTVER}.*.rom $RELEASE_DIR 
+	ROMFW="${FW_DIR}/${PRODUCTVER}.*.rom"
+	[ -f "$ROMFW" ] && cp $ROMFW $RELEASE_DIR
 	SDFW="${FW_DIR}/sdfw/sd.rom"
 	[ -f "$SDFW" ] && cp $SDFW $RELEASE_DIR
 
