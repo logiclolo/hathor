@@ -27,7 +27,7 @@ copy_filesystem_log ()
 function copy_firmware_mozart3()
 {
 	cp ${FW_DIR}/${PRODUCTVER}.*.rom $RELEASE_DIR 
-	SDFW="${PRODUCTVER}/release/package/${PRODUCTVER}/sdfw/sd.rom"
+	SDFW="${FW_DIR}/sdfw/sd.rom"
 	[ -f "$SDFW" ] && cp $SDFW $RELEASE_DIR
 
 	[ -f $PRODUCTVER.flash.rom ] && md5sum $PRODUCTVER.flash.rom >> $PRODUCTVER.md5
