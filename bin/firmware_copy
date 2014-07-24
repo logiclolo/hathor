@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/bash 
 
 source $HATHOR/config/basic_config
 source $HATHOR/lib/libfirmwareinfo
@@ -9,7 +9,7 @@ hathor_get_firmware_path
 
 DIRECTORY_TO_PUT_FIRMWARE=$FIRMWARE_VERSION
 
-FIRMWARE_TO_UPLOAD="`ls $RELEASE_DIR/$PRODUCTVER*`"
+FIRMWARE_TO_UPLOAD="`ls $RELEASE_DIR/$PRODUCTVER* $RELEASE_DIR/sd.rom`"
 for f in $FIRMWARE_TO_UPLOAD; do
 	PUT_COMMAND="put $f `basename $f`; $PUT_COMMAND"
 done
