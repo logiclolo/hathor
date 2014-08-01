@@ -9,7 +9,7 @@ BASE="http://dqa01.vivotek.tw/bugzilla/"
 BUGZ="bugz -q --columns 1024"
 BRAND=`echo $PRODUCTVER | awk -F- '{print $2}'`
 
-echo "Get bug list from redmine (http://dqa02/redmine/)..."
+echo "Get bug list from redmine (http://dqa02.vivotek.tw/redmine/)..."
 
 $HATHOR/bin/bug_report.py $OUTPUT
 

@@ -24,7 +24,7 @@ HIGHLIGHT='\033[1m'
 
 AllPass=1
 
-REDMINE_URL=http://dqa02/projects/dqa-test-1-request-fwtest/issues.xml
+REDMINE_URL=http://dqa02.vivotek.tw/projects/dqa-test-1-request-fwtest/issues.xml
 
 function GenerateRedmineRC ()
 {
@@ -70,7 +70,7 @@ function GenerateBugzCookie ()
 	echo "Please enter bugzilla username/password on request"
 	read -p "Username: " USERNAME
 	read -s -p "Password: " PASSWORD
-	bugz -q -u $USERNAME -p $PASSWORD -b http://dqa01/bugzilla/ search --product 'VVTK IP8332' > bugz_output
+	bugz -q -u $USERNAME -p $PASSWORD -b http://dqa01.vivotek.tw/bugzilla/ search --product 'VVTK IP8332' > bugz_output
 	if [ "$?" != "0" ] ; then
 		cat bugz_output
 		AllPass=0

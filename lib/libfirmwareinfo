@@ -10,7 +10,7 @@ function hathor_get_firmware_name
 
 function hathor_get_firmware_path
 {
-	FIRMWARE_PATH_SERVER="\\\\athena\\SQA"
+	FIRMWARE_PATH_SERVER="\\\\athena.vivotek.tw\\SQA"
 	FIRMWARE_PATH_SUFFIX="$FIRMWARE_BRAND\\Multi_lingual\\Application\\Firmware\\English"
 	FIRMWARE_PATH_SERVER_REVERTED=`echo "$FIRMWARE_PATH_SERVER" | sed -e 's:\\\\:\/:g'`
 	HATHOR_FIRMWARE_PATH_PREFIX="\\Project\\$PRODUCTNAME\\$FIRMWARE_PATH_SUFFIX"
