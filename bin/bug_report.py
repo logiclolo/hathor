@@ -20,6 +20,7 @@ severity_abbr_map = {
 	'minor': 'MNR',
 	'suggestion': 'SGST',
 	'unconfirmed': 'UNCM',
+	'critical': 'CRIT',
 }
 
 plat_map = {
