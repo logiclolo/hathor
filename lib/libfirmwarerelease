@@ -34,5 +34,13 @@ function copy_firmware_mozart3()
 	[ -f $PRODUCTVER.flash.rom ] && md5sum $PRODUCTVER.flash.rom >> $PRODUCTVER.md5
 }
 
+function copy_firmware_dm8127()
+{
+	if [ -f "${FW_DIR}/sdboot.tar.bz2" ]; then 
+		cp ${FW_DIR}/sdboot.tar.bz2 $RELEASE_DIR
+		md5sum sdboot.tar.bz2 >> $PRODUCTVER.md5
+	fi
+}
+
 # tell vim to use shell script highlight automagically
 # vim:ft=sh

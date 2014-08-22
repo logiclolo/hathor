@@ -3,9 +3,21 @@
 source $HATHOR/config/basic_config
 source $HATHOR/lib/libmessage
 if [ -d "$TEMP_DIR/$PRODUCTVER" ]; then
-	source $TEMP_DIR/$PRODUCTVER/build/apps_config.config
+	if [ -e "$TEMP_DIR/$PRODUCTVER/build/apps_config.config" ]; then
+		source $TEMP_DIR/$PRODUCTVER/build/apps_config.config
+	elif [ -e "$TEMP_DIR/$PRODUCTVER/release/config/apps_config.config" ]; then
+		source $TEMP_DIR/$PRODUCTVER/release/config/apps_config.config
+	else
+		echo "$0: Where to find apps_config.config"
+	fi
 else
-	source $PRODUCTDIR/build/apps_config.config
+	if [ -e "$PRODUCTDIR/build/apps_config.config" ]; then
+		source $PRODUCTDIR/build/apps_config.config
+	elif [ -e "$PRODUCTDIR/release/config/apps_config.config" ]; then
+		source $PRODUCTDIR/release/config/apps_config.config
+	else
+		echo "$0: Where to find apps_config.config"
+	fi
 fi
 
 
@@ -40,6 +52,11 @@ get_mp4_encode_library_dm365 ()
 {
 	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/mp4venc/inc/mp4venc.h | $CMD1 | $CMD2 | sed s/,\ /./g
 }
+get_mp4_encode_library_dm8127()
+{
+	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/mp4venc/inc/mp4venc.h | $CMD1 | $CMD2 | sed s/,\ /./g
+}
+
 
 get_h264_encode_library_mozart3 ()
 {
@@ -51,12 +68,22 @@ get_h264_encode_library_dm365 ()
 	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/h264enc/inc/h264enc.h | $CMD1 | $CMD2 | sed s/,\ /./g
 }
 
+get_h264_encode_library_dm8127 ()
+{
+	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/h264enc/inc/h264enc.h | $CMD1 | $CMD2 | sed s/,\ /./g
+}
+
 get_mjpeg_encode_library_mozart3 ()
 {
 	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/${soc_version}/jpegenc/inc/JPEGEnc.h | $CMD1 | $CMD2 | sed s/,\ /./g
 }
 
 get_mjpeg_encode_library_dm365 ()
+{
+	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/jpegenc/inc/jpegenc.h | $CMD1 | $CMD2 | sed s/,\ /./g
+}
+
+get_mjpeg_encode_library_dm8127 ()
 {
 	grep "MAKEFOURCC" $APP_CLUSTER_DIR/media/libs/${BOARDTYPE}/jpegenc/inc/jpegenc.h | $CMD1 | $CMD2 | sed s/,\ /./g
 }
