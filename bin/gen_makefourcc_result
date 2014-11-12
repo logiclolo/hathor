@@ -132,11 +132,17 @@ fi
 ONVIFD_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/onvifmessage/inc/onvifmessage.h | $CMD1 | $CMD2 | sed s/,\ /./g`
 echo "ONVIF daemon: $ONVIFD_VER" >> $VER_FILE
 #-------------------------------------------------------------------------------------------------------------
-ONVIFDISCOVERY_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/onvifdiscovery/inc/ONVIFDiscovery.h | $CMD1 | $CMD2 | sed s/,\ /./g`
+ONVIFDISCOVERY_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/onvifdiscovery/inc/ONVIFDiscovery.h | $CMD1 | $CMD2 | sed s/,\ */./g`
 echo "ONVIF discovery: $ONVIFDISCOVERY_VER" >> $VER_FILE
 #-------------------------------------------------------------------------------------------------------------
-ONVIFEVENT_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/onvifevent/inc/onvifeventmsg_defines.h | $CMD1 | $CMD2 | sed s/,\ /./g`
+ONVIFEVENT_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/onvifevent/inc/onvifeventmsg.h | $CMD1 | $CMD2 | sed s/,\ /./g`
 echo "ONVIF eventd: $ONVIFEVENT_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+ONVIFBASIC_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/onvifbasic/inc/onvifbasic_defines.h | $CMD1 | $CMD2 | sed s/,\ /./g`
+echo "ONVIF basic: $ONVIFBASIC_VER" >> $VER_FILE
+#-------------------------------------------------------------------------------------------------------------
+ONVIFAS_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/network/onvifas/inc/onvifasmsg_defines.h | $CMD1 | $CMD2 | sed s/,\ /./g`
+echo "ONVIF as: $ONVIFAS_VER" >> $VER_FILE
 #-------------------------------------------------------------------------------------------------------------
 if [ -d $APP_CLUSTER_DIR/peripheral/uartd ]; then
 	UARTD_VER=`grep "MAKEFOURCC" $APP_CLUSTER_DIR/peripheral/uartd/inc/uartd.h | awk '{print $4$5$6$7}' | sed s/,/./g`
