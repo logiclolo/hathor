@@ -6,7 +6,14 @@ source $HATHOR/lib/libfirmwarerelease
 set +o posix
 TEMP_PRODUCT_DIR="$TEMP_DIR/$PRODUCTVER"
 DEVEL_SOURCE_FILE="devel_`echo $PRODUCTVER | sed -e 's/-[^-]*$//' -e 's/-/_/g'`"
-source $TEMP_PRODUCT_DIR/build/apps_config.config
+if [ -e "$TEMP_PRODUCT_DIR/build/apps_config.config" ]; then
+	source $TEMP_PRODUCT_DIR/build/apps_config.config
+elif [ -e "$TEMP_PRODUCT_DIR/release/config/apps_config.config" ]; then
+	source $TEMP_PRODUCT_DIR/release/config/apps_config.config
+else
+	echo "$0: Where to find apps_config.config?"
+	exit 1
+fi
 cd $TEMP_PRODUCT_DIR/build/
 source $DEVEL_SOURCE_FILE
 

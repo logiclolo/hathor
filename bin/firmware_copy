@@ -9,9 +9,11 @@ hathor_get_firmware_path
 
 DIRECTORY_TO_PUT_FIRMWARE=$FIRMWARE_VERSION
 
-FIRMWARE_TO_UPLOAD="`ls $RELEASE_DIR/$PRODUCTVER* $RELEASE_DIR/sd.rom`"
+FIRMWARE_TO_UPLOAD="`ls $RELEASE_DIR/$PRODUCTVER* $RELEASE_DIR/sd.rom $RELEASE_DIR/sdboot*`"
 for f in $FIRMWARE_TO_UPLOAD; do
-	PUT_COMMAND="put $f `basename $f`; $PUT_COMMAND"
+	if [ -e "$f" ]; then
+		PUT_COMMAND="put $f `basename $f`; $PUT_COMMAND"
+	fi
 done
 SMB_CMD_FIRMWARE="mkdir $DIRECTORY_TO_PUT_FIRMWARE; cd $DIRECTORY_TO_PUT_FIRMWARE; $PUT_COMMAND; cd .."
 
