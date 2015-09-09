@@ -288,7 +288,7 @@ def gen_supportlist_xls(write_sheet):
         # That is g_expand_row > 0, so we need to expand the 'test request model' row
         # 
         col = 0
-        max_col_width = 0
+        max_col_width = 20
         model_length = 0
         test_model_length = 1 
         row_offset = 0
@@ -331,7 +331,7 @@ def gen_supportlist_xls(write_sheet):
                 if col == 0:
                         continue
 
-                max_col_width = 0
+                max_col_width = 20
                 current_rows = []
                 for row in range(read_sheet.nrows):
                         value = read_sheet.cell_value(row, col) 
