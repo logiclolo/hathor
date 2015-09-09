@@ -32,6 +32,9 @@ sample: _doctor_check_config _tag_sample _build_kernel _build_firmware _prepare 
 sample-skip-kernel: _doctor_check_config _tag_sample _build_firmware _prepare _firmware_check history _firmware_prerelease
 release-sample: _doctor_check_config _upload_sample
 
+report:
+	$(call SHELLCMD,bin/bug_report_improve.py)
+
 doctor:
 	$(call SHELLCMD,bin/doctor)
 
