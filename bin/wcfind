@@ -58,6 +58,9 @@ if [ "$depth" = "yes" ]; then
     -or -regex \''.*/\.git'\' -or -regex \''.*/\.git/.*'\' \
     -or '\(' $exprmain '\)' $print
 else
-    eval find $optspaths $expropts '\(' -name .svn -or -name CVS -or -name .git '\)' -prune \
+    if [ -e "$HATHOR_METADATA_ARGS_FOR_FIND" ]; then
+        ignore=`cat $HATHOR_METADATA_ARGS_FOR_FIND`
+    fi
+    eval find $optspaths $expropts '\(' -name .svn -or -name CVS -or -name .git $ignore '\)' -prune \
     -or '\(' $exprmain '\)' $print
 fi

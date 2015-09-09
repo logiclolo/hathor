@@ -13,3 +13,10 @@ if [ -z "$PRODUCTVER" ] ; then
 	exit 1;
 fi
 
+echo $PRODUCTVER | grep "[0-9]\{1,\}\.[0-9a-z]\{1,\}\.[0-9a-z]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}" > /dev/null
+if [ "$?" == 0 ] ; then
+	export ISONEFW="true"
+else
+	export ISONEFW="false"
+fi
+

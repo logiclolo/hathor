@@ -3,11 +3,16 @@
 source $HATHOR/config/basic_config
 source $HATHOR/lib/libfirmwareinfo
 source $HATHOR/lib/libmessage
+source $HATHOR/lib/libsmb
+#set -x
 
 hathor_get_firmware_path
 
-
-DIRECTORY_TO_PUT_FIRMWARE=$FIRMWARE_VERSION
+if [ "$ISONEFW" == "true" ]; then
+    DIRECTORY_TO_PUT_FIRMWARE=$PRODUCTVER
+else
+	DIRECTORY_TO_PUT_FIRMWARE=$FIRMWARE_VERSION
+fi
 
 FIRMWARE_TO_UPLOAD="`ls $RELEASE_DIR/$PRODUCTVER* $RELEASE_DIR/sd.rom $RELEASE_DIR/sdboot*`"
 for f in $FIRMWARE_TO_UPLOAD; do
@@ -19,10 +24,31 @@ SMB_CMD_FIRMWARE="mkdir $DIRECTORY_TO_PUT_FIRMWARE; cd $DIRECTORY_TO_PUT_FIRMWAR
 
 
 RETRY_COUNT=2
+check_identity=0
 info "準備將 firmware 和 history.txt 上傳至雅典娜"
 warn "密碼錯誤重試次數只有 $RETRY_COUNT 次，請小心輸入"
-read -s -p "密碼: " PASSWORD
-echo 
+for i in `seq 1 $RETRY_COUNT`; do
+    read -s -p "密碼: " PASSWORD
+    echo 
+    hathor_check_dir_exists $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED $USERNAME_ATHENA $PASSWORD
+    if [ "$?" == "0" ]; then
+        check_identity=1
+        break
+    else
+        if [ "$ret" == "NT_STATUS_LOGON_FAILURE" ]; then
+            warn '密碼錯誤!!'
+            warn "重試次數還有 `expr $RETRY_COUNT - $i` 次，請小心輸入"
+        else
+            warn "Error: $ret"
+            break
+        fi
+    fi
+done
+
+if [ "$check_identity" == "0" ] ; then
+    warn "密碼錯誤!"
+    exit 1
+fi
 
 export USER=$USERNAME_ATHENA
 export PASSWD=$PASSWORD
@@ -35,16 +61,40 @@ fi
 
 ###  upload history.txt
 
-# get correct history path first
-hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED $USERNAME_ATHENA $PASSWORD
+if [ "$ISONEFW" == "true" ]; then
+	HATHOR_FIRMWARE_HISTORY_FOLDER="$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED/$PRODUCTVER"
+	SMB_CMD_HISTORY="put $RELEASE_DIR/history.txt history.txt"
+else
+	# get correct history path first
+	hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED $USERNAME_ATHENA $PASSWORD
 
-export USER=$USERNAME_ATHENA
-export PASSWD=$PASSWORD
-SMB_CMD_HISTORY="get $HATHOR_FIRMWARE_HISTORY_NAME $HATHOR_FIRMWARE_HISTORY_NAME.bak; put $RELEASE_DIR/history.txt $HATHOR_FIRMWARE_HISTORY_NAME; put $HATHOR_FIRMWARE_HISTORY_NAME.bak"
+	export USER=$USERNAME_ATHENA
+	export PASSWD=$PASSWORD
+
+	if [ -z "$HATHOR_FIRMWARE_HISTORY_NAME" ]; then
+		# first release to Athena
+		SMB_CMD_HISTORY="put $RELEASE_DIR/history.txt history.txt"
+	else
+		SMB_CMD_HISTORY="get $HATHOR_FIRMWARE_HISTORY_NAME $HATHOR_FIRMWARE_HISTORY_NAME.bak; put $RELEASE_DIR/history.txt $HATHOR_FIRMWARE_HISTORY_NAME; put $HATHOR_FIRMWARE_HISTORY_NAME.bak"
+	fi
+fi
 ret=`SMB_Command "$FIRMWARE_PATH_SERVER_REVERTED" "$HATHOR_FIRMWARE_HISTORY_FOLDER" "$SMB_CMD_HISTORY"`
 if [ "$ret" != "" ]; then
-	warn "檔案上傳失敗! ($ret)"
+	warn "history.txt上傳失敗! ($ret)"
 	exit 1
 fi
 
+### upload image_library_release_note.log
+if [ "$ISONEFW" == "true" ]; then
+	HATHOR_FIRMWARE_IMAGELIBLOG_FOLDER="$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED"
+	SMB_CMD_FILES="put $RELEASE_DIR/image_library_release_note.log image_library_release_note.log; put $RELEASE_DIR/support_list.xls support_list.xls"
+
+	ret=`SMB_Command "$FIRMWARE_PATH_SERVER_REVERTED" "$HATHOR_FIRMWARE_IMAGELIBLOG_FOLDER" "$SMB_CMD_FILES"`
+	if [ "$ret" != "" ]; then
+		warn "image lib release note 和 support_list.xml 上傳失敗! ($ret)"
+		exit 1
+	fi
+fi
+
+info "上傳成功!"
 unset PASSWD; unset USER

@@ -9,22 +9,22 @@ BASE="http://dqa01.vivotek.tw/bugzilla/"
 BUGZ="bugz -q --columns 1024"
 BRAND=`echo $PRODUCTVER | awk -F- '{print $2}'`
 
-echo "Get bug list from redmine (http://dqa02.vivotek.tw/redmine/)..."
+#echo "Get bug list from redmine (http://dqa02.vivotek.tw/redmine/)..."
 
-$HATHOR/bin/bug_report.py $OUTPUT
+$HATHOR/bin/bug_report_improve.py $OUTPUT
 
-echo "Get bug list from bugzilla ($BASE)..."
+#echo "Get bug list from bugzilla ($BASE)..."
 
 [ -f $CONFIG ] && source $CONFIG
 
-MODEL="$BRAND $PRODUCTNAME"
+#MODEL="$BRAND $PRODUCTNAME"
 
-$BUGZ -b $BASE search --product "$MODEL" --status 'RESOLVED' --resolution 'fixed' | tee -a $OUTPUT
-bugz_result=$?
-if [ "$bugz_result" -ne "0" ] ; then
-	warn "Unable to retrieve bug list from bugzilla"
-	exit 1
-fi
+#$BUGZ -b $BASE search --product "$MODEL" --status 'RESOLVED' --resolution 'fixed' | tee -a $OUTPUT
+#bugz_result=$?
+#if [ "$bugz_result" -ne "0" ] ; then
+	#warn "Unable to retrieve bug list from bugzilla"
+	#exit 1
+#fi
 
 # Generate "<None>" if no fixed bug found in this release
 OUTPUT_FILESIZE=`stat -c "%s" $OUTPUT`

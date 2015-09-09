@@ -18,6 +18,18 @@ copy_history ()
 	cp $OUTPUT_DIR/history-$PRODUCTVER.txt $RELEASE_DIR
 }
 
+copy_image_lib_release_note ()
+{
+    svn export $HATHOR_IMAGE_LIB_RELEASE_NOTE $$.temp.txt > /dev/null
+    mv -f $$.temp.txt "$RELEASE_DIR/image_library_release_note.log"
+}
+
+copy_supportlist ()
+{
+	$HATHOR/bin/supportlist_output.py
+        mv *.xls "$RELEASE_DIR/support_list.xls" 
+}
+
 copy_filesystem_log ()
 {
 	cp $PRODUCTDIR/release/log/* $RELEASE_DIR

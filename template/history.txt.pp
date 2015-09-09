@@ -34,6 +34,20 @@ Verify major bug fixed:     </* FILL IN MAJOR BUGS FIXED*/>
 #endif
 -----------------------------------------------------------------------
 #include "module-versions.txt"
+#ifdef $ROSSINI 
+imgsys revision: /* FILL IN */
+videocap revision: 
+vpl_vic revision: 
+AR0230 sensor revision:
+IMX123 sensor revision:
+IMX225 sensor revision:
+IMX236 sensor revision:
+IMX322 sensor revision:
+OV5658 sensor revision:
+#endif
+#ifdef $HI3516A
+imgsys revision: /* FILL IN */
+#endif
 
 #comment #include "svn-log.txt"
 

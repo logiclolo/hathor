@@ -1,0 +1,5 @@
+#!/bin/sh
+
+for file in `cat $1`; do
+	svn revert $file
+done

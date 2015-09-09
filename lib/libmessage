@@ -48,6 +48,14 @@ function RunCommandWithSpinningIndicator ()
 	spinning $READY_FILE
 }
 
+#function cleanup ()
+#{
+	#if [ $? != "0" ]; then	
+        #rm -f "$HOME/.hathor/sourceme"
+	#fi
+#}
+
+#trap cleanup EXIT INT TERM
 
 # tell vim to use shell script highlight automagically
 # vim:ft=sh

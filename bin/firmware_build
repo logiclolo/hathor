@@ -10,17 +10,35 @@ source $HATHOR/lib/libmessage
 # currently variable action could be 'kernel' or 'firmware'
 action=$1
 
+# some build script use $1 (ie. unionpack_images)
+# so we need to unset $1
+set --
+
 set +o posix
-# check out firmware source code from remote
-echo "Check out source code from $SVN_TARGET_URL"
 TEMP_PRODUCT_DIR="$TEMP_DIR/$PRODUCTVER"
-DEVEL_SOURCE_FILE="devel_`echo $PRODUCTVER | sed -e 's/-[^-]*$//' -e 's/-/_/g'`"
 
 cd $TEMP_PRODUCT_DIR/build
+
+if [ "$ISONEFW" == "true" ]; then
+    if [ -n "$SHARE_BASE" ]; then
+		DEVEL_SOURCE_FILE=$DEVELFILE 	
+	else
+		DEVEL_SOURCE_FILE="devel_${PRODUCTNAME,,}"
+	fi
+else
+	DEVEL_SOURCE_FILE="devel_`echo $PRODUCTVER | sed -e 's/-[^-]*$//' -e 's/-/_/g'`"
+fi
+
+info "\nHathor would source $DEVEL_SOURCE_FILE more then one time."
+info "Choose the same build version if needed"
 source $DEVEL_SOURCE_FILE
 
+# cache major environment variable for further use 
+printenv | grep "PRODUCT" > $HOME/.hathor/sourceme
+sed -rni 's/(^.*)=(.*)/export \1="\2"/p' $HOME/.hathor/sourceme
+
 # build
-if [ "$action" == "kernel" ] && [ -d "$PRODUCTDIR/tmp/include" ] ; then 
+if [ "$action" == "kernel" ] && [[ -d "$PRODUCTDIR/tmp/include" || -d "$PRODUCTDIR/tmp/kernel/include" ]] ; then 
 	# we have kernel built so we could skip building kernels
 	info "Kernel headers detected, we skip kernel building"
 	exit 0

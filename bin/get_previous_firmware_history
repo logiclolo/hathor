@@ -24,7 +24,13 @@ for i in `seq 1 $RETRY_COUNT`; do
 	read -s -p "密碼: " PASSWORD_ATHENA
 	echo
 	info "連線中..."
-	hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED $USERNAME_ATHENA $PASSWORD_ATHENA
+
+	if [ "$ISONEFW" == "true" ]; then
+		hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED "$HATHOR_FIRMWARE_PATH_PREFIX_REVERTED/$PARENT_PKG" $USERNAME_ATHENA $PASSWORD_ATHENA
+	else
+		hathor_get_history_path $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED $USERNAME_ATHENA $PASSWORD_ATHENA
+	fi
+
 	if [ "$?" == "0" ]; then
 		get_history_success=1
 		break;
@@ -39,22 +45,49 @@ for i in `seq 1 $RETRY_COUNT`; do
 	fi
 done
 
+
+export USER=$USERNAME_ATHENA; export PASSWD=$PASSWORD_ATHENA
+
+if [ $ISONEFW == "true" ]; then
+	info "下載 support_list.xls"
+	SMB_GetFile $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED "support_list.xls"
+	if [ "$ret" != "" ] ; then
+		warn "無法從 $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED 下載 support_list.xls，請確認是否存在。"
+		warn "(如果是第一版，請手動產生 support_list.xls)"
+		exit 2 
+	fi
+
+	if [ -f "support_list.xls" ]; then
+		mv support_list.xls $OUTPUT_DIR/support_list.xls
+	fi
+fi
+
 if [ "$get_history_success" == "0" ] ; then
-	warn "偵測 firmware 目錄失敗"
+	if [ "$ISONEFW" == "true" ]; then
+		warn "偵測 $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED/$PARENT_PKG 目錄失敗"
+	else
+		warn "偵測 $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED 目錄失敗"
+	fi
 	exit 1
 fi
 
 info "下載 history.txt"
 
-export USER=$USERNAME_ATHENA; export PASSWD=$PASSWORD_ATHENA
-SMB_GetFile $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_HISTORY_FOLDER "$HATHOR_FIRMWARE_HISTORY_NAME"
-if [ "$ret" != "" ] ; then
-	SMB_GetFile $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_HISTORY_FOLDER "history.txt"
+if [ -z "$HATHOR_FIRMWARE_HISTORY_NAME" ]; then
+	warn "無法下載 history.txt，請確認是否存在。"
+	exit 1
+else
+	SMB_GetFile $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_HISTORY_FOLDER "$HATHOR_FIRMWARE_HISTORY_NAME"
 	if [ "$ret" != "" ] ; then
-		warn "下載 history.txt 失敗!!"
-		exit 1
+		SMB_GetFile $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_HISTORY_FOLDER "history.txt"
+		if [ "$ret" != "" ] ; then
+			warn "無法下載 history.txt，請確認是否存在。"
+			exit 1
+		fi
 	fi
 fi
+
+
 unset USER; unset PASSWD
 
 if [ -f $HATHOR_FIRMWARE_HISTORY_NAME ] && [ "$HATHOR_FIRMWARE_HISTORY_NAME" != "history.txt" ] ; then

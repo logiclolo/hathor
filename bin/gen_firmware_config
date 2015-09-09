@@ -61,3 +61,14 @@ echo "export HATHOR_WEBPAGE_LANGUAGE='$HATHOR_WEBPAGE_LANGUAGE'" >> $FIRMWARE_CO
 hathor_get_commonbug_list
 echo "export HATHOR_COMMONBUG_LIST='$HATHOR_COMMONBUG_LIST'" >> $FIRMWARE_CONFIG
 
+#HATHOR_IMAGE_LIB_RELEASE_NOTE
+if [ "$ISONEFW" == "true" ]; then
+	if [ "$PRODUCTNAME" == "ROSSINI" ]; then
+		echo "export ROSSINI='true'" >> $FIRMWARE_CONFIG
+		echo "export HATHOR_IMAGE_LIB_RELEASE_NOTE='http://172.16.5.30/subversion/Library/Images/Rossini/release_note.log'" >> $FIRMWARE_CONFIG
+	elif [ "$PRODUCTNAME" == "hi3516a" ]; then
+		echo "export HI3516A='true'" >> $FIRMWARE_CONFIG
+		echo "export HATHOR_IMAGE_LIB_RELEASE_NOTE='http://172.16.5.30/subversion/Library/Images/HiSilicon/release_note.txt'" >> $FIRMWARE_CONFIG
+    fi
+fi
+

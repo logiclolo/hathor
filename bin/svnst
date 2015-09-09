@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# svn st for common fw
+
+IFS=$'\n'
+
+svn st &
+svn_wc=`find $1 -iname ".svn" -type d`
+#st_list="/tmp/svn-st.$$"
+
+#svn st >> $st_list
+for i in $svn_wc; do
+	#svn st `dirname $i` >> $st_list
+	if [ "$i" != "./.svn" ]; then
+		svn st `dirname $i`
+	fi
+done
+
+#cat $st_list | sort | uniq
+#rm -f $st_list
+

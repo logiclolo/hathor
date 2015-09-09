@@ -2,6 +2,7 @@
 
 source $HATHOR/config/basic_config
 source $HATHOR/lib/libfirmwarerelease
+source $HATHOR/lib/libmessage
 
 set +o posix
 TEMP_PRODUCT_DIR="$TEMP_DIR/$PRODUCTVER"
@@ -14,8 +15,32 @@ else
 	echo "$0: Where to find apps_config.config?"
 	exit 1
 fi
+
+
 cd $TEMP_PRODUCT_DIR/build/
-source $DEVEL_SOURCE_FILE
+
+#if [ "$ISONEFW" == "true" ]; then
+    #if [ -n "$SHARE_BASE" ]; then
+		#DEVEL_SOURCE_FILE=$DEVELFILE 	
+	#else
+		#DEVEL_SOURCE_FILE="devel_${PRODUCTNAME,,}"
+	#fi
+#else
+	#DEVEL_SOURCE_FILE="devel_`echo $PRODUCTVER | sed -e 's/-[^-]*$//' -e 's/-/_/g'`"
+#fi
+
+#info "\nHathor would source $DEVEL_SOURCE_FILE more then one time."
+#info "Choose the same build version if needed"
+#source $DEVEL_SOURCE_FILE
+
+source $HOME/.hathor/sourceme
+
+if [ -f $FIRMWARE_CONFIG ] ; then 
+	source $FIRMWARE_CONFIG
+else
+	warn "$FIRMWARE_CONFIG not found, quit!"
+	exit 1;
+fi
 
 # create product dir if it doesn't exist
 [ -d "$RELEASE_DIR" ] || mkdir $RELEASE_DIR
@@ -25,6 +50,12 @@ copy_firmware
 echo "Firmware copied (${PRODUCTVER})."
 
 copy_history
+
+if [ "$ISONEFW" == "true" ]; then
+	copy_image_lib_release_note
+	copy_supportlist
+	info "support_list.xls 已產生至  $RELEASE_DIR/support_list.xls"
+fi
 
 # copy rootfs/flashfs log
 copy_filesystem_log

@@ -5,17 +5,47 @@ FIRMWARE_BRAND=`echo $PRODUCTVER | awk -F- '{print $2}'`
 
 function hathor_get_firmware_name
 {
-	HATHOR_FIRMWARE_NAME="$PRODUCTNAME-$FIRMWARE_BRAND firmware $FIRMWARE_VERSION"
+	if [ "$ISONEFW" == "true" ]; then
+		if [ "$PRODUCTNAME" == "hi3516a" ]; then
+			HATHOR_FIRMWARE_NAME="Hisilicon - firmware"
+		else
+			HATHOR_FIRMWARE_NAME="$PRODUCTNAME - firmware"
+		fi
+	else
+		HATHOR_FIRMWARE_NAME="$PRODUCTNAME-$FIRMWARE_BRAND firmware $FIRMWARE_VERSION"
+	fi
 }
 
 function hathor_get_firmware_path
 {
-	FIRMWARE_PATH_SERVER="\\\\athena.vivotek.tw\\SQA"
-	FIRMWARE_PATH_SUFFIX="$FIRMWARE_BRAND\\Multi_lingual\\Application\\Firmware\\English"
-	FIRMWARE_PATH_SERVER_REVERTED=`echo "$FIRMWARE_PATH_SERVER" | sed -e 's:\\\\:\/:g'`
-	HATHOR_FIRMWARE_PATH_PREFIX="\\Project\\$PRODUCTNAME\\$FIRMWARE_PATH_SUFFIX"
-	HATHOR_FIRMWARE_PATH="$FIRMWARE_PATH_SERVER\\$HATHOR_FIRMWARE_PATH_PREFIX\\$FIRMWARE_VERSION"
-	HATHOR_FIRMWARE_PATH_PREFIX_REVERTED=`echo $HATHOR_FIRMWARE_PATH_PREFIX | sed -e 's:\\\\:\/:g'`
+	if [ "$ISONEFW" == "true" ]; then
+
+		# decide the product name for Athena directory 
+		if [ "$PRODUCTNAME" == "hi3516a" ]; then
+			HATHOR_PRODUCTNAME="Hisilicon"
+			if [[ "$DEVELFILE" == *standard* ]]; then
+				FIRMWARE_PATH_SUFFIX="Hi3516a\\standard\\VVTK\\Multi_lingual\\Application\\Firmware\\English"
+			else
+				FIRMWARE_PATH_SUFFIX="Hi3516a\\speeddome\\VVTK\\Multi_lingual\\Application\\Firmware\\English"
+			fi
+		else
+			HATHOR_PRODUCTNAME=$PRODUCTNAME
+			FIRMWARE_PATH_SUFFIX="VVTK\\Multi_lingual\\Application\\Firmware\\English"
+		fi
+
+		FIRMWARE_PATH_SERVER="\\\\athena.vivotek.tw\\SQA"
+		FIRMWARE_PATH_SERVER_REVERTED=`echo "$FIRMWARE_PATH_SERVER" | sed -e 's:\\\\:\/:g'`
+		HATHOR_FIRMWARE_PATH_PREFIX="\\Project\\$HATHOR_PRODUCTNAME\\$FIRMWARE_PATH_SUFFIX"
+		HATHOR_FIRMWARE_PATH="$FIRMWARE_PATH_SERVER\\$HATHOR_FIRMWARE_PATH_PREFIX\\$PRODUCTVER"
+		HATHOR_FIRMWARE_PATH_PREFIX_REVERTED=`echo $HATHOR_FIRMWARE_PATH_PREFIX | sed -e 's:\\\\:\/:g'`
+	else
+		FIRMWARE_PATH_SERVER="\\\\athena.vivotek.tw\\SQA"
+		FIRMWARE_PATH_SUFFIX="$FIRMWARE_BRAND\\Multi_lingual\\Application\\Firmware\\English"
+		FIRMWARE_PATH_SERVER_REVERTED=`echo "$FIRMWARE_PATH_SERVER" | sed -e 's:\\\\:\/:g'`
+		HATHOR_FIRMWARE_PATH_PREFIX="\\Project\\$PRODUCTNAME\\$FIRMWARE_PATH_SUFFIX"
+		HATHOR_FIRMWARE_PATH="$FIRMWARE_PATH_SERVER\\$HATHOR_FIRMWARE_PATH_PREFIX\\$FIRMWARE_VERSION"
+		HATHOR_FIRMWARE_PATH_PREFIX_REVERTED=`echo $HATHOR_FIRMWARE_PATH_PREFIX | sed -e 's:\\\\:\/:g'`
+	fi
 }
 
 function hathor_get_specific_product_name
@@ -31,6 +61,18 @@ function hathor_get_specific_product_name
 
     done
     echo $PRODUCTNAME
+}
+
+function hathor_check_dir_exists
+{
+	local SMBSERVER=$1
+	local SMBPATH=$2
+	local USER=$3
+	local PASS=$4
+
+	export USER=$USER ; export PASSWD=$PASS
+	SMB_CheckIfDirectoryExists $SMBSERVER $SMBPATH
+	return $?
 }
 
 function hathor_get_history_path 
@@ -74,11 +116,15 @@ function hathor_get_history_path
 	if [ "$get_history_succeed" == "true" ]; then
 		SMB_GetBunchOfFiles $SMBSERVER $SMBPATH "history.txt history.txt.lnk"
 
+		HATHOR_FIRMWARE_HISTORY_FOLDER=$SMBPATH
+
 		if [ -f "history.txt.lnk" ] ; then
 			HATHOR_FIRMWARE_HISTORY_PATH=`strings history.txt.lnk | grep "Project_ReleaseNote" | sed -e 's:\\\\:\/:g'`
 			HATHOR_FIRMWARE_HISTORY_NAME=`basename $HATHOR_FIRMWARE_HISTORY_PATH`
 			HATHOR_FIRMWARE_HISTORY_FOLDER=`dirname $HATHOR_FIRMWARE_HISTORY_PATH`
-		else 
+		fi
+
+		if [ -f "history.txt" ] ; then
 			HATHOR_FIRMWARE_HISTORY_PATH="$SMBPATH/history.txt"
 			HATHOR_FIRMWARE_HISTORY_NAME="history.txt"
 			HATHOR_FIRMWARE_HISTORY_FOLDER=`dirname $HATHOR_FIRMWARE_HISTORY_PATH`
@@ -97,7 +143,11 @@ function hathor_get_history_path
 
 function hathor_get_firmware_file
 {
-	HATHOR_FIRMWARE_FILE="$PRODUCTVER.flash.pkg"
+	if [ "$ISONEFW" == "true" ]; then
+		HATHOR_FIRMWARE_FILE="$PKGVER.flash.pkg"
+	else
+		HATHOR_FIRMWARE_FILE="$PRODUCTVER.flash.pkg"
+	fi
 }
 
 function hathor_get_firmware_end_date
@@ -112,9 +162,13 @@ function hathor_get_author
 
 function hathor_get_firmware_type
 {
-	echo $FIRMWARE_VERSION | grep "[0-9][0-9][0-9][a-z]$"
-	[ "$?" = "0" ] && HATHOR_FIRMWARE_TYPE="General"
-	[ "$?" = "1" ] && HATHOR_FIRMWARE_TYPE="Sample"
+	if [ "$ISONEFW" == "true" ]; then
+		HATHOR_FIRMWARE_TYPE="/* FILL IN 'General' of 'Sample' */"
+	else
+		echo $FIRMWARE_VERSION | grep "[0-9][0-9][0-9][a-z]$"
+		[ "$?" = "0" ] && HATHOR_FIRMWARE_TYPE="General"
+		[ "$?" = "1" ] && HATHOR_FIRMWARE_TYPE="Sample"
+	fi
 }
 
 function hathor_get_firmware_version

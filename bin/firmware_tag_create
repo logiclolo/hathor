@@ -8,14 +8,17 @@ source $HATHOR/config/basic_config
 source $HATHOR/lib/libfirmwareinfo
 source $HATHOR/lib/libmessage
 
-HATHOR_METADATA_EXECUTABLE_ADD="$HATHOR/.hathor_metadata_executable_add"
-HATHOR_METADATA_EXECUTABLE_TEMP="$HATHOR/.hathor_metadata_executable_temp"
+# metadata
+export HATHOR_METADATA_EXECUTABLE_ADD="$OUTPUT_DIR/.hathor_metadata_executable_add"
+export HATHOR_METADATA_EXECUTABLE_TEMP="$OUTPUT_DIR/.hathor_metadata_executable_temp"
+export HATHOR_METADATA_SVN_PG="$OUTPUT_DIR/.hathor_metadata_svn_pg"
+export HATHOR_METADATA_ARGS_FOR_FIND="$OUTPUT_DIR/.hathor_metadata_args_for_find"
 
 set +o posix
-DEVEL_SOURCE_FILE="devel_`echo $PRODUCTVER | sed -e 's/-[^-]*$//' -e 's/-/_/g'`"
+#DEVEL_SOURCE_FILE="devel_`echo $PRODUCTVER | sed -e 's/-[^-]*$//' -e 's/-/_/g'`"
 cd ${PRODUCTDIR}
 pushd build > /dev/null
-source $DEVEL_SOURCE_FILE
+#source $DEVEL_SOURCE_FILE
 popd > /dev/null
 
 fixperm_all ()
@@ -32,7 +35,7 @@ fixperm_all ()
 			fi
 
 			if [ "$EXE_PROPERTY" != "*" ] ; then
-				svn ps svn:executable true $line > /dev/null
+				#svn ps svn:executable true $line > /dev/null
 				if [ "$?" == "0" ] ; then
 					echo "$line" | sed 's%^[.][/]%'"${1}"'%g' >> $HATHOR_METADATA_EXECUTABLE_ADD
 				fi
@@ -45,18 +48,18 @@ fixperm_all ()
 
 remove_metadata ()
 {
-	if [ -e $HATHOR_METADATA_EXECUTABLE_TEMP ] ; then
-		rm $HATHOR_METADATA_EXECUTABLE_TEMP
-	fi
-	if [ -e $HATHOR_METADATA_EXECUTABLE_ADD ] ; then
-		rm $HATHOR_METADATA_EXECUTABLE_ADD
-	fi
+	rm -f $HATHOR_METADATA_EXECUTABLE_TEMP
+	rm -f $HATHOR_METADATA_EXECUTABLE_ADD
+	rm -f $HATHOR_METADATA_SVN_PG
+	rm -f $HATHOR_METADATA_ARGS_FOR_FIND
 }
 
 
 checkExecutable ()
 {
 	remove_metadata
+
+	/usr/local/bin/python $HATHOR/bin/find_externals.py
 	EXEC_DIR="rootfs/usr/bin/               $EXTENSION_SRCDIR/rootfs/usr/bin/
               rootfs/usr/sbin/              $EXTENSION_SRCDIR/rootfs/usr/sbin/
               rootfs/usr/share/www/cgi-bin/ $EXTENSION_SRCDIR/rootfs/usr/share/www/cgi-bin/
@@ -66,11 +69,20 @@ checkExecutable ()
 		fixperm_all $TMP_DIR
 	done
 
-	if [ -s $HATHOR_METADATA_EXECUTABLE_ADD ] ; then
-		svn ci `cat $HATHOR_METADATA_EXECUTABLE_ADD` -m "Add svn:executable property to executable files"
-	fi
+	#if [ -s $HATHOR_METADATA_EXECUTABLE_ADD ] ; then
+		#svn ci `cat $HATHOR_METADATA_EXECUTABLE_ADD` -m "[HATHOR] add svn:executable property to executable files"
+	#fi
 
-	remove_metadata
+    return 0 
+}
+
+onefw_svnst ()
+{
+	if [ -n "$SHARE_BASE" ]; then
+		WORKING_COPY_NOT_CLEAN=`$HATHOR/\bin/\svnst | grep -E "^M|^A|^D|^C|^\!"`
+	else
+        WORKING_COPY_NOT_CLEAN=`svn st | grep -E "^M|^A|^D|^C|^\!"`
+    fi
 }
 
 # skip directory check when releasing sample firmware
@@ -78,12 +90,20 @@ if [ "$THIS_IS_SAMPLE_FIRMWARE" != "y" ] ; then
 
 	# check if current project directory is clean
 	info "Check if everything is committed to subversion..."
-	WORKING_COPY_NOT_CLEAN=`svn st | grep -E "^M|^A|^D|^C|^\!"`
+	if [ "$ISONEFW" == "true" ]; then
+		onefw_svnst
+	else
+        	WORKING_COPY_NOT_CLEAN=`svn st | grep -E "^M|^A|^D|^C|^\!"`
+    	fi	
+
 	if [ -n "$WORKING_COPY_NOT_CLEAN" ]; then
 		warn "Following files is modified:"
 		warn "$WORKING_COPY_NOT_CLEAN"
-		warn "Please commit all your code before proceeding!"
-		exit 1
+		info "Strongly recommond to commit all your code before proceeding!"
+		read -p "Do you still want to continue? [y/N] " SKIP_MODIFY_FILES
+		if [ "$SKIP_MODIFY_FILES" != "y" ] && [ "$SKIP_MODIFY_FILES" != "Y" ] ; then
+			exit 1
+		fi
 	fi
 
 	WORKING_COPY_HAS_MISSING_FILE=`svn st | grep -E "^\?"`
@@ -97,22 +117,27 @@ if [ "$THIS_IS_SAMPLE_FIRMWARE" != "y" ] ; then
 		fi
 	fi
 
-	# check if executable files have svn:executable property
-	info "\nHathor is going to check executable files and add svn:executable property to it if needed."
-	info "It may take a few minutes...."
-	read -p "Do you want to skip it? [y/N] " SKIP_EXECUTABLE_CHECK
-	if [ "$SKIP_EXECUTABLE_CHECK" != "y" ] && [ "$SKIP_EXECUTABLE_CHECK" != "Y" ] ; then
-		RunCommandWithSpinningIndicator "checkExecutable" "checking..."
+	if [ "$ISONEFW" != "true" ]; then
+		# check if executable files have svn:executable property
+		info "\nHathor is going to check executable files and add svn:executable property to it if needed."
+		info "It may take a few minutes...."
+		read -p "Do you want to skip it? [y/N] " SKIP_EXECUTABLE_CHECK
+		if [ "$SKIP_EXECUTABLE_CHECK" == "n" ] || [ "$SKIP_EXECUTABLE_CHECK" == "N" ] ; then
+			#checkExecutable
+			RunCommandWithSpinningIndicator "checkExecutable" "checking..."
+		fi
 	fi
 
 else
-	FIRMWARE_VERSION=$PRODUCTVER
-	hathor_get_firmware_type > /dev/null
-	if [ "$HATHOR_FIRMWARE_TYPE" != "Sample" ] ; then
-		warn "Your version number does not follow sample firmware rule ($PRODUCTVER)"
-		read -p "Do you still want to continue? [y/N] " SKIP_INCORRECT_SAMPLE_FIRMWARE_VERSION_RULE
-		if [ "$SKIP_INCORRECT_SAMPLE_FIRMWARE_VERSION_RULE" != "y" ] && [ "$SKIP_INCORRECT_SAMPLE_FIRMWARE_VERSION_RULE" != "Y" ] ; then
-			exit 1
+        if [ "$ISONEFW" != "true" ]; then
+		FIRMWARE_VERSION=$PRODUCTVER
+		hathor_get_firmware_type > /dev/null
+		if [ "$HATHOR_FIRMWARE_TYPE" != "Sample" ] ; then
+			warn "Your version number does not follow sample firmware rule ($PRODUCTVER)"
+			read -p "Do you still want to continue? [y/N] " SKIP_INCORRECT_SAMPLE_FIRMWARE_VERSION_RULE
+			if [ "$SKIP_INCORRECT_SAMPLE_FIRMWARE_VERSION_RULE" != "y" ] && [ "$SKIP_INCORRECT_SAMPLE_FIRMWARE_VERSION_RULE" != "Y" ] ; then
+				exit 1
+			fi
 		fi
 	fi
 
@@ -128,24 +153,33 @@ if [ "$SVN_PROJECT_ROOT_BRANCH" == "branches" ] ; then
 fi
 
 # tag to remote
-SVN_TARGET_URL="$SVN_PROJECT_ROOT/tags/$PRODUCTVER"
-SVN_TARGET_URL_EXIST=`svn ls $SVN_TARGET_URL 2> /dev/null`
-echo "Tagging to $SVN_TARGET_URL"
-if [ -n "$SVN_TARGET_URL_EXIST" ] ; then
-	warn "Tag 路徑 $SVN_TARGET_URL 已存在!!"
-	read -p "你是否想要強制更新這個 tag? [y/N] " FORCE_REMOVE_TAG
-	if [ "$FORCE_REMOVE_TAG" != "y" ] && [ "$FORCE_REMOVE_TAG" != "Y" ]; then
-		info "請手動移除 tag 後再重新 make firmware"
-		exit 1
-	else
-		svn rm -q "$SVN_TARGET_URL" -m "Force remove tag"
-		info "$SVN_TARGET_URL 已移除"
+if [ "$ISONEFW" == "true" ]; then
+	# There is no need for onefw project to tag, because it has freezing revision mechanism
+	# Check out firmware source code from remote
+	TEMP_PRODUCT_DIR="$TEMP_DIR/$PRODUCTVER"
+	RunCommandWithSpinningIndicator "svn co $SVN_URL $TEMP_PRODUCT_DIR > /dev/null" "Checkout from $SVN_URL"
+	echo "Check out source code from $SVN_URL"
+else
+	SVN_TARGET_URL="$SVN_PROJECT_ROOT/tags/$PRODUCTVER"
+	SVN_TARGET_URL_EXIST=`svn ls $SVN_TARGET_URL 2> /dev/null`
+	echo "Tagging to $SVN_TARGET_URL"
+	if [ -n "$SVN_TARGET_URL_EXIST" ] ; then
+		warn "Tag 路徑 $SVN_TARGET_URL 已存在!!"
+		read -p "你是否想要強制更新這個 tag? [y/N] " FORCE_REMOVE_TAG
+		if [ "$FORCE_REMOVE_TAG" != "y" ] && [ "$FORCE_REMOVE_TAG" != "Y" ]; then
+			info "請手動移除 tag 後再重新 make firmware"
+			exit 1
+		else
+			svn rm -q "$SVN_TARGET_URL" -m "Force remove tag"
+			info "$SVN_TARGET_URL 已移除"
+		fi
 	fi
+
+	RunCommandWithSpinningIndicator "svn up --depth=empty" "Updating working copy"
+	RunCommandWithSpinningIndicator "svn cp -q $SVN_WC_PATH $SVN_TARGET_URL -m \"$PRODUCTVER\"" "Tagging $SVN_TARGET_URL"
+
+	# check out firmware source code from remote
+	TEMP_PRODUCT_DIR="$TEMP_DIR/$PRODUCTVER"
+	RunCommandWithSpinningIndicator "svn co $SVN_TARGET_URL $TEMP_PRODUCT_DIR > /dev/null" "Checkout from $SVN_TARGET_URL"
+	echo "Check out source code from $SVN_TARGET_URL"
 fi
-
-RunCommandWithSpinningIndicator "svn up --depth=empty" "Updating working copy"
-RunCommandWithSpinningIndicator "svn cp -q $SVN_WC_PATH $SVN_TARGET_URL -m \"$PRODUCTVER\"" "Tagging $SVN_TARGET_URL"
-
-# check out firmware source code from remote
-TEMP_PRODUCT_DIR="$TEMP_DIR/$PRODUCTVER"
-RunCommandWithSpinningIndicator "svn co $SVN_TARGET_URL $TEMP_PRODUCT_DIR > /dev/null" "Checkout from $SVN_TARGET_URL"
