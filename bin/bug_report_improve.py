@@ -75,7 +75,8 @@ def help_msg():
 
 def auth_setup():
 	global username, password
-	username = raw_input('Username: ')
+        print 'Username:'
+	username = raw_input()
 	password = getpass.getpass()
 
 	auth = urllib2.HTTPBasicAuthHandler()
