@@ -82,7 +82,7 @@ function GenerateAllConfig ()
 {
 	GenerateRedmineRC
 	GenerateHathorRC
-	GenerateBugzCookie
+	#GenerateBugzCookie
 }
 
 # force generate configs
@@ -94,9 +94,9 @@ if [ ! -f $DQA_REDMINE_API_KEY ] ; then
 fi
 
 # check .bug_cookie
-if [ ! -f $HOME/.bugz_cookie ] ; then
-	GenerateBugzCookie
-fi
+#if [ ! -f $HOME/.bugz_cookie ] ; then
+	#GenerateBugzCookie
+#fi
 
 # check .hathor/hathorrc
 if [ ! -f $HOME/.hathor/hathorrc ] ; then
