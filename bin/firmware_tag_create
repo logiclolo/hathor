@@ -100,7 +100,8 @@ if [ "$THIS_IS_SAMPLE_FIRMWARE" != "y" ] ; then
 		warn "Following files is modified:"
 		warn "$WORKING_COPY_NOT_CLEAN"
 		info "Strongly recommond to commit all your code before proceeding!"
-		read -p "Do you still want to continue? [y/N] " SKIP_MODIFY_FILES
+		info "Do you still want to continue? [y/N]" 
+		read SKIP_MODIFY_FILES
 		if [ "$SKIP_MODIFY_FILES" != "y" ] && [ "$SKIP_MODIFY_FILES" != "Y" ] ; then
 			exit 1
 		fi
@@ -111,7 +112,8 @@ if [ "$THIS_IS_SAMPLE_FIRMWARE" != "y" ] ; then
 		info "You might want to add these files to subversion first."
 		info "You could also use svn to ignore these files in working copy."
 		echo "$WORKING_COPY_HAS_MISSING_FILE"
-		read -p "Do you still want to continue? [y/N] " SKIP_MISSING_FILES
+		info "Do you still want to continue? [y/N]" 
+		read SKIP_MISSING_FILES
 		if [ "$SKIP_MISSING_FILES" != "y" ] && [ "$SKIP_MISSING_FILES" != "Y" ] ; then
 			exit 1
 		fi
@@ -121,7 +123,8 @@ if [ "$THIS_IS_SAMPLE_FIRMWARE" != "y" ] ; then
 		# check if executable files have svn:executable property
 		info "\nHathor is going to check executable files and add svn:executable property to it if needed."
 		info "It may take a few minutes...."
-		read -p "Do you want to skip it? [y/N] " SKIP_EXECUTABLE_CHECK
+		info "Do you want to skip it? [y/N]" 
+		read SKIP_EXECUTABLE_CHECK
 		if [ "$SKIP_EXECUTABLE_CHECK" == "n" ] || [ "$SKIP_EXECUTABLE_CHECK" == "N" ] ; then
 			#checkExecutable
 			RunCommandWithSpinningIndicator "checkExecutable" "checking..."
@@ -134,7 +137,8 @@ else
 		hathor_get_firmware_type > /dev/null
 		if [ "$HATHOR_FIRMWARE_TYPE" != "Sample" ] ; then
 			warn "Your version number does not follow sample firmware rule ($PRODUCTVER)"
-			read -p "Do you still want to continue? [y/N] " SKIP_INCORRECT_SAMPLE_FIRMWARE_VERSION_RULE
+			info "Do you still want to continue? [y/N] " 
+			read SKIP_INCORRECT_SAMPLE_FIRMWARE_VERSION_RULE
 			if [ "$SKIP_INCORRECT_SAMPLE_FIRMWARE_VERSION_RULE" != "y" ] && [ "$SKIP_INCORRECT_SAMPLE_FIRMWARE_VERSION_RULE" != "Y" ] ; then
 				exit 1
 			fi
@@ -165,7 +169,8 @@ else
 	echo "Tagging to $SVN_TARGET_URL"
 	if [ -n "$SVN_TARGET_URL_EXIST" ] ; then
 		warn "Tag 路徑 $SVN_TARGET_URL 已存在!!"
-		read -p "你是否想要強制更新這個 tag? [y/N] " FORCE_REMOVE_TAG
+		info "你是否想要強制更新這個 tag? [y/N] " 
+		read FORCE_REMOVE_TAG
 		if [ "$FORCE_REMOVE_TAG" != "y" ] && [ "$FORCE_REMOVE_TAG" != "Y" ]; then
 			info "請手動移除 tag 後再重新 make firmware"
 			exit 1
