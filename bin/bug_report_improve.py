@@ -1022,6 +1022,11 @@ def check_bug_info_source():
 	return 1 
 
 if __name__ == '__main__':
+    
+	# Set the buffer size of standard output to 0,
+        # so it will flush the standard output immediately
+	sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], 'n:h')
 	except getopt.GetoptError, e:
