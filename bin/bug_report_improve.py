@@ -462,7 +462,7 @@ def get_product_proj(plat_id, product):
 		print '------------ Match product from url..... -------------------'
 	product_list = get_subproj(plat_id)
 	for p in product_list:
-		if not has_children(p) and matching(p, product):
+		if matching(p, product):
 			handle_matching_products(p, 'url')	
 			return p	
 
