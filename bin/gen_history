@@ -60,9 +60,7 @@ $EXEC/get_previous_firmware_history
 ret="$?"
 if [ "$ret" != "0" ]; then
 	if [ "$ISONEFW" == "true" ];then
-		if [ "$ret" == 2 ]; then
-			exit 1
-		else
+		if [ "$ret" == 1 ]; then
 			info "是第一次 release 這個平台的 pkg 嗎? [y/N]"
 			read -p "" FIRST 
 			if [ "$FIRST" != "y" ] && [ "$FIRST" != "Y" ] ; then
@@ -70,6 +68,8 @@ if [ "$ret" != "0" ]; then
 				exit 1
 			fi
 			touch $HISTORY_ATHENA
+		else
+			exit 1
 		fi
 	else
 		if [ "$FIRMWARE_VERSION" == "0100a" ]; then

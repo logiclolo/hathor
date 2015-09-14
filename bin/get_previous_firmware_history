@@ -48,6 +48,15 @@ done
 
 export USER=$USERNAME_ATHENA; export PASSWD=$PASSWORD_ATHENA
 
+if [ "$get_history_success" == "0" ] ; then
+	if [ "$ISONEFW" == "true" ]; then
+		warn "偵測 $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED/$PARENT_PKG 目錄失敗"
+	else
+		warn "偵測 $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED 目錄失敗"
+	fi
+	exit 3 
+fi
+
 if [ $ISONEFW == "true" ]; then
 	info "下載 support_list.xls"
 	SMB_GetFile $FIRMWARE_PATH_SERVER_REVERTED $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED "support_list.xls"
@@ -62,14 +71,6 @@ if [ $ISONEFW == "true" ]; then
 	fi
 fi
 
-if [ "$get_history_success" == "0" ] ; then
-	if [ "$ISONEFW" == "true" ]; then
-		warn "偵測 $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED/$PARENT_PKG 目錄失敗"
-	else
-		warn "偵測 $HATHOR_FIRMWARE_PATH_PREFIX_REVERTED 目錄失敗"
-	fi
-	exit 1
-fi
 
 info "下載 history.txt"
 
