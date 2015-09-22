@@ -746,8 +746,10 @@ def add_svn_log_to_fixed_bugs(content):
 		fixed_bugs.append(content)
 	else:
 		for info in fixed_bugs:
-			if content != info:
-				fixed_bugs.append(content)	
+			if content == info:
+				return	
+		fixed_bugs.append(content)
+
 def scan_svn_log(log):
 	global g_previous_release_revision
 	
