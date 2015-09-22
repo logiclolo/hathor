@@ -81,8 +81,8 @@ onefw_svnst ()
 	if [ -n "$SHARE_BASE" ]; then
 		WORKING_COPY_NOT_CLEAN=`$HATHOR/\bin/\svnst | grep -E "^M|^A|^D|^C|^\!"`
 	else
-        WORKING_COPY_NOT_CLEAN=`svn st | grep -E "^M|^A|^D|^C|^\!"`
-    fi
+		WORKING_COPY_NOT_CLEAN=`svn st | grep -E "^M|^A|^D|^C|^\!"`
+	fi
 }
 
 # skip directory check when releasing sample firmware
@@ -93,8 +93,8 @@ if [ "$THIS_IS_SAMPLE_FIRMWARE" != "y" ] ; then
 	if [ "$ISONEFW" == "true" ]; then
 		onefw_svnst
 	else
-        	WORKING_COPY_NOT_CLEAN=`svn st | grep -E "^M|^A|^D|^C|^\!"`
-    	fi	
+		WORKING_COPY_NOT_CLEAN=`svn st | grep -E "^M|^A|^D|^C|^\!"`
+	fi	
 
 	if [ -n "$WORKING_COPY_NOT_CLEAN" ]; then
 		warn "Following files is modified:"
@@ -132,7 +132,7 @@ if [ "$THIS_IS_SAMPLE_FIRMWARE" != "y" ] ; then
 	fi
 
 else
-        if [ "$ISONEFW" != "true" ]; then
+	if [ "$ISONEFW" != "true" ]; then
 		FIRMWARE_VERSION=$PRODUCTVER
 		hathor_get_firmware_type > /dev/null
 		if [ "$HATHOR_FIRMWARE_TYPE" != "Sample" ] ; then

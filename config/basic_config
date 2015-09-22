@@ -1,5 +1,7 @@
 # Only change these stuff when you know what you are doing
-source $HOME/.hathor/hathorrc
+if [ -f "$HOME/.hathor/hathorrc" ] ; then
+	source $HOME/.hathor/hathorrc
+fi
 OUTPUT_DIR="$HATHOR/temp/$PRODUCTVER"
 RELEASE_DIR="$HATHOR/release/$PRODUCTVER"
 FIRMWARE_CONFIG="$OUTPUT_DIR/firmware_config"
