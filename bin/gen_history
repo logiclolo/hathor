@@ -26,22 +26,19 @@ fi
 
 PARENT_PKG_PATH="$OUTPUT_DIR/parent_pkg"
 if [ "$ISONEFW" == "true" ]; then
-	if [ -f "$PARENT_PKG_PATH" ]; then
-		echo "Previous release pkg version is `cat $PARENT_PKG_PATH`"
+
+	info "The current release pkg is $PRODUCTVER"
+	info "What is the 'parent pkg' of the current release pkg ? (上一版版號是多少)"
+	read -p "" PKG 
+	echo $PKG > $PARENT_PKG_PATH
+	info "\nHathor would generate pkg tree automatically, but we need the information."
+	info "Is current release pkg (a)still in the trunk (b)in another new branch ?"
+	read -p "" TRUNK 
+	if [ "$TRUNK" == "b" ]; then
+		echo "branch" >> $PARENT_PKG_PATH
 	else
-		info "The current release pkg version is $PRODUCTVER"
-		info "What is the 'last' release pkg version ?"
-		read -p "" PKG 
-		echo $PKG > $PARENT_PKG_PATH
-		info "\nHathor would generate pkg tree automatically, but we need the information."
-		info "Is current release pkg (a)still in the trunk (b)in another new branch ?"
-		read -p "" TRUNK 
-		if [ "$TRUNK" == "b" ]; then
-			echo "branch" >> $PARENT_PKG_PATH
-		else
-			echo "trunk" >> $PARENT_PKG_PATH
-		fi
-	fi        
+		echo "trunk" >> $PARENT_PKG_PATH
+	fi
 
 	export PARENT_PKG=`cat $PARENT_PKG_PATH | head -n 1`
 
