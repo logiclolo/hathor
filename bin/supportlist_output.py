@@ -155,8 +155,10 @@ def insert_new_column(wb_sheet, models, pre_models, maximum):
         wb_sheet.write(model_name_index, col, 'firmware version', style_1)
         model_name_index = model_name_index + 1
         last_offset = -1 
+        offset_list = []
         for model in models:
                 offset = get_model_insert_offset(pre_models, model[0], last_offset) 
+                offset_list.append(offset)
 
 
                 wb_sheet.write(model_name_index + offset, col, model[1], style_0)
@@ -165,23 +167,12 @@ def insert_new_column(wb_sheet, models, pre_models, maximum):
                 if offset > (len(pre_models) - 1): 
                         last_offset = last_offset + 1
                 else:
-                        # need to wirte 'blank' to the cell which we skip
-                        step = (offset - 1) - last_offset
-                        if step > 0:
-                                while step:
-                                        wb_sheet.write(model_name_index + last_offset + step, col, None, style_0)
-                                        step = step - 1
-
                         last_offset = offset
         
-        # check whether to wirte 'blank' to the cell at the end  
-        if last_offset < len(pre_models) - 1:
-                step = (len(pre_models) - 1) - last_offset
-                if step > 0:
-                        while step:
-                                wb_sheet.write(model_name_index + last_offset + step, col, None, style_0)
-                                step = step - 1
-
+        # need to wirte 'blank' to the cell which we skip
+        for i in range(len(pre_models)):
+                if i not in offset_list:
+                        wb_sheet.write(model_name_index + i, col, None, style_0)
 
         wb_sheet.col(1).width = len(svn_path) * 256
 
@@ -197,8 +188,8 @@ def get_model_insert_offset(pre_models, model, begin_offset):
         for pre_model in pre_models:
                 offset = pre_models.index(pre_model) 
 
-                if offset <= begin_offset: 
-                        continue
+                #if offset <= begin_offset: 
+                        #continue
 
                 if pre_model == model:
                         return offset 
