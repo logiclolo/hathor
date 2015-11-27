@@ -35,6 +35,7 @@ down_arrow = u'\u2193'
 
 default_col_width = len("xx.xx.xx.xx.xx") * 256 
 g_expand_row = 0
+g_new_add_model = []
 debug = False
 
 def get_style(value, col):
@@ -115,7 +116,7 @@ def fetch_svn_path():
                         return m.group(1)
         return None 
 
-def insert_new_column(wb_sheet, models, maximum):
+def insert_new_column(wb_sheet, models, pre_models, maximum):
         global g_expand_row
         col = 1
 
@@ -144,15 +145,69 @@ def insert_new_column(wb_sheet, models, maximum):
                         #break
         
         # model name rows
+        #
+        # If the newly added model is not in the previous models group (ie. the model name rows),
+        # we insert this model at the tail.
+        # On the other hand, If the newly added models don't contain any of the previous models, 
+        # we must leave the cell blank.
+        # 
         model_name_index = 3 + maximum  
         wb_sheet.write(model_name_index, col, 'firmware version', style_1)
+        model_name_index = model_name_index + 1
+        last_offset = -1 
         for model in models:
-                wb_sheet.write(model_name_index+1, col, model[1], style_0)
-                model_name_index = model_name_index + 1
+                offset = get_model_insert_offset(pre_models, model[0], last_offset) 
+
+
+                wb_sheet.write(model_name_index + offset, col, model[1], style_0)
+
+                # find the last model's offset
+                if offset > (len(pre_models) - 1): 
+                        last_offset = last_offset + 1
+                else:
+                        # need to wirte 'blank' to the cell which we skip
+                        step = (offset - 1) - last_offset
+                        if step > 0:
+                                while step:
+                                        wb_sheet.write(model_name_index + last_offset + step, col, None, style_0)
+                                        step = step - 1
+
+                        last_offset = offset
+        
+        # check whether to wirte 'blank' to the cell at the end  
+        if last_offset < len(pre_models) - 1:
+                step = (len(pre_models) - 1) - last_offset
+                if step > 0:
+                        while step:
+                                wb_sheet.write(model_name_index + last_offset + step, col, None, style_0)
+                                step = step - 1
 
 
         wb_sheet.col(1).width = len(svn_path) * 256
+
+        if len(g_new_add_model) > 0:
+                print 'I found %d new model(s) that support_list.xls has not recorded yet' % len(g_new_add_model)
+                print g_new_add_model
+                print 'I will insert it(them) at the bottom, please check!\n'
                 
+
+def get_model_insert_offset(pre_models, model, begin_offset):
+        global g_new_add_model
+
+        for pre_model in pre_models:
+                offset = pre_models.index(pre_model) 
+
+                if offset <= begin_offset: 
+                        continue
+
+                if pre_model == model:
+                        return offset 
+
+        g_new_add_model.append(model)
+
+        # insert the new model at the tail 
+        return len(pre_models) + len(g_new_add_model) - 1
+
 def check_merge(prev_rows, current_rows, row):
 
         # If first row (pkg version) is not null,
@@ -270,17 +325,28 @@ def gen_pkg_tree(write_sheet):
 
                 write_sheet.col(col + col_add).width = default_col_width 
 
+def get_previous_models(read_sheet):
+        col = 0
+        model = []
+        for row in range(read_sheet.nrows):
+                value = read_sheet.cell_value(row, col)
+                if re.match('[A-Z][A-Z][0-9][0-9].*$', value): 
+                        model.append(value)
+
+        return model
+
 def gen_supportlist_xls(write_sheet):
 
         read_sheet = get_support_list(0)
         models = get_release_list()
+        pre_models = get_previous_models(read_sheet)
         total_test_models_rows = read_max_numbers_of_test_model(read_sheet)
 
         #print read_sheet.merged_cells
 
 
         # insert the new column
-        insert_new_column(write_sheet, models, total_test_models_rows)
+        insert_new_column(write_sheet, models, pre_models, total_test_models_rows)
 
         # handle first column 
         # 
@@ -304,7 +370,7 @@ def gen_supportlist_xls(write_sheet):
                                 write_sheet.write(row + row_offset, col, value, get_style(value, col))
                 else:
                         # merge: r1, r2, c1, c2
-                        write_sheet.merge(row-1, row, col, col, style_2)
+                        write_sheet.merge(row-1, row, col, col, style_6)
                         test_model_length = test_model_length + 1
 
                 if len(value) > max_col_width:
@@ -313,16 +379,13 @@ def gen_supportlist_xls(write_sheet):
                 if re.match('[A-Z][A-Z][0-9]+', value):
                         model_length = model_length + 1
 
+
+        # add newly added models in the 'model name' row
+        for model in g_new_add_model:
+                row = row + 1
+                write_sheet.write(row + row_offset, col, model, get_style(value, col))
+
         write_sheet.col(col).width = max_col_width * 256 + 500 
-
-        # expand the 'model name' row
-        temp = len(models) - model_length 
-        if temp > 0:
-                for i in range(temp):
-                        value = models[-temp + i][0]
-                        write_sheet.write(read_sheet.nrows + i + row_offset, col, value, style_0)
-
-
 
         # traverse all the rows and columns except the first columns 
         max_total_test_models = 0
