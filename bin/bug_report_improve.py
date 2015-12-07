@@ -727,17 +727,16 @@ def get_svn_url(path):
 def find_specific_svn_log(target, aim, first_line):
 	# find the previous pkg version commit log and return the stop
 	# eg. '========1.1a.a1.1.1=========='
-	m = re.search('=+([0-9]+\.[a-z0-9]+\.[a-z0-9]+\.[0-9]+\.[0-9]+)=+', target)
-	if m:
-		if m.group(1) == g_parent_pkg:
-			return 'stop'
+	pattern = '=+(%s)=+' % g_parent_pkg
+	if re.search(pattern, target):
+		return 'stop'
 
-		return 'skip'
 
 	# find the specific log format 
 	# eg. '[fixed:1.1a.a1.1.2]'
-	if first_line == 1 and re.search('\[fixed:[0-9]+\.[a-z0-9]+\.[a-z0-9]+\.[0-9]+\.[0-9]+\]', target):
-		return 'continue'
+	pattern = '\[fixed:%s\]' % aim
+	if first_line == 1 and re.search(pattern, target):
+		return 'match'
 
 	return 'skip' 
 
@@ -754,7 +753,7 @@ def scan_svn_log(log):
 	global g_previous_release_revision
 	
 	# fetch last onefw version 
-	ver = find_version(os.getenv('PRODUCTVER'))
+	ver = os.getenv('PRODUCTVER')
 
 	content = ''
 	first_line = 1 
@@ -1084,4 +1083,4 @@ if __name__ == '__main__':
 		print 'All matching products:'
 		for p in g_all_matching_products:
 			print p['name']
-
+# vim: tabstop=8 shiftwidth=8 softtabstop=8 noexpandtab
