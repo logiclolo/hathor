@@ -269,13 +269,12 @@ def insert_node(read_sheet, write_sheet, trunk, row, col):
                 return True 
 
 
-def gen_pkg_tree(write_sheet):
+def gen_pkg_tree(read_sheet, write_sheet):
         info = get_parent_pkg()
         print info
         parent_pkg = info[0] 
         trunk = info[1]
         svn_path = fetch_svn_path() 
-        read_sheet = get_support_list(1)
         first_node = True
 
         # check is the first node or not
@@ -326,9 +325,8 @@ def get_previous_models(read_sheet):
 
         return model
 
-def gen_supportlist_xls(write_sheet):
+def gen_supportlist_xls(read_sheet, write_sheet):
 
-        read_sheet = get_support_list(0)
         models = get_release_list()
         pre_models = get_previous_models(read_sheet)
         total_test_models_rows = read_max_numbers_of_test_model(read_sheet)
@@ -407,37 +405,34 @@ def gen_supportlist_xls(write_sheet):
                                 max_col_width = len(value)
 
                         # list of tuple
-                        current_rows.append((value, get_style(value, col)))                
-                
+                        current_rows.append((value, get_style(value, col)))
+
                 prev_rows = current_rows
 
                 # adjust column width
-                write_sheet.col(col+1).width = max_col_width * 256 
-
-
+                write_sheet.col(col+1).width = max_col_width * 256
 
 
 def check_expand(sheet, row, col, value, test_model_length):
         if g_expand_row == 0:
-                return 0	
+                return 0
         else:
-                magic_row = ((test_model_length + 3) -1)
+                magic_row = ((test_model_length + 3) - 1)
                 if row < magic_row:
                         return 0
-                elif row == magic_row: 
+                elif row == magic_row:
                         for i in range(g_expand_row):
-                                #print '%d, %d' % (row + 1 +i, col)
+                                # print '%d, %d' % (row + 1 +i, col)
                                 sheet.write(row + 1 + i, col, "", style_0)
-                        return 0 
+                        return 0
                 else:
                         return g_expand_row
-                        
-
 
 
 def get_parent_pkg():
         try:
-                path = os.path.join(os.getenv('HATHOR'), 'temp', os.getenv('PRODUCTVER'), 'parent_pkg')
+                path = os.path.join(os.getenv('HATHOR'), 'temp',
+                                    os.getenv('PRODUCTVER'), 'parent_pkg')
                 if os.path.exists(path):
                         fh = open(path)
                         parent = fh.readline()
@@ -452,7 +447,7 @@ def get_parent_pkg():
                         parent = raw_input()
 
                         print '\nHathor would generate pkg tree automatically, but we need the information...'
-                        print 'Is this new pkg (a)still in the trunk (b)in another new branch ?'
+                        print 'Is this new pkg (related', parent, ') (a)still in the trunk (b)in another new branch ?'
                         choice = raw_input()
 
                         if choice == 'a':
@@ -502,30 +497,51 @@ def get_release_list():
         print 'Can\'t fetch release-list'
         sys.exit(1)
 
-def get_support_list(sheet_index):
+
+def backup_old_tree_sheets(read_wb, write_wb):
+        number = read_wb.nsheets
+        for idx in range(2, number):
+                read_sheet = read_wb.sheet_by_index(idx)
+                sheet_name = read_wb.sheet_names()[idx]
+                write_sheet = write_wb.add_sheet(sheet_name)
+                for ci in range(read_sheet.ncols):
+                        write_sheet.col(ci).width = default_col_width
+                        for ri in range(read_sheet.nrows):
+                                content = read_sheet.cell_value(ri, ci)
+                                if type(content) is unicode:
+                                        write_sheet.write(ri, ci,
+                                                          content,
+                                                          get_style2(content))
+
+
+if __name__ == '__main__':
+
         if not os.getenv('HATHOR'):
                 print 'Please execute this script from Hathor!'
                 sys.exit(0)
 
         try:
-                path = os.path.join(os.getenv('HATHOR'),'temp',os.getenv('PRODUCTVER'), 'support_list.xls')
-                read_wb = xlrd.open_workbook(path)
-                read_sheet = read_wb.sheet_by_index(sheet_index)
+                path = os.path.join(os.getenv('HATHOR'),
+                                    'temp', os.getenv('PRODUCTVER'),
+                                    'support_list.xls')
+                read_wb = xlrd.open_workbook(path, formatting_info=True)
         except IOError as e:
                 print e
                 sys.exit(1)
 
-        return read_sheet
-
-if __name__ == '__main__': 
-
         write_wb = xlwt.Workbook()
-        write_sheet = write_wb.add_sheet('sheet1')
-        gen_supportlist_xls(write_sheet)
 
-        write_sheet = write_wb.add_sheet('sheet2')  
-        gen_pkg_tree(write_sheet)
+        # sheet 1: models' support list
+        read_sheet = read_wb.sheet_by_index(0)
+        write_sheet = write_wb.add_sheet('support_list')
+        gen_supportlist_xls(read_sheet, write_sheet)
 
+        # sheet 2: draw pkg tree
+        read_sheet = read_wb.sheet_by_index(1)
+        write_sheet = write_wb.add_sheet('ongoing_pkg_tree')
+        gen_pkg_tree(read_sheet, write_sheet)
+
+        backup_old_tree_sheets(read_wb, write_wb)
         write_wb.save('output.xls')
 
-# vim: tabstop=8 shiftwidth=8 softtabstop=8 expandtab
+# get_sheet vim: tabstop=4 shiftwidth=4 softtabstop=4 expandtab
